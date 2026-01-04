@@ -1,0 +1,124 @@
+Starting project at /home/absolut7/Documents/26apps/ihyatafsir-android
+Starting Metro Bundler
+Clearing Webpack development cache directory...
+The project's Babel config is invalid: Cannot find module 'babel-preset-expo'
+Require stack:
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/lib/config/files/plugins.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/lib/config/files/index.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/lib/index.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/metro-config/build/transform-worker/collect-dependencies.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/metro-config/build/serializer/reconcileTransformSerializerPlugin.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/metro-config/build/serializer/withExpoSerializers.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/metro-config/build/ExpoMetroConfig.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/cli/build/src/start/server/metro/instantiateMetro.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/cli/build/src/start/server/metro/MetroBundlerDevServer.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/cli/build/src/start/server/DevServerManager.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/cli/build/src/start/startAsync.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/cli/build/src/start/index.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/cli/build/bin/cli
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/bin/cli
+
+Make sure that all the Babel plugins and presets you are using
+are defined as dependencies or devDependencies in your package.json
+file. It's possible that the missing plugin is loaded by a preset
+you are using that forgot to add the plugin to its dependencies: you
+can workaround this problem by explicitly adding the missing package
+to your top-level package.json.
+
+Error: Cannot find module 'babel-preset-expo'
+Require stack:
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/lib/config/files/plugins.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/lib/config/files/index.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/lib/index.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/metro-config/build/transform-worker/collect-dependencies.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/metro-config/build/serializer/reconcileTransformSerializerPlugin.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/metro-config/build/serializer/withExpoSerializers.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/metro-config/build/ExpoMetroConfig.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/cli/build/src/start/server/metro/instantiateMetro.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/cli/build/src/start/server/metro/MetroBundlerDevServer.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/cli/build/src/start/server/DevServerManager.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/cli/build/src/start/startAsync.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/cli/build/src/start/index.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/cli/build/bin/cli
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/bin/cli
+
+Make sure that all the Babel plugins and presets you are using
+are defined as dependencies or devDependencies in your package.json
+file. It's possible that the missing plugin is loaded by a preset
+you are using that forgot to add the plugin to its dependencies: you
+can workaround this problem by explicitly adding the missing package
+to your top-level package.json.
+
+Error: Cannot find module 'babel-preset-expo'
+Require stack:
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/lib/config/files/plugins.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/lib/config/files/index.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/lib/index.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/metro-config/build/transform-worker/collect-dependencies.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/metro-config/build/serializer/reconcileTransformSerializerPlugin.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/metro-config/build/serializer/withExpoSerializers.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/metro-config/build/ExpoMetroConfig.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/cli/build/src/start/server/metro/instantiateMetro.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/cli/build/src/start/server/metro/MetroBundlerDevServer.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/cli/build/src/start/server/DevServerManager.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/cli/build/src/start/startAsync.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/cli/build/src/start/index.js
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/cli/build/bin/cli
+- /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/bin/cli
+
+Make sure that all the Babel plugins and presets you are using
+are defined as dependencies or devDependencies in your package.json
+file. It's possible that the missing plugin is loaded by a preset
+you are using that forgot to add the plugin to its dependencies: you
+can workaround this problem by explicitly adding the missing package
+to your top-level package.json.
+
+    at Function.Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+    at resolve (node:internal/modules/helpers:193:19)
+    at tryRequireResolve (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/src/config/files/plugins.ts:140:36)
+    at resolveStandardizedNameForRequire (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/src/config/files/plugins.ts:168:19)
+    at resolvePreset (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/src/config/files/plugins.ts:196:12)
+    at resolver (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/src/config/files/plugins.ts:50:32)
+    at loadPreset.next (<anonymous>)
+    at createDescriptor (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/src/config/config-descriptors.ts:328:35)
+    at createDescriptor.next (<anonymous>)
+    at evaluateSync (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/gensync/index.js:251:28)
+    at /home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/gensync/index.js:31:34
+    at Array.map (<anonymous>)
+    at Function.sync (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/gensync/index.js:31:22)
+    at Function.all (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/gensync/index.js:210:24)
+    at Generator.next (<anonymous>)
+    at createDescriptors (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/src/config/config-descriptors.ts:269:38)
+    at createDescriptors.next (<anonymous>)
+    at fn (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/src/config/config-descriptors.ts:243:17)
+    at createPresetDescriptors.next (<anonymous>)
+    at presets (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/src/gensync-utils/functional.ts:18:46)
+    at Generator.next (<anonymous>)
+    at mergeChainOpts (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/src/config/config-chain.ts:727:34)
+    at mergeChainOpts.next (<anonymous>)
+    at loadFileChainWalker (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/src/config/config-chain.ts:663:14)
+    at chainWalker.next (<anonymous>)
+    at loadFileChain (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/src/config/config-chain.ts:400:24)
+    at loadFileChain.next (<anonymous>)
+    at buildRootChain (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/src/config/config-chain.ts:186:27)
+    at buildRootChain.next (<anonymous>)
+    at loadPrivatePartialConfig (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/src/config/partial.ts:110:44)
+    at loadPrivatePartialConfig.next (<anonymous>)
+    at loadPartialConfig (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/src/config/partial.ts:169:12)
+    at loadPartialConfig.next (<anonymous>)
+    at evaluateSync (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/gensync/index.js:251:28)
+    at fn (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/gensync/index.js:89:14)
+    at stopHiding - secret - don't use this - v1 (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/src/errors/rewrite-stack-trace.ts:99:14)
+    at loadPartialConfigSync (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/src/config/index.ts:53:60)
+    at loadPartialConfig (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@babel/core/src/config/index.ts:72:14)
+    at generateCacheIdentifier (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@expo/webpack-config/src/loaders/createBabelLoader.ts:77:36)
+    at createBabelLoader (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@expo/webpack-config/src/loaders/createBabelLoader.ts:189:25)
+    at getBabelLoaderRule (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@expo/webpack-config/src/loaders/createAllLoaders.ts:177:27)
+    at createAllLoaders (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@expo/webpack-config/src/loaders/createAllLoaders.ts:133:5)
+    at default_1 (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@expo/webpack-config/src/webpack.config.ts:236:38)
+    at loadDefaultConfigAsync (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/@expo/webpack-config/src/index.ts:29:37)
+    at WebpackBundlerDevServer.loadConfigAsync (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/cli/src/start/server/webpack/WebpackBundlerDevServer.ts:270:22)
+    at WebpackBundlerDevServer.startImplementationAsync (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/cli/src/start/server/webpack/WebpackBundlerDevServer.ts:182:31)
+    at WebpackBundlerDevServer.startAsync (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/cli/src/start/server/BundlerDevServer.ts:160:18)
+    at DevServerManager.startAsync (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/cli/src/start/server/DevServerManager.ts:184:7)
+    at startAsync (/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/node_modules/@expo/cli/src/start/startAsync.ts:100:3)

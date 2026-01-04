@@ -1,0 +1,90 @@
+Starting project at /home/absolut7/Documents/26apps/ihyatafsir-android
+Starting Metro Bundler
+› Webpack failed to locate a valid Babel config
+(node:1553914) [DEP_WEBPACK_DEV_SERVER_CONSTRUCTOR] DeprecationWarning: Using 'compiler' as the first argument is deprecated. Please use 'options' as the first argument and 'compiler' as the second argument.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:1553914) [DEP_WEBPACK_DEV_SERVER_LISTEN] DeprecationWarning: 'listen' is deprecated. Please use the async 'start' or 'startCallback' method.
+Starting Webpack on port 19006 in development mode.
+The following packages should be updated for best compatibility with the installed expo version:
+  react-dom@19.2.3 - expected version: 19.1.0
+Your project may not work correctly until you install the expected versions of the packages.
+Waiting on http://localhost:8081
+Logs for your project will appear below.
+ERROR in ./App.tsx:177:4
+Syntax error: Support for the experimental syntax 'jsx' isn't currently enabled (177:5):
+
+  175 |
+  176 |   const renderSplash = () => (
+> 177 |     <LinearGradient colors={theme.bg} style={styles.container}>
+      |     ^
+  178 |       <StatusBar style="light" />
+  179 |       <View style={styles.splashContent}>
+  180 |         <Text style={[styles.splashTitle, { color: theme.primary }]}>IHYA QURAN</Text>
+
+Add @babel/preset-react (https://github.com/babel/babel/tree/main/packages/babel-preset-react) to the 'presets' section of your Babel config to enable transformation.
+If you want to leave it as-is, add @babel/plugin-syntax-jsx (https://github.com/babel/babel/tree/main/packages/babel-plugin-syntax-jsx) to the 'plugins' section to enable parsing.
+
+If you already added the plugin for this syntax to your config, it's possible that your config isn't being loaded.
+You can re-run Babel with the BABEL_SHOW_CONFIG_FOR environment variable to show the loaded configuration:
+	npx cross-env BABEL_SHOW_CONFIG_FOR=/home/absolut7/Documents/26apps/ihyatafsir-android/App.tsx <your build command>
+See https://babeljs.io/docs/configuration#print-effective-configs for more info.
+
+ERROR in ./node_modules/expo/src/Expo.ts:23:7
+Syntax error: Support for the experimental syntax 'flow' isn't currently enabled (23:8):
+
+  21 | } from 'expo-modules-core';
+  22 |
+> 23 | export type {
+     |        ^
+  24 |   /** @deprecated Move to `SharedRef` with a type-only import instead */
+  25 |   SharedRef as SharedRefType,
+  26 |   /** @deprecated Move to `EventEmitter` with a type-only import instead */
+
+Add @babel/preset-flow (https://github.com/babel/babel/tree/main/packages/babel-preset-flow) to the 'presets' section of your Babel config to enable transformation.
+If you want to leave it as-is, add @babel/plugin-syntax-flow (https://github.com/babel/babel/tree/main/packages/babel-plugin-syntax-flow) to the 'plugins' section to enable parsing.
+
+If you already added the plugin for this syntax to your config, it's possible that your config isn't being loaded.
+You can re-run Babel with the BABEL_SHOW_CONFIG_FOR environment variable to show the loaded configuration:
+	npx cross-env BABEL_SHOW_CONFIG_FOR=/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/src/Expo.ts <your build command>
+See https://babeljs.io/docs/configuration#print-effective-configs for more info.
+
+web compiled with 2 errors
+ERROR in ./App.tsx:177:4
+Syntax error: Support for the experimental syntax 'jsx' isn't currently enabled (177:5):
+
+  175 |
+  176 |   const renderSplash = () => (
+> 177 |     <LinearGradient colors={theme.bg} style={styles.container}>
+      |     ^
+  178 |       <StatusBar style="light" />
+  179 |       <View style={styles.splashContent}>
+  180 |         <Text style={[styles.splashTitle, { color: theme.primary }]}>IHYA QURAN</Text>
+
+Add @babel/preset-react (https://github.com/babel/babel/tree/main/packages/babel-preset-react) to the 'presets' section of your Babel config to enable transformation.
+If you want to leave it as-is, add @babel/plugin-syntax-jsx (https://github.com/babel/babel/tree/main/packages/babel-plugin-syntax-jsx) to the 'plugins' section to enable parsing.
+
+If you already added the plugin for this syntax to your config, it's possible that your config isn't being loaded.
+You can re-run Babel with the BABEL_SHOW_CONFIG_FOR environment variable to show the loaded configuration:
+	npx cross-env BABEL_SHOW_CONFIG_FOR=/home/absolut7/Documents/26apps/ihyatafsir-android/App.tsx <your build command>
+See https://babeljs.io/docs/configuration#print-effective-configs for more info.
+
+ERROR in ./node_modules/expo/src/Expo.ts:23:7
+Syntax error: Support for the experimental syntax 'flow' isn't currently enabled (23:8):
+
+  21 | } from 'expo-modules-core';
+  22 |
+> 23 | export type {
+     |        ^
+  24 |   /** @deprecated Move to `SharedRef` with a type-only import instead */
+  25 |   SharedRef as SharedRefType,
+  26 |   /** @deprecated Move to `EventEmitter` with a type-only import instead */
+
+Add @babel/preset-flow (https://github.com/babel/babel/tree/main/packages/babel-preset-flow) to the 'presets' section of your Babel config to enable transformation.
+If you want to leave it as-is, add @babel/plugin-syntax-flow (https://github.com/babel/babel/tree/main/packages/babel-plugin-syntax-flow) to the 'plugins' section to enable parsing.
+
+If you already added the plugin for this syntax to your config, it's possible that your config isn't being loaded.
+You can re-run Babel with the BABEL_SHOW_CONFIG_FOR environment variable to show the loaded configuration:
+	npx cross-env BABEL_SHOW_CONFIG_FOR=/home/absolut7/Documents/26apps/ihyatafsir-android/node_modules/expo/src/Expo.ts <your build command>
+See https://babeljs.io/docs/configuration#print-effective-configs for more info.
+
+web compiled with 2 errors

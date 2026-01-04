@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "Ihya Tafsir",
+    "slug": "ihyatafsir",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "platforms": [
+      "android",
+      "ios",
+      "web"
+    ],
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#022c22"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ihyatafsir.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#022c22"
+      },
+      "package": "com.ihyatafsir.app"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    }
+  }
+}
