@@ -90,20 +90,21 @@ const cleanTranslit = (translit: string): string => {
 };
 
 // Helper to render Arabic and Transliteration letter-by-letter aligned
-const renderLetterByLetter = (arabic, translit, arabicStyle, translitStyle, highlightIndex = -1, highlightColor = '#ffd700') => {
-  // Split into characters, handling Arabic diacritics
-  const arabicChars = [...(arabic || '')];
-  const translitChars = [...(translit || '')];
+const renderLetterByLetter = (arabic, translit, arabicStyle, translitStyle, isCurrentWord = false) => {
+  // Clean and reverse the transliteration first
+  const cleanedTranslit = cleanTranslit(translit);
 
-  // Filter out Arabic diacritics for alignment (diacritics stay with base letter)
-  const arabicDiacritics = /[\u064B-\u0652\u0670\u0640]/; // Common Arabic diacritics
+  // Arabic diacritics pattern (harakat that attach to letters)
+  const arabicDiacritics = /[\u064B-\u0652\u0670\u0640\u0671]/;
 
   // Group Arabic chars: base letter + following diacritics
-  const arabicGroups = [];
+  const arabicChars = [...(arabic || '')];
+  const arabicGroups: string[] = [];
   let currentGroup = '';
+
   for (const char of arabicChars) {
     if (arabicDiacritics.test(char) && currentGroup) {
-      currentGroup += char;
+      currentGroup += char; // Add diacritic to current group
     } else {
       if (currentGroup) arabicGroups.push(currentGroup);
       currentGroup = char;
@@ -111,32 +112,32 @@ const renderLetterByLetter = (arabic, translit, arabicStyle, translitStyle, high
   }
   if (currentGroup) arabicGroups.push(currentGroup);
 
-  // Map transliteration to Arabic groups
-  const maxLen = Math.max(arabicGroups.length, translitChars.length);
+  // Get cleaned transliteration characters
+  const translitChars = [...cleanedTranslit];
+
+  // Create pairs - align by distributing transliteration chars across Arabic groups
+  const pairCount = Math.max(arabicGroups.length, translitChars.length);
 
   return (
-    <View style={{ flexDirection: 'row-reverse', alignItems: 'flex-start' }}>
-      {Array.from({ length: maxLen }).map((_, i) => {
-        const isHighlighted = i === highlightIndex;
-        return (
-          <View key={i} style={{ alignItems: 'center', marginHorizontal: 1 }}>
-            <Text style={[
-              arabicStyle,
-              { textAlign: 'center' },
-              isHighlighted && { color: highlightColor, textShadowColor: highlightColor, textShadowRadius: 4 }
-            ]}>
-              {arabicGroups[i] || ''}
-            </Text>
-            <Text style={[
-              translitStyle,
-              { textAlign: 'center', fontSize: 10 },
-              isHighlighted && { color: highlightColor }
-            ]}>
-              {translitChars[i] || ''}
-            </Text>
-          </View>
-        );
-      })}
+    <View style={{ flexDirection: 'row-reverse', alignItems: 'flex-start', flexWrap: 'wrap', justifyContent: 'center' }}>
+      {Array.from({ length: pairCount }).map((_, i) => (
+        <View key={i} style={{ alignItems: 'center', marginHorizontal: 1, minWidth: 12 }}>
+          <Text style={[
+            arabicStyle,
+            { textAlign: 'center' },
+            isCurrentWord && { color: '#ffd700' }
+          ]}>
+            {arabicGroups[i] || ''}
+          </Text>
+          <Text style={[
+            translitStyle,
+            { textAlign: 'center', fontSize: 9, minWidth: 8 },
+            isCurrentWord && { color: '#ffd700', fontWeight: 'bold' }
+          ]}>
+            {translitChars[i] || ''}
+          </Text>
+        </View>
+      ))}
     </View>
   );
 };
@@ -631,28 +632,27 @@ export default function App() {
                             }
                           ]}
                         >
-                          {/* Arabic Word */}
-                          {settings.tajweed ?
-                            renderTajweedText(
+                          {/* Letter-by-letter when transliteration enabled, otherwise word-level */}
+                          {settings.showTransliteration ? (
+                            renderLetterByLetter(
                               word.arabic,
+                              word.translit,
                               [styles.wordArabic, { color: theme.arabic, fontSize: settings.fontSize }],
-                              true
-                            ) :
-                            renderArabicWithAllah(
-                              word.arabic,
-                              [styles.wordArabic, { color: theme.arabic, fontSize: settings.fontSize }],
-                              settings.allahHighlight
+                              [styles.wordTranslit, { color: theme.primary }],
+                              isCurrentWord
                             )
-                          }
-                          {/* Transliteration below Arabic */}
-                          {settings.showTransliteration && (
-                            <Text style={[
-                              styles.wordTranslit,
-                              { color: theme.primary, textAlign: 'center' },
-                              isCurrentWord && { color: '#ffd700', fontWeight: 'bold' }
-                            ]}>
-                              {cleanTranslit(word.translit)}
-                            </Text>
+                          ) : (
+                            settings.tajweed ?
+                              renderTajweedText(
+                                word.arabic,
+                                [styles.wordArabic, { color: theme.arabic, fontSize: settings.fontSize }],
+                                true
+                              ) :
+                              renderArabicWithAllah(
+                                word.arabic,
+                                [styles.wordArabic, { color: theme.arabic, fontSize: settings.fontSize }],
+                                settings.allahHighlight
+                              )
                           )}
                         </View>
                       );
