@@ -112,29 +112,50 @@ const renderLetterByLetter = (arabic, translit, arabicStyle, translitStyle, isCu
   }
   if (currentGroup) arabicGroups.push(currentGroup);
 
-  // Get cleaned transliteration characters
-  const translitChars = [...cleanedTranslit];
+  // Group Latin digraphs: th, kh, sh, gh, dh, ṭh, etc. should stay together
+  const latinDigraphs = ['th', 'kh', 'sh', 'gh', 'dh', 'zh', 'ḥ', 'ṣ', 'ṭ', 'ḍ', 'ẓ', 'ā', 'ū', 'ī', 'ʿ', 'ʾ'];
+  const translitGroups: string[] = [];
+  let i = 0;
+  const translitLower = cleanedTranslit.toLowerCase();
 
-  // Create pairs - align by distributing transliteration chars across Arabic groups
-  const pairCount = Math.max(arabicGroups.length, translitChars.length);
+  while (i < cleanedTranslit.length) {
+    // Check for digraphs (2-char combinations)
+    const twoChar = cleanedTranslit.slice(i, i + 2).toLowerCase();
+    if (i + 1 < cleanedTranslit.length && latinDigraphs.includes(twoChar)) {
+      translitGroups.push(cleanedTranslit.slice(i, i + 2));
+      i += 2;
+    } else {
+      // Single special char or regular char
+      const oneChar = cleanedTranslit[i];
+      if (latinDigraphs.includes(oneChar.toLowerCase())) {
+        translitGroups.push(oneChar);
+      } else {
+        translitGroups.push(oneChar);
+      }
+      i++;
+    }
+  }
+
+  // Create pairs - align transliteration groups with Arabic groups
+  const pairCount = Math.max(arabicGroups.length, translitGroups.length);
 
   return (
     <View style={{ flexDirection: 'row-reverse', alignItems: 'flex-start', flexWrap: 'wrap', justifyContent: 'center' }}>
-      {Array.from({ length: pairCount }).map((_, i) => (
-        <View key={i} style={{ alignItems: 'center', marginHorizontal: 1, minWidth: 12 }}>
+      {Array.from({ length: pairCount }).map((_, idx) => (
+        <View key={idx} style={{ alignItems: 'center', marginHorizontal: 1, minWidth: 14 }}>
           <Text style={[
             arabicStyle,
             { textAlign: 'center' },
             isCurrentWord && { color: '#ffd700' }
           ]}>
-            {arabicGroups[i] || ''}
+            {arabicGroups[idx] || ''}
           </Text>
           <Text style={[
             translitStyle,
-            { textAlign: 'center', fontSize: 9, minWidth: 8 },
+            { textAlign: 'center', fontSize: 9, minWidth: 10 },
             isCurrentWord && { color: '#ffd700', fontWeight: 'bold' }
           ]}>
-            {translitChars[i] || ''}
+            {translitGroups[idx] || ''}
           </Text>
         </View>
       ))}
@@ -463,7 +484,8 @@ export default function App() {
       const surahVerses = versesData[item.surah.toString()] || [];
       const verseData = surahVerses.find(v => v.ayah === item.ayah);
       const wordCount = verseData?.words?.length || 5;
-      const estimatedDuration = 4000 + (wordCount * 300); // Base 4s + 300ms per word
+      // Slower timing: base 6s + 600ms per word (Abdul Basit recitation is slow)
+      const estimatedDuration = 6000 + (wordCount * 600);
       const wordInterval = Math.floor(estimatedDuration / wordCount);
 
       const { sound: newSound } = await Audio.Sound.createAsync({ uri: url }, { shouldPlay: true });
