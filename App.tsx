@@ -13,7 +13,6 @@ import {
   Animated,
   Switch,
   Alert,
-  Modal,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Audio } from 'expo-av';
@@ -27,6 +26,18 @@ import versesData from './assets/verses_v4.json';
 import ihyaTafsirData from './assets/ihya_tafsir.json';
 
 // ═══════════════════════════════════════════════════════════════════════════
+// TAJWEED COLORS (from AlQuran APK)
+// ═══════════════════════════════════════════════════════════════════════════
+const TAJWEED_COLORS = {
+  ghunna: '#d16a00',
+  idgham: '#b955c8',
+  idghamWo: '#aaaaaa',
+  ikhfa: '#b60000',
+  iqlab: '#3164c5',
+  qalqala: '#2f9900',
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
 // THEMES & CONFIG
 // ═══════════════════════════════════════════════════════════════════════════
 const THEMES = {
@@ -34,37 +45,45 @@ const THEMES = {
     name: 'Ghazali Emerald',
     bg: ['#011f17', '#022c22'],
     card: '#054535',
-    primary: '#f59e0b', // Gold
+    cardHighlight: '#0a6b4d',
+    primary: '#f59e0b',
     text: '#ffffff',
     subText: '#9ca3af',
     arabic: '#fef3c7',
+    wbwBg: 'rgba(174, 208, 175, 0.15)',
   },
   midnight: {
     name: 'Midnight Gold',
     bg: ['#0f172a', '#1e293b'],
     card: '#334155',
+    cardHighlight: '#475569',
     primary: '#fbbf24',
     text: '#e2e8f0',
     subText: '#94a3b8',
     arabic: '#ffffff',
+    wbwBg: 'rgba(38, 92, 135, 0.2)',
   },
   blue: {
     name: 'Royal Blue',
     bg: ['#172554', '#1e3a8a'],
     card: '#1e40af',
+    cardHighlight: '#2563eb',
     primary: '#60a5fa',
     text: '#eff6ff',
     subText: '#bfdbfe',
     arabic: '#ffffff',
+    wbwBg: 'rgba(96, 165, 250, 0.15)',
   },
   light: {
     name: 'Classic Paper',
     bg: ['#fdf6e3', '#eee8d5'],
     card: '#ffffff',
+    cardHighlight: '#fffbeb',
     primary: '#b58900',
     text: '#586e75',
     subText: '#93a1a1',
     arabic: '#000000',
+    wbwBg: 'rgba(181, 137, 0, 0.1)',
   }
 };
 
@@ -77,12 +96,73 @@ const RECITERS = [
 
 const DEFAULT_SETTINGS = {
   theme: 'emerald',
-  fontSize: 24,
+  fontSize: 26,
   arabicFont: 'amiri',
   showTranslation: true,
   showTransliteration: true,
   reciter: 'minshawi',
   tajweed: false,
+  allahHighlight: true,
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ALLAH SHIMMER COMPONENT - Gold Holographic Effect
+// ═══════════════════════════════════════════════════════════════════════════
+const AllahShimmer = ({ children, style }) => {
+  const shimmerAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(shimmerAnim, { toValue: 1, duration: 1500, useNativeDriver: false }),
+        Animated.timing(shimmerAnim, { toValue: 0, duration: 1500, useNativeDriver: false }),
+      ])
+    );
+    loop.start();
+    return () => loop.stop();
+  }, []);
+
+  const color = shimmerAnim.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: ['#ffd700', '#fff4c4', '#ffd700'],
+  });
+
+  return (
+    <Animated.Text style={[style, { color, textShadowColor: '#ffd700', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 8 }]}>
+      {children}
+    </Animated.Text>
+  );
+};
+
+// Helper to render Arabic text with Allah highlighted
+const renderArabicWithAllah = (text, baseStyle, highlight = true) => {
+  if (!highlight || !text) return <Text style={baseStyle}>{text}</Text>;
+
+  const allahPatterns = ['الله', 'ٱللَّه', 'ٱللَّهِ', 'لِلَّهِ', 'بِٱللَّهِ'];
+  let parts = [text];
+
+  allahPatterns.forEach(pattern => {
+    parts = parts.flatMap(part => {
+      if (typeof part !== 'string') return [part];
+      const split = part.split(pattern);
+      const result = [];
+      split.forEach((s, i) => {
+        result.push(s);
+        if (i < split.length - 1) result.push({ isAllah: true, text: pattern });
+      });
+      return result;
+    });
+  });
+
+  return (
+    <Text style={baseStyle}>
+      {parts.map((part, i) =>
+        typeof part === 'string'
+          ? part
+          : <AllahShimmer key={i} style={baseStyle}>{part.text}</AllahShimmer>
+      )}
+    </Text>
+  );
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -91,24 +171,42 @@ const DEFAULT_SETTINGS = {
 export default function App() {
   const [loading, setLoading] = useState(true);
   const [screen, setScreen] = useState('splash');
+  const [navigationStack, setNavigationStack] = useState(['home']); // Navigation history
   const [selectedSurah, setSelectedSurah] = useState(1);
-  const [selectedVerse, setSelectedVerse] = useState(null); // For detail/tafsir view
+  const [selectedVerse, setSelectedVerse] = useState(null);
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
 
   // Audio State
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [playbackStatus, setPlaybackStatus] = useState({ isPlaying: false, currentVerse: null });
-  const [playbackQueue, setPlaybackQueue] = useState([]); // List of {surah, ayah} keys
+  const [playbackQueue, setPlaybackQueue] = useState([]);
+  const flatListRef = useRef(null);
 
   // Theme
   const theme = THEMES[settings.theme] || THEMES.emerald;
 
+  // Navigation helpers
+  const navigate = (newScreen) => {
+    setNavigationStack(prev => [...prev, newScreen]);
+    setScreen(newScreen);
+  };
+
+  const goBack = () => {
+    if (navigationStack.length > 1) {
+      const newStack = [...navigationStack];
+      newStack.pop();
+      const prevScreen = newStack[newStack.length - 1];
+      setNavigationStack(newStack);
+      setScreen(prevScreen);
+    }
+  };
+
   // Load Settings
   useEffect(() => {
-    // Simulate loading or load from AsyncStorage
     setTimeout(() => {
       setLoading(false);
       setScreen('home');
+      setNavigationStack(['home']);
     }, 2000);
   }, []);
 
@@ -120,7 +218,6 @@ export default function App() {
   }, [sound]);
 
   const playSurah = async (surahNum) => {
-    // Generate queue for whole surah
     const verses = versesData[surahNum] || [];
     const queue = verses.map(v => ({ surah: surahNum, ayah: v.ayah }));
     setPlaybackQueue(queue);
@@ -136,8 +233,6 @@ export default function App() {
     const item = queue[index];
     const reciter = RECITERS.find(r => r.id === settings.reciter);
 
-    // Calculate global verse ID (approximate for API)
-    // Actually islamic.network uses 1-based index 1..6236
     let globalId = 0;
     for (let i = 1; i < item.surah; i++) {
       globalId += surahsData.find(s => s.number === i).verses;
@@ -152,6 +247,11 @@ export default function App() {
       setSound(newSound);
       setPlaybackStatus({ isPlaying: true, currentVerse: `${item.surah}:${item.ayah}` });
 
+      // Scroll to current verse
+      if (flatListRef.current) {
+        flatListRef.current.scrollToIndex({ index: item.ayah - 1, animated: true, viewPosition: 0.3 });
+      }
+
       newSound.setOnPlaybackStatusUpdate(status => {
         if (status.didJustFinish) {
           playQueue(queue, index + 1);
@@ -159,7 +259,7 @@ export default function App() {
       });
     } catch (e) {
       console.log("Audio Error", e);
-      Alert.alert("Error", "Could not play audio. Check internet.");
+      playQueue(queue, index + 1); // Skip to next on error
     }
   };
 
@@ -177,9 +277,10 @@ export default function App() {
     <LinearGradient colors={theme.bg} style={styles.container}>
       <StatusBar style="light" />
       <View style={styles.splashContent}>
-        <Text style={[styles.splashTitle, { color: theme.primary }]}>IHYA QURAN</Text>
-        <Text style={[styles.splashSub, { color: theme.text }]}>Perfection Edition</Text>
-        <ActivityIndicator size="large" color={theme.primary} style={{ marginTop: 20 }} />
+        <Text style={[styles.splashTitle, { color: theme.primary }]}>بِسْمِ ٱللَّهِ</Text>
+        <Text style={[styles.splashSub, { color: theme.text, marginTop: 12 }]}>IHYA QURAN</Text>
+        <Text style={[styles.splashTag, { color: theme.subText }]}>Perfection Edition</Text>
+        <ActivityIndicator size="large" color={theme.primary} style={{ marginTop: 30 }} />
       </View>
     </LinearGradient>
   );
@@ -188,30 +289,35 @@ export default function App() {
     <LinearGradient colors={theme.bg} style={styles.container}>
       <StatusBar style="light" />
       <View style={styles.header}>
-        <Text style={[styles.headerTitle, { color: theme.primary }]}>Ihya Quran</Text>
-        <TouchableOpacity onPress={() => setScreen('settings')}>
-          <Text style={{ fontSize: 24 }}>⚙️</Text>
+        <View>
+          <Text style={[styles.headerTitle, { color: theme.primary }]}>Ihya Quran</Text>
+          <Text style={{ color: theme.subText, fontSize: 12 }}>إحياء علوم القرآن</Text>
+        </View>
+        <TouchableOpacity style={styles.settingsBtn} onPress={() => navigate('settings')}>
+          <Text style={{ fontSize: 22 }}>⚙️</Text>
         </TouchableOpacity>
       </View>
       <FlatList
         data={surahsData}
         keyExtractor={item => item.number.toString()}
+        contentContainerStyle={{ paddingBottom: 20 }}
         renderItem={({ item }) => (
           <TouchableOpacity
             style={[styles.surahItem, { backgroundColor: theme.card }]}
             onPress={() => {
               setSelectedSurah(item.number);
-              setScreen('surah');
+              navigate('surah');
             }}
+            activeOpacity={0.7}
           >
-            <View style={[styles.surahNum, { backgroundColor: theme.bg[0] }]}>
-              <Text style={{ color: theme.primary }}>{item.number}</Text>
+            <View style={[styles.surahNum, { backgroundColor: theme.bg[0], borderColor: theme.primary, borderWidth: 1 }]}>
+              <Text style={{ color: theme.primary, fontWeight: 'bold' }}>{item.number}</Text>
             </View>
             <View style={{ flex: 1, paddingHorizontal: 12 }}>
               <Text style={[styles.surahName, { color: theme.text }]}>{item.name}</Text>
-              <Text style={{ color: theme.subText }}>{item.type} • {item.verses} Verses</Text>
+              <Text style={{ color: theme.subText, fontSize: 12 }}>{item.type} • {item.verses} Ayat</Text>
             </View>
-            <Text style={[styles.surahArabic, { color: theme.primary }]}>{item.arabic}</Text>
+            <Text style={[styles.surahArabic, { color: theme.arabic }]}>{item.arabic}</Text>
           </TouchableOpacity>
         )}
       />
@@ -220,51 +326,77 @@ export default function App() {
 
   const renderSurah = () => {
     const surah = surahsData.find(s => s.number === selectedSurah);
-    const verses = versesData[selectedSurah.toString()]; // Now v4 structure
+    const verses = versesData[selectedSurah.toString()];
 
     return (
       <LinearGradient colors={theme.bg} style={styles.container}>
         <StatusBar style="light" />
         {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => { stopAudio(); setScreen('home'); }}>
+          <TouchableOpacity onPress={goBack} style={styles.backBtnContainer}>
             <Text style={[styles.backBtn, { color: theme.primary }]}>←</Text>
           </TouchableOpacity>
-          <View style={{ alignItems: 'center' }}>
+          <View style={{ alignItems: 'center', flex: 1 }}>
             <Text style={[styles.headerTitle, { color: theme.text }]}>{surah.name}</Text>
-            <Text style={{ color: theme.subText }}>{surah.arabic}</Text>
+            <Text style={{ color: theme.primary, fontSize: 18 }}>{surah.arabic}</Text>
           </View>
-          <TouchableOpacity onPress={() => playbackStatus.isPlaying ? stopAudio() : playSurah(selectedSurah)}>
-            <Text style={{ fontSize: 24 }}>{playbackStatus.isPlaying ? '⏹' : '▶'}</Text>
+          <TouchableOpacity
+            style={[styles.playBtn, { backgroundColor: playbackStatus.isPlaying ? theme.primary : theme.card }]}
+            onPress={() => playbackStatus.isPlaying ? stopAudio() : playSurah(selectedSurah)}
+          >
+            <Text style={{ color: playbackStatus.isPlaying ? theme.bg[0] : theme.text }}>
+              {playbackStatus.isPlaying ? '⏹' : '▶'}
+            </Text>
           </TouchableOpacity>
         </View>
 
+        {/* Bismillah Header (for all surahs except 9) */}
+        {selectedSurah !== 9 && (
+          <View style={[styles.bismillahHeader, { backgroundColor: theme.wbwBg }]}>
+            {renderArabicWithAllah('بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ', [styles.bismillahText, { color: theme.arabic }], settings.allahHighlight)}
+          </View>
+        )}
+
         {/* Verses List */}
         <FlatList
+          ref={flatListRef}
           data={verses}
           keyExtractor={item => `${selectedSurah}:${item.ayah}`}
-          contentContainerStyle={{ padding: 10 }}
+          contentContainerStyle={{ padding: 12, paddingBottom: 40 }}
+          onScrollToIndexFailed={() => { }}
           renderItem={({ item }) => {
             const isPlaying = playbackStatus.currentVerse === `${selectedSurah}:${item.ayah}`;
             return (
-              <View style={[styles.verseCard, { backgroundColor: theme.card, borderColor: isPlaying ? theme.primary : 'transparent', borderWidth: isPlaying ? 1 : 0 }]}>
-                {/* Actions Row (Top) */}
-                <View style={styles.verseActions}>
+              <Animated.View style={[
+                styles.verseCard,
+                {
+                  backgroundColor: isPlaying ? theme.cardHighlight : theme.card,
+                  borderLeftColor: isPlaying ? theme.primary : 'transparent',
+                  borderLeftWidth: isPlaying ? 4 : 0,
+                }
+              ]}>
+                {/* Verse Number Badge */}
+                <View style={styles.verseHeader}>
                   <View style={[styles.verseBadge, { backgroundColor: theme.primary }]}>
-                    <Text style={{ color: theme.bg[0], fontWeight: 'bold' }}>{item.ayah}</Text>
+                    <Text style={{ color: theme.bg[0], fontWeight: 'bold', fontSize: 12 }}>{item.ayah}</Text>
                   </View>
-                  <TouchableOpacity onPress={() => playQueue([{ surah: selectedSurah, ayah: item.ayah }], 0)}>
-                    <Text>▶</Text>
+                  <TouchableOpacity
+                    style={[styles.miniPlayBtn, { backgroundColor: theme.bg[0] }]}
+                    onPress={() => playQueue([{ surah: selectedSurah, ayah: item.ayah }], 0)}
+                  >
+                    <Text style={{ color: theme.primary, fontSize: 12 }}>▶</Text>
                   </TouchableOpacity>
                 </View>
 
-                {/* Word by Word Flow - RTL */}
-                <View style={styles.wordContainer}>
+                {/* Word by Word Flow - RTL with Background */}
+                <View style={[styles.wordContainer, { backgroundColor: theme.wbwBg }]}>
                   {item.words && item.words.map((word, idx) => (
                     <View key={idx} style={styles.wordColumn}>
-                      <Text style={[styles.wordArabic, { color: theme.arabic, fontSize: settings.fontSize, fontFamily: settings.arabicFont === 'amiri' ? 'System' : 'System' }]}>
-                        {word.arabic}
-                      </Text>
+                      {renderArabicWithAllah(
+                        word.arabic,
+                        [styles.wordArabic, { color: theme.arabic, fontSize: settings.fontSize }],
+                        settings.allahHighlight
+                      )}
                       {settings.showTransliteration && (
                         <Text style={[styles.wordTranslit, { color: theme.primary }]}>
                           {word.translit}
@@ -279,16 +411,16 @@ export default function App() {
                   <Text style={[styles.translation, { color: theme.subText }]}>{item.translation}</Text>
                 )}
 
-                {/* Ihya Tafsir - New Style (Below) */}
+                {/* Ihya Tafsir Button */}
                 {item.hasIhya && (
                   <TouchableOpacity
-                    style={[styles.ihyaBar, { backgroundColor: theme.bg[0] }]}
-                    onPress={() => { setSelectedVerse({ surah: selectedSurah, ...item }); setScreen('detail'); }}
+                    style={[styles.ihyaBar, { backgroundColor: theme.bg[0], borderColor: theme.primary }]}
+                    onPress={() => { setSelectedVerse({ surah: selectedSurah, ...item }); navigate('detail'); }}
                   >
-                    <Text style={{ color: theme.primary, fontWeight: 'bold' }}>✦ Read Al-Ghazali's Commentary</Text>
+                    <Text style={{ color: theme.primary, fontWeight: '600' }}>📖 Read Al-Ghazali's Commentary</Text>
                   </TouchableOpacity>
                 )}
-              </View>
+              </Animated.View>
             );
           }}
         />
@@ -299,46 +431,58 @@ export default function App() {
   const renderDetail = () => {
     if (!selectedVerse) return null;
     const tafsirEntry = ihyaTafsirData[`${selectedVerse.surah}:${selectedVerse.ayah}`];
-    // Use first entry to show book title in header if needed, but we list all below
 
     return (
       <LinearGradient colors={theme.bg} style={styles.container}>
         <StatusBar style="light" />
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => setScreen('surah')}>
+          <TouchableOpacity onPress={goBack} style={styles.backBtnContainer}>
             <Text style={[styles.backBtn, { color: theme.primary }]}>← Back</Text>
           </TouchableOpacity>
           <Text style={[styles.headerTitle, { color: theme.text }]}>Ihya Tafsir</Text>
-          <View style={{ width: 40 }} />
+          <View style={{ width: 60 }} />
         </View>
         <ScrollView style={{ padding: 16 }}>
           {/* Verse Block */}
           <View style={[styles.detailVerseBox, { backgroundColor: theme.card }]}>
-            <Text style={[styles.arabicBlock, { color: theme.arabic, fontSize: settings.fontSize * 1.2 }]}>
-              {selectedVerse.text}
-            </Text>
+            <View style={[styles.verseRefBadge, { backgroundColor: theme.primary }]}>
+              <Text style={{ color: theme.bg[0], fontWeight: 'bold' }}>{selectedVerse.surah}:{selectedVerse.ayah}</Text>
+            </View>
+            {renderArabicWithAllah(
+              selectedVerse.text,
+              [styles.arabicBlock, { color: theme.arabic, fontSize: settings.fontSize }],
+              settings.allahHighlight
+            )}
             <Text style={[styles.translationBlock, { color: theme.subText }]}>
               {selectedVerse.translation}
             </Text>
           </View>
 
           {/* Tafsir Entries */}
-          <Text style={[styles.sectionTitle, { color: theme.primary }]}>COMMENTARY BY AL-GHAZALI</Text>
+          <Text style={[styles.sectionTitle, { color: theme.primary }]}>
+            ✦ COMMENTARY BY IMAM AL-GHAZALI
+          </Text>
 
           {tafsirEntry ? (
             tafsirEntry.map((t, i) => (
               <View key={i} style={[styles.tafsirCard, { backgroundColor: theme.card }]}>
-                <View style={styles.bookBadge}>
-                  <Text style={{ color: theme.bg[0], fontWeight: 'bold', fontSize: 12 }}>BOOK: {t.book_title || "Ihya 'Ulum al-Din"}</Text>
+                <View style={[styles.bookBadge, { backgroundColor: theme.primary }]}>
+                  <Text style={{ color: theme.bg[0], fontWeight: 'bold', fontSize: 11 }}>
+                    📚 {t.book_title || "Ihya 'Ulum al-Din"}
+                  </Text>
                 </View>
-                <Text style={[styles.tafsirArabic, { color: theme.arabic }]}>{t.arabic}</Text>
+                {t.arabic && (
+                  <Text style={[styles.tafsirArabic, { color: theme.arabic }]}>{t.arabic}</Text>
+                )}
                 <Text style={[styles.tafsirEnglish, { color: theme.text }]}>{t.english}</Text>
               </View>
             ))
           ) : (
-            <Text style={{ color: theme.subText, textAlign: 'center', marginTop: 20 }}>No Ihya Tafsir available for this verse.</Text>
+            <Text style={{ color: theme.subText, textAlign: 'center', marginTop: 20 }}>
+              No Ihya Tafsir available for this verse.
+            </Text>
           )}
-          <View style={{ height: 40 }} />
+          <View style={{ height: 50 }} />
         </ScrollView>
       </LinearGradient>
     );
@@ -348,45 +492,64 @@ export default function App() {
     <LinearGradient colors={theme.bg} style={styles.container}>
       <StatusBar style="light" />
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => setScreen('home')}>
+        <TouchableOpacity onPress={goBack} style={styles.backBtnContainer}>
           <Text style={[styles.backBtn, { color: theme.primary }]}>←</Text>
         </TouchableOpacity>
         <Text style={[styles.headerTitle, { color: theme.text }]}>Settings</Text>
         <View style={{ width: 40 }} />
       </View>
-      <ScrollView contentContainerStyle={{ padding: 16 }}>
+      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
 
         {/* Theme */}
-        <Text style={[styles.sectionTitle, { color: theme.primary }]}>THEME</Text>
+        <Text style={[styles.sectionTitle, { color: theme.primary }]}>🎨 THEME</Text>
         <View style={styles.rowWrap}>
           {Object.keys(THEMES).map(k => (
             <TouchableOpacity
               key={k}
-              style={[styles.chip, { backgroundColor: settings.theme === k ? theme.primary : theme.card }]}
+              style={[styles.chip, {
+                backgroundColor: settings.theme === k ? theme.primary : theme.card,
+                borderWidth: 1,
+                borderColor: settings.theme === k ? theme.primary : 'transparent'
+              }]}
               onPress={() => setSettings({ ...settings, theme: k })}
             >
-              <Text style={{ color: settings.theme === k ? theme.bg[0] : theme.text }}>{THEMES[k].name}</Text>
+              <Text style={{ color: settings.theme === k ? theme.bg[0] : theme.text, fontWeight: '500' }}>
+                {THEMES[k].name}
+              </Text>
             </TouchableOpacity>
           ))}
         </View>
 
         {/* Font Size */}
-        <Text style={[styles.sectionTitle, { color: theme.primary }]}>FONT SIZE ({settings.fontSize}px)</Text>
+        <Text style={[styles.sectionTitle, { color: theme.primary }]}>📏 ARABIC FONT SIZE: {settings.fontSize}px</Text>
         <View style={styles.row}>
-          <TouchableOpacity onPress={() => setSettings({ ...settings, fontSize: settings.fontSize - 2 })} style={[styles.btn, { backgroundColor: theme.card }]}>
-            <Text style={{ color: theme.text }}>-</Text>
+          <TouchableOpacity
+            onPress={() => setSettings({ ...settings, fontSize: Math.max(16, settings.fontSize - 2) })}
+            style={[styles.sizeBtn, { backgroundColor: theme.card }]}
+          >
+            <Text style={{ color: theme.text, fontSize: 20 }}>−</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => setSettings({ ...settings, fontSize: settings.fontSize + 2 })} style={[styles.btn, { backgroundColor: theme.card }]}>
-            <Text style={{ color: theme.text }}>+</Text>
+          <View style={[styles.sizePreview, { backgroundColor: theme.card }]}>
+            <Text style={{ color: theme.arabic, fontSize: settings.fontSize }}>هِ</Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => setSettings({ ...settings, fontSize: Math.min(44, settings.fontSize + 2) })}
+            style={[styles.sizeBtn, { backgroundColor: theme.card }]}
+          >
+            <Text style={{ color: theme.text, fontSize: 20 }}>+</Text>
           </TouchableOpacity>
         </View>
 
         {/* Reciter */}
-        <Text style={[styles.sectionTitle, { color: theme.primary }]}>RECITER</Text>
+        <Text style={[styles.sectionTitle, { color: theme.primary }]}>🎙️ RECITER</Text>
         {RECITERS.map(r => (
           <TouchableOpacity
             key={r.id}
-            style={[styles.listItem, { borderColor: settings.reciter === r.id ? theme.primary : 'transparent', borderWidth: 1 }]}
+            style={[styles.listItem, {
+              backgroundColor: settings.reciter === r.id ? theme.cardHighlight : theme.card,
+              borderColor: settings.reciter === r.id ? theme.primary : 'transparent',
+              borderWidth: 1
+            }]}
             onPress={() => setSettings({ ...settings, reciter: r.id })}
           >
             <Text style={{ color: theme.text }}>{r.name}</Text>
@@ -395,29 +558,37 @@ export default function App() {
         ))}
 
         {/* Toggles */}
-        <Text style={[styles.sectionTitle, { color: theme.primary }]}>DISPLAY</Text>
-        <View style={styles.toggleRow}>
+        <Text style={[styles.sectionTitle, { color: theme.primary }]}>⚙️ DISPLAY OPTIONS</Text>
+        <View style={[styles.toggleRow, { backgroundColor: theme.card, borderRadius: 12, padding: 16 }]}>
           <Text style={{ color: theme.text }}>Show Translation</Text>
           <Switch
             value={settings.showTranslation}
             onValueChange={v => setSettings({ ...settings, showTranslation: v })}
-            trackColor={{ true: theme.primary }}
+            trackColor={{ false: theme.subText, true: theme.primary }}
           />
         </View>
-        <View style={styles.toggleRow}>
+        <View style={[styles.toggleRow, { backgroundColor: theme.card, borderRadius: 12, padding: 16, marginTop: 8 }]}>
           <Text style={{ color: theme.text }}>Show Transliteration</Text>
           <Switch
             value={settings.showTransliteration}
             onValueChange={v => setSettings({ ...settings, showTransliteration: v })}
-            trackColor={{ true: theme.primary }}
+            trackColor={{ false: theme.subText, true: theme.primary }}
           />
         </View>
-        <View style={styles.toggleRow}>
-          <Text style={{ color: theme.text }}>Tajweed Coloring (Alpha)</Text>
+        <View style={[styles.toggleRow, { backgroundColor: theme.card, borderRadius: 12, padding: 16, marginTop: 8 }]}>
+          <Text style={{ color: theme.text }}>Allah ﷻ Gold Highlight</Text>
+          <Switch
+            value={settings.allahHighlight}
+            onValueChange={v => setSettings({ ...settings, allahHighlight: v })}
+            trackColor={{ false: theme.subText, true: theme.primary }}
+          />
+        </View>
+        <View style={[styles.toggleRow, { backgroundColor: theme.card, borderRadius: 12, padding: 16, marginTop: 8 }]}>
+          <Text style={{ color: theme.text }}>Tajweed Coloring (Beta)</Text>
           <Switch
             value={settings.tajweed}
             onValueChange={v => setSettings({ ...settings, tajweed: v })}
-            trackColor={{ true: theme.primary }}
+            trackColor={{ false: theme.subText, true: theme.primary }}
           />
         </View>
 
@@ -441,66 +612,77 @@ export default function App() {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   splashContent: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  splashTitle: { fontSize: 32, fontWeight: 'bold', letterSpacing: 2 },
-  splashSub: { fontSize: 16, marginTop: 10 },
+  splashTitle: { fontSize: 42, fontWeight: 'bold' },
+  splashSub: { fontSize: 18, fontWeight: '600', letterSpacing: 3 },
+  splashTag: { fontSize: 14, marginTop: 4 },
   header: { padding: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   headerTitle: { fontSize: 20, fontWeight: 'bold' },
-  surahItem: { flexDirection: 'row', alignItems: 'center', padding: 16, marginHorizontal: 16, marginVertical: 6, borderRadius: 12 },
-  surahNum: { width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center' },
-  surahName: { fontSize: 18, fontWeight: '600' },
-  surahArabic: { fontSize: 24 },
-  backBtn: { fontSize: 24 },
-  verseCard: { marginHorizontal: 12, marginVertical: 8, padding: 16, borderRadius: 12 },
-  verseActions: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },
-  verseBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8, marginRight: 12 },
+  settingsBtn: { padding: 8 },
+  backBtnContainer: { padding: 4 },
+  backBtn: { fontSize: 22, fontWeight: '600' },
+  playBtn: { width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center' },
 
-  // Word by Word RTL - Enhanced
+  surahItem: { flexDirection: 'row', alignItems: 'center', padding: 14, marginHorizontal: 12, marginVertical: 5, borderRadius: 12, elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 2 },
+  surahNum: { width: 42, height: 42, borderRadius: 21, justifyContent: 'center', alignItems: 'center' },
+  surahName: { fontSize: 16, fontWeight: '600' },
+  surahArabic: { fontSize: 22 },
+
+  bismillahHeader: { padding: 16, marginHorizontal: 12, borderRadius: 12, marginBottom: 8 },
+  bismillahText: { fontSize: 26, textAlign: 'center', lineHeight: 40 },
+
+  verseCard: { marginVertical: 8, padding: 16, borderRadius: 14, elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.15, shadowRadius: 4 },
+  verseHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 },
+  verseBadge: { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 10 },
+  miniPlayBtn: { width: 32, height: 32, borderRadius: 16, justifyContent: 'center', alignItems: 'center' },
+
   wordContainer: {
     flexDirection: 'row-reverse',
     flexWrap: 'wrap',
     justifyContent: 'center',
     alignItems: 'flex-start',
     marginBottom: 16,
+    paddingVertical: 12,
     paddingHorizontal: 8,
+    borderRadius: 10,
   },
   wordColumn: {
     alignItems: 'center',
-    marginHorizontal: 6,
-    marginVertical: 8,
+    marginHorizontal: 8,
+    marginVertical: 10,
     minWidth: 50,
-    maxWidth: 100,
   },
   wordArabic: {
     textAlign: 'center',
     marginBottom: 6,
-    lineHeight: 36,
+    lineHeight: 38,
   },
   wordTranslit: {
-    fontSize: 13,
+    fontSize: 12,
     textAlign: 'center',
     fontWeight: '500',
-    letterSpacing: 0.5,
+    letterSpacing: 0.3,
   },
 
-  translation: { fontSize: 15, lineHeight: 22 },
+  translation: { fontSize: 15, lineHeight: 24, marginTop: 8 },
 
-  // Ihya Bar
-  ihyaBar: { marginTop: 16, padding: 12, borderRadius: 8, alignItems: 'center', borderWidth: 1, borderColor: '#f59e0b' },
+  ihyaBar: { marginTop: 14, padding: 14, borderRadius: 10, alignItems: 'center', borderWidth: 1.5 },
 
-  sectionTitle: { fontSize: 14, fontWeight: 'bold', marginTop: 24, marginBottom: 12 },
-  row: { flexDirection: 'row', alignItems: 'center' },
+  sectionTitle: { fontSize: 13, fontWeight: 'bold', marginTop: 24, marginBottom: 14, letterSpacing: 0.5 },
+  row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
   rowWrap: { flexDirection: 'row', flexWrap: 'wrap' },
-  chip: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, marginRight: 10, marginBottom: 10 },
-  btn: { width: 50, height: 50, justifyContent: 'center', alignItems: 'center', borderRadius: 25, marginRight: 16 },
-  listItem: { padding: 16, flexDirection: 'row', justifyContent: 'space-between', borderRadius: 8, marginBottom: 8 },
-  toggleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 12 },
+  chip: { paddingHorizontal: 18, paddingVertical: 10, borderRadius: 22, marginRight: 10, marginBottom: 10 },
+  sizeBtn: { width: 50, height: 50, justifyContent: 'center', alignItems: 'center', borderRadius: 25 },
+  sizePreview: { width: 80, height: 60, justifyContent: 'center', alignItems: 'center', marginHorizontal: 20, borderRadius: 12 },
+  listItem: { padding: 16, flexDirection: 'row', justifyContent: 'space-between', borderRadius: 12, marginBottom: 8 },
+  toggleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
 
-  detailVerseBox: { padding: 16, borderRadius: 12, marginBottom: 20 },
-  arabicBlock: { textAlign: 'right', lineHeight: 50, marginBottom: 20 },
-  translationBlock: { fontSize: 16, lineHeight: 24 },
+  detailVerseBox: { padding: 20, borderRadius: 14, marginBottom: 24 },
+  verseRefBadge: { alignSelf: 'flex-end', paddingHorizontal: 12, paddingVertical: 4, borderRadius: 8, marginBottom: 12 },
+  arabicBlock: { textAlign: 'right', lineHeight: 50, marginBottom: 16 },
+  translationBlock: { fontSize: 16, lineHeight: 26 },
 
-  tafsirCard: { padding: 16, borderRadius: 12, marginBottom: 16 },
-  bookBadge: { alignSelf: 'flex-start', backgroundColor: '#f59e0b', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4, marginBottom: 12 },
-  tafsirArabic: { textAlign: 'right', fontSize: 18, marginBottom: 12, lineHeight: 30 },
-  tafsirEnglish: { fontSize: 15, lineHeight: 22 },
+  tafsirCard: { padding: 18, borderRadius: 14, marginBottom: 16, elevation: 2 },
+  bookBadge: { alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 6, marginBottom: 14 },
+  tafsirArabic: { textAlign: 'right', fontSize: 18, marginBottom: 14, lineHeight: 32 },
+  tafsirEnglish: { fontSize: 15, lineHeight: 24 },
 });
