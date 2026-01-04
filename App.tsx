@@ -143,59 +143,85 @@ const renderLetterByLetter = (arabic, translit, arabicStyle, translitStyle, isCu
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
-// MANUSCRIPT-INSPIRED DECORATIVE COMPONENTS
+// MANUSCRIPT-INSPIRED DECORATIVE COMPONENTS (Mamluk/Baybars Style)
 // ═══════════════════════════════════════════════════════════════════════════
 const MANUSCRIPT_COLORS = {
   gold: '#ffd700',
   deepGold: '#daa520',
+  royalGold: '#b8860b',
   indigo: '#1a237e',
+  azure: '#0d47a1',
   parchment: '#f5f0e1',
+  cream: '#fdfcf8',
   forest: '#2e7d32',
+  ruby: '#a31545',
   silver: '#c0c0c0',
+  bronze: '#cd7f32',
 };
 
-// Verse separator component (۝)
+// Verse separator component - Mamluk style (۝)
 const VerseSeparator = ({ theme }) => (
-  <View style={{ alignItems: 'center', marginVertical: 8 }}>
-    <Text style={{ color: MANUSCRIPT_COLORS.gold, fontSize: 16 }}>
-      ❧ ۝ ❧
+  <View style={{ alignItems: 'center', marginVertical: 6 }}>
+    <Text style={{ color: MANUSCRIPT_COLORS.gold, fontSize: 14 }}>
+      ❦ ۝ ❦
     </Text>
   </View>
 );
 
-// Ornate frame for Surah headers
+// Ornate frame for Surah headers - Mamluk illumination style
 const OrnateFrame = ({ children, theme }) => (
   <View style={{
-    borderWidth: 2,
-    borderColor: MANUSCRIPT_COLORS.gold,
-    borderRadius: 12,
-    padding: 12,
+    borderWidth: 3,
+    borderColor: MANUSCRIPT_COLORS.royalGold,
+    borderRadius: 16,
+    padding: 16,
     marginHorizontal: 12,
     marginBottom: 12,
-    backgroundColor: 'rgba(218, 165, 32, 0.1)',
+    backgroundColor: 'rgba(218, 165, 32, 0.08)',
+    shadowColor: MANUSCRIPT_COLORS.gold,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 4,
   }}>
-    {/* Corner decorations */}
-    <View style={{ position: 'absolute', top: -8, left: -8 }}>
-      <Text style={{ color: MANUSCRIPT_COLORS.gold, fontSize: 18 }}>✿</Text>
+    {/* Inner border - double frame effect */}
+    <View style={{
+      position: 'absolute',
+      top: 4, left: 4, right: 4, bottom: 4,
+      borderWidth: 1,
+      borderColor: MANUSCRIPT_COLORS.deepGold,
+      borderRadius: 12,
+      opacity: 0.6,
+    }} />
+    {/* Corner decorations - elaborate Islamic patterns */}
+    <View style={{ position: 'absolute', top: -10, left: -10 }}>
+      <Text style={{ color: MANUSCRIPT_COLORS.gold, fontSize: 22 }}>✾</Text>
     </View>
-    <View style={{ position: 'absolute', top: -8, right: -8 }}>
-      <Text style={{ color: MANUSCRIPT_COLORS.gold, fontSize: 18 }}>✿</Text>
+    <View style={{ position: 'absolute', top: -10, right: -10 }}>
+      <Text style={{ color: MANUSCRIPT_COLORS.gold, fontSize: 22 }}>✾</Text>
     </View>
-    <View style={{ position: 'absolute', bottom: -8, left: -8 }}>
-      <Text style={{ color: MANUSCRIPT_COLORS.gold, fontSize: 18 }}>✿</Text>
+    <View style={{ position: 'absolute', bottom: -10, left: -10 }}>
+      <Text style={{ color: MANUSCRIPT_COLORS.gold, fontSize: 22 }}>✾</Text>
     </View>
-    <View style={{ position: 'absolute', bottom: -8, right: -8 }}>
-      <Text style={{ color: MANUSCRIPT_COLORS.gold, fontSize: 18 }}>✿</Text>
+    <View style={{ position: 'absolute', bottom: -10, right: -10 }}>
+      <Text style={{ color: MANUSCRIPT_COLORS.gold, fontSize: 22 }}>✾</Text>
+    </View>
+    {/* Side decorations */}
+    <View style={{ position: 'absolute', top: '45%', left: -6 }}>
+      <Text style={{ color: MANUSCRIPT_COLORS.deepGold, fontSize: 14 }}>◈</Text>
+    </View>
+    <View style={{ position: 'absolute', top: '45%', right: -6 }}>
+      <Text style={{ color: MANUSCRIPT_COLORS.deepGold, fontSize: 14 }}>◈</Text>
     </View>
     {children}
   </View>
 );
 
-// Decorative geometric border
+// Decorative geometric border - Carpet page style
 const GeometricBorder = ({ theme }) => (
-  <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 8 }}>
-    <Text style={{ color: MANUSCRIPT_COLORS.gold, fontSize: 12, letterSpacing: 4 }}>
-      ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆
+  <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 6 }}>
+    <Text style={{ color: MANUSCRIPT_COLORS.gold, fontSize: 11 }}>
+      ◆ ❖ ◆ ❖ ◆ ❖ ◆ ❖ ◆
     </Text>
   </View>
 );
@@ -434,7 +460,8 @@ export default function App() {
       setPlayingWordIndex(0);
 
       // Get word count for this verse to estimate timing
-      const verseData = versesData.find(v => v.surah === item.surah && v.ayah === item.ayah);
+      const surahVerses = versesData[item.surah.toString()] || [];
+      const verseData = surahVerses.find(v => v.ayah === item.ayah);
       const wordCount = verseData?.words?.length || 5;
       const estimatedDuration = 4000 + (wordCount * 300); // Base 4s + 300ms per word
       const wordInterval = Math.floor(estimatedDuration / wordCount);
