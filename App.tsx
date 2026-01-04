@@ -80,6 +80,58 @@ const renderTajweedText = (text, baseStyle, enabled = false) => {
   );
 };
 
+// Helper to render Arabic and Transliteration letter-by-letter aligned
+const renderLetterByLetter = (arabic, translit, arabicStyle, translitStyle, highlightIndex = -1, highlightColor = '#ffd700') => {
+  // Split into characters, handling Arabic diacritics
+  const arabicChars = [...(arabic || '')];
+  const translitChars = [...(translit || '')];
+
+  // Filter out Arabic diacritics for alignment (diacritics stay with base letter)
+  const arabicDiacritics = /[\u064B-\u0652\u0670\u0640]/; // Common Arabic diacritics
+
+  // Group Arabic chars: base letter + following diacritics
+  const arabicGroups = [];
+  let currentGroup = '';
+  for (const char of arabicChars) {
+    if (arabicDiacritics.test(char) && currentGroup) {
+      currentGroup += char;
+    } else {
+      if (currentGroup) arabicGroups.push(currentGroup);
+      currentGroup = char;
+    }
+  }
+  if (currentGroup) arabicGroups.push(currentGroup);
+
+  // Map transliteration to Arabic groups
+  const maxLen = Math.max(arabicGroups.length, translitChars.length);
+
+  return (
+    <View style={{ flexDirection: 'row-reverse', alignItems: 'flex-start' }}>
+      {Array.from({ length: maxLen }).map((_, i) => {
+        const isHighlighted = i === highlightIndex;
+        return (
+          <View key={i} style={{ alignItems: 'center', marginHorizontal: 1 }}>
+            <Text style={[
+              arabicStyle,
+              { textAlign: 'center' },
+              isHighlighted && { color: highlightColor, textShadowColor: highlightColor, textShadowRadius: 4 }
+            ]}>
+              {arabicGroups[i] || ''}
+            </Text>
+            <Text style={[
+              translitStyle,
+              { textAlign: 'center', fontSize: 10 },
+              isHighlighted && { color: highlightColor }
+            ]}>
+              {translitChars[i] || ''}
+            </Text>
+          </View>
+        );
+      })}
+    </View>
+  );
+};
+
 // ═══════════════════════════════════════════════════════════════════════════
 // THEMES & CONFIG
 // ═══════════════════════════════════════════════════════════════════════════
@@ -223,7 +275,9 @@ export default function App() {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [playbackStatus, setPlaybackStatus] = useState({ isPlaying: false, currentVerse: null });
   const [playbackQueue, setPlaybackQueue] = useState([]);
+  const [playingWordIndex, setPlayingWordIndex] = useState(-1); // Word-level highlighting
   const flatListRef = useRef(null);
+  const wordTimerRef = useRef<any>(null);
 
   // Theme
   const theme = THEMES[settings.theme] || THEMES.emerald;
@@ -303,9 +357,32 @@ export default function App() {
 
     try {
       if (sound) await sound.unloadAsync();
+
+      // Clear any existing word timer
+      if (wordTimerRef.current) {
+        clearInterval(wordTimerRef.current);
+        wordTimerRef.current = null;
+      }
+      setPlayingWordIndex(0);
+
+      // Get word count for this verse to estimate timing
+      const verseData = versesData.find(v => v.surah === item.surah && v.ayah === item.ayah);
+      const wordCount = verseData?.words?.length || 5;
+      const estimatedDuration = 4000 + (wordCount * 300); // Base 4s + 300ms per word
+      const wordInterval = Math.floor(estimatedDuration / wordCount);
+
       const { sound: newSound } = await Audio.Sound.createAsync({ uri: url }, { shouldPlay: true });
       setSound(newSound);
       setPlaybackStatus({ isPlaying: true, currentVerse: `${item.surah}:${item.ayah}` });
+
+      // Start word cycling timer
+      let currentWordIdx = 0;
+      wordTimerRef.current = setInterval(() => {
+        currentWordIdx++;
+        if (currentWordIdx < wordCount) {
+          setPlayingWordIndex(currentWordIdx);
+        }
+      }, wordInterval);
 
       // Scroll to current verse
       if (flatListRef.current) {
@@ -314,17 +391,33 @@ export default function App() {
 
       newSound.setOnPlaybackStatusUpdate(status => {
         if (status.didJustFinish) {
+          // Clear timer and reset word index before next verse
+          if (wordTimerRef.current) {
+            clearInterval(wordTimerRef.current);
+            wordTimerRef.current = null;
+          }
+          setPlayingWordIndex(-1);
           playQueue(queue, index + 1);
         }
       });
     } catch (e) {
       console.log("Audio Error", e);
+      if (wordTimerRef.current) {
+        clearInterval(wordTimerRef.current);
+        wordTimerRef.current = null;
+      }
+      setPlayingWordIndex(-1);
       playQueue(queue, index + 1); // Skip to next on error
     }
   };
 
   const stopAudio = async () => {
     if (sound) await sound.stopAsync();
+    if (wordTimerRef.current) {
+      clearInterval(wordTimerRef.current);
+      wordTimerRef.current = null;
+    }
+    setPlayingWordIndex(-1);
     setPlaybackStatus({ isPlaying: false, currentVerse: null });
     setPlaybackQueue([]);
   };
@@ -448,29 +541,51 @@ export default function App() {
                   </TouchableOpacity>
                 </View>
 
-                {/* Word by Word Flow - RTL with Background */}
+                {/* Word by Word Flow - Letter-by-letter aligned */}
                 <View style={[styles.wordContainer, { backgroundColor: theme.wbwBg }]}>
-                  {item.words && item.words.map((word, idx) => (
-                    <View key={idx} style={styles.wordColumn}>
-                      {settings.tajweed ?
-                        renderTajweedText(
-                          word.arabic,
-                          [styles.wordArabic, { color: theme.arabic, fontSize: settings.fontSize }],
-                          true
-                        ) :
-                        renderArabicWithAllah(
-                          word.arabic,
-                          [styles.wordArabic, { color: theme.arabic, fontSize: settings.fontSize }],
-                          settings.allahHighlight
-                        )
-                      }
-                      {settings.showTransliteration && (
-                        <Text style={[styles.wordTranslit, { color: theme.primary }]}>
-                          {word.translit}
-                        </Text>
-                      )}
-                    </View>
-                  ))}
+                  {item.words && item.words.map((word, idx) => {
+                    const isCurrentVerse = playbackStatus.currentVerse === `${selectedSurah}:${item.ayah}`;
+                    const isCurrentWord = isCurrentVerse && idx === playingWordIndex;
+
+                    return (
+                      <View
+                        key={idx}
+                        style={[
+                          styles.wordColumn,
+                          isCurrentWord && {
+                            backgroundColor: 'rgba(255, 215, 0, 0.2)',
+                            borderRadius: 4,
+                            shadowColor: '#ffd700',
+                            shadowRadius: 8,
+                            elevation: 3
+                          }
+                        ]}
+                      >
+                        {settings.showTransliteration ?
+                          renderLetterByLetter(
+                            word.arabic,
+                            word.translit,
+                            [styles.wordArabic, { color: theme.arabic, fontSize: settings.fontSize }],
+                            [styles.wordTranslit, { color: theme.primary }],
+                            -1,
+                            '#ffd700'
+                          ) : (
+                            settings.tajweed ?
+                              renderTajweedText(
+                                word.arabic,
+                                [styles.wordArabic, { color: theme.arabic, fontSize: settings.fontSize }],
+                                true
+                              ) :
+                              renderArabicWithAllah(
+                                word.arabic,
+                                [styles.wordArabic, { color: theme.arabic, fontSize: settings.fontSize }],
+                                settings.allahHighlight
+                              )
+                          )
+                        }
+                      </View>
+                    );
+                  })}
                 </View>
 
                 {/* Translation */}
