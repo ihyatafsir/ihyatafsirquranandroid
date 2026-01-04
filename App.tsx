@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {
   StyleSheet,
@@ -13,6 +13,8 @@ import {
   Animated,
   Switch,
   Alert,
+  BackHandler,
+  Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Audio } from 'expo-av';
@@ -26,15 +28,56 @@ import versesData from './assets/verses_v4.json';
 import ihyaTafsirData from './assets/ihya_tafsir.json';
 
 // ═══════════════════════════════════════════════════════════════════════════
-// TAJWEED COLORS (from AlQuran APK)
+// TAJWEED COLORS & RULES (from AlQuran APK)
 // ═══════════════════════════════════════════════════════════════════════════
 const TAJWEED_COLORS = {
-  ghunna: '#d16a00',
-  idgham: '#b955c8',
-  idghamWo: '#aaaaaa',
-  ikhfa: '#b60000',
-  iqlab: '#3164c5',
-  qalqala: '#2f9900',
+  ghunna: '#d16a00',      // Orange - Ghunna (nasalization)
+  idgham: '#b955c8',      // Purple - Idgham (merging)
+  idghamWo: '#aaaaaa',    // Gray - Idgham without ghunna
+  ikhfa: '#b60000',       // Red - Ikhfa (hiding)
+  iqlab: '#3164c5',       // Blue - Iqlab (conversion)
+  qalqala: '#2f9900',     // Green - Qalqala (echoing)
+  madd: '#ff6600',        // Madd (elongation)
+};
+
+// Qalqala letters: ق ط ب ج د
+const QALQALA_LETTERS = ['ق', 'ط', 'ب', 'ج', 'د'];
+// Noon/Meem Sakinah indicators  
+const NOON_SAKINAH = 'نْ';
+const MEEM_SAKINAH = 'مْ';
+
+// Helper to apply Tajweed colors to Arabic text
+const renderTajweedText = (text, baseStyle, enabled = false) => {
+  if (!enabled || !text) return <Text style={baseStyle}>{text}</Text>;
+
+  const chars = [...text];
+  return (
+    <Text style={baseStyle}>
+      {chars.map((char, i) => {
+        let color = null;
+        // Check for Qalqala letters
+        if (QALQALA_LETTERS.includes(char)) {
+          color = TAJWEED_COLORS.qalqala;
+        }
+        // Check for Noon with sukoon (rough approximation)
+        else if (char === 'ن' && chars[i + 1] === 'ْ') {
+          color = TAJWEED_COLORS.ghunna;
+        }
+        // Check for Meem with sukoon
+        else if (char === 'م' && chars[i + 1] === 'ْ') {
+          color = TAJWEED_COLORS.ghunna;
+        }
+        // Check for Madd (elongation mark)
+        else if (char === 'ٓ' || char === 'ٰ' || char === 'آ') {
+          color = TAJWEED_COLORS.madd;
+        }
+
+        return color ? (
+          <Text key={i} style={{ color, fontWeight: '600' }}>{char}</Text>
+        ) : char;
+      })}
+    </Text>
+  );
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -191,15 +234,32 @@ export default function App() {
     setScreen(newScreen);
   };
 
-  const goBack = () => {
+  const goBack = useCallback(() => {
     if (navigationStack.length > 1) {
       const newStack = [...navigationStack];
       newStack.pop();
       const prevScreen = newStack[newStack.length - 1];
       setNavigationStack(newStack);
       setScreen(prevScreen);
+      return true; // Handled
     }
-  };
+    return false; // Let system handle (exit app only at home)
+  }, [navigationStack]);
+
+  // Android Hardware Back Button Handler
+  useEffect(() => {
+    if (Platform.OS === 'android' || Platform.OS === 'web') {
+      const backAction = () => {
+        if (screen === 'home') {
+          return false; // Allow exit only from home
+        }
+        return goBack();
+      };
+
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+      return () => backHandler.remove();
+    }
+  }, [screen, goBack]);
 
   // Load Settings
   useEffect(() => {
@@ -392,11 +452,18 @@ export default function App() {
                 <View style={[styles.wordContainer, { backgroundColor: theme.wbwBg }]}>
                   {item.words && item.words.map((word, idx) => (
                     <View key={idx} style={styles.wordColumn}>
-                      {renderArabicWithAllah(
-                        word.arabic,
-                        [styles.wordArabic, { color: theme.arabic, fontSize: settings.fontSize }],
-                        settings.allahHighlight
-                      )}
+                      {settings.tajweed ?
+                        renderTajweedText(
+                          word.arabic,
+                          [styles.wordArabic, { color: theme.arabic, fontSize: settings.fontSize }],
+                          true
+                        ) :
+                        renderArabicWithAllah(
+                          word.arabic,
+                          [styles.wordArabic, { color: theme.arabic, fontSize: settings.fontSize }],
+                          settings.allahHighlight
+                        )
+                      }
                       {settings.showTransliteration && (
                         <Text style={[styles.wordTranslit, { color: theme.primary }]}>
                           {word.translit}
