@@ -719,7 +719,7 @@ export default function App() {
                       style={[styles.ihyaBar, { backgroundColor: theme.bg[0], borderColor: theme.primary }]}
                       onPress={() => { setSelectedVerse({ surah: selectedSurah, ...item }); navigate('detail'); }}
                     >
-                      <Text style={{ color: theme.primary, fontWeight: '600' }}>📖 Read Al-Ghazali's Commentary</Text>
+                      <Text style={{ color: theme.primary, fontWeight: '600' }}>📖 Ihya Commentary</Text>
                     </TouchableOpacity>
                   )}
                 </Animated.View>
