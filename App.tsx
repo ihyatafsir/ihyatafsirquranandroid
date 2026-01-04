@@ -454,11 +454,33 @@ const styles = StyleSheet.create({
   verseActions: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },
   verseBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8, marginRight: 12 },
 
-  // Word by Word RTL
-  wordContainer: { flexDirection: 'row-reverse', flexWrap: 'wrap', justifyContent: 'flex-start', marginBottom: 12 },
-  wordColumn: { alignItems: 'center', margin: 4, minWidth: 40 },
-  wordArabic: { textAlign: 'center', marginBottom: 4 },
-  wordTranslit: { fontSize: 11, textAlign: 'center' },
+  // Word by Word RTL - Enhanced
+  wordContainer: {
+    flexDirection: 'row-reverse',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    marginBottom: 16,
+    paddingHorizontal: 8,
+  },
+  wordColumn: {
+    alignItems: 'center',
+    marginHorizontal: 6,
+    marginVertical: 8,
+    minWidth: 50,
+    maxWidth: 100,
+  },
+  wordArabic: {
+    textAlign: 'center',
+    marginBottom: 6,
+    lineHeight: 36,
+  },
+  wordTranslit: {
+    fontSize: 13,
+    textAlign: 'center',
+    fontWeight: '500',
+    letterSpacing: 0.5,
+  },
 
   translation: { fontSize: 15, lineHeight: 22 },
 
