@@ -80,6 +80,15 @@ const renderTajweedText = (text, baseStyle, enabled = false) => {
   );
 };
 
+// Helper to clean transliteration (data is RTL-reversed with Arabic diacritics embedded)
+const cleanTranslit = (translit: string): string => {
+  if (!translit) return '';
+  // Remove Arabic diacritics (harakat)
+  const cleaned = translit.replace(/[\u064B-\u0652\u0670\u0640\u0671]/g, '');
+  // Reverse the string (data is stored RTL)
+  return [...cleaned].reverse().join('');
+};
+
 // Helper to render Arabic and Transliteration letter-by-letter aligned
 const renderLetterByLetter = (arabic, translit, arabicStyle, translitStyle, highlightIndex = -1, highlightColor = '#ffd700') => {
   // Split into characters, handling Arabic diacritics
@@ -131,6 +140,64 @@ const renderLetterByLetter = (arabic, translit, arabicStyle, translitStyle, high
     </View>
   );
 };
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MANUSCRIPT-INSPIRED DECORATIVE COMPONENTS
+// ═══════════════════════════════════════════════════════════════════════════
+const MANUSCRIPT_COLORS = {
+  gold: '#ffd700',
+  deepGold: '#daa520',
+  indigo: '#1a237e',
+  parchment: '#f5f0e1',
+  forest: '#2e7d32',
+  silver: '#c0c0c0',
+};
+
+// Verse separator component (۝)
+const VerseSeparator = ({ theme }) => (
+  <View style={{ alignItems: 'center', marginVertical: 8 }}>
+    <Text style={{ color: MANUSCRIPT_COLORS.gold, fontSize: 16 }}>
+      ❧ ۝ ❧
+    </Text>
+  </View>
+);
+
+// Ornate frame for Surah headers
+const OrnateFrame = ({ children, theme }) => (
+  <View style={{
+    borderWidth: 2,
+    borderColor: MANUSCRIPT_COLORS.gold,
+    borderRadius: 12,
+    padding: 12,
+    marginHorizontal: 12,
+    marginBottom: 12,
+    backgroundColor: 'rgba(218, 165, 32, 0.1)',
+  }}>
+    {/* Corner decorations */}
+    <View style={{ position: 'absolute', top: -8, left: -8 }}>
+      <Text style={{ color: MANUSCRIPT_COLORS.gold, fontSize: 18 }}>✿</Text>
+    </View>
+    <View style={{ position: 'absolute', top: -8, right: -8 }}>
+      <Text style={{ color: MANUSCRIPT_COLORS.gold, fontSize: 18 }}>✿</Text>
+    </View>
+    <View style={{ position: 'absolute', bottom: -8, left: -8 }}>
+      <Text style={{ color: MANUSCRIPT_COLORS.gold, fontSize: 18 }}>✿</Text>
+    </View>
+    <View style={{ position: 'absolute', bottom: -8, right: -8 }}>
+      <Text style={{ color: MANUSCRIPT_COLORS.gold, fontSize: 18 }}>✿</Text>
+    </View>
+    {children}
+  </View>
+);
+
+// Decorative geometric border
+const GeometricBorder = ({ theme }) => (
+  <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 8 }}>
+    <Text style={{ color: MANUSCRIPT_COLORS.gold, fontSize: 12, letterSpacing: 4 }}>
+      ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆ ◇ ◆
+    </Text>
+  </View>
+);
 
 // ═══════════════════════════════════════════════════════════════════════════
 // THEMES & CONFIG
@@ -505,9 +572,12 @@ export default function App() {
 
         {/* Bismillah Header (for all surahs except 9) */}
         {selectedSurah !== 9 && (
-          <View style={[styles.bismillahHeader, { backgroundColor: theme.wbwBg }]}>
-            {renderArabicWithAllah('بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ', [styles.bismillahText, { color: theme.arabic }], settings.allahHighlight)}
-          </View>
+          <OrnateFrame theme={theme}>
+            <View style={{ alignItems: 'center' }}>
+              {renderArabicWithAllah('بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ', [styles.bismillahText, { color: theme.arabic }], settings.allahHighlight)}
+              <GeometricBorder theme={theme} />
+            </View>
+          </OrnateFrame>
         )}
 
         {/* Verses List */}
@@ -520,93 +590,99 @@ export default function App() {
           renderItem={({ item }) => {
             const isPlaying = playbackStatus.currentVerse === `${selectedSurah}:${item.ayah}`;
             return (
-              <Animated.View style={[
-                styles.verseCard,
-                {
-                  backgroundColor: isPlaying ? theme.cardHighlight : theme.card,
-                  borderLeftColor: isPlaying ? theme.primary : 'transparent',
-                  borderLeftWidth: isPlaying ? 4 : 0,
-                }
-              ]}>
-                {/* Verse Number Badge */}
-                <View style={styles.verseHeader}>
-                  <View style={[styles.verseBadge, { backgroundColor: theme.primary }]}>
-                    <Text style={{ color: theme.bg[0], fontWeight: 'bold', fontSize: 12 }}>{item.ayah}</Text>
+              <>
+                <Animated.View style={[
+                  styles.verseCard,
+                  {
+                    backgroundColor: isPlaying ? theme.cardHighlight : theme.card,
+                    borderLeftColor: isPlaying ? theme.primary : 'transparent',
+                    borderLeftWidth: isPlaying ? 4 : 0,
+                  }
+                ]}>
+                  {/* Verse Number Badge */}
+                  <View style={styles.verseHeader}>
+                    <View style={[styles.verseBadge, { backgroundColor: theme.primary }]}>
+                      <Text style={{ color: theme.bg[0], fontWeight: 'bold', fontSize: 12 }}>{item.ayah}</Text>
+                    </View>
+                    <TouchableOpacity
+                      style={[styles.miniPlayBtn, { backgroundColor: theme.bg[0] }]}
+                      onPress={() => playQueue([{ surah: selectedSurah, ayah: item.ayah }], 0)}
+                    >
+                      <Text style={{ color: theme.primary, fontSize: 12 }}>▶</Text>
+                    </TouchableOpacity>
                   </View>
-                  <TouchableOpacity
-                    style={[styles.miniPlayBtn, { backgroundColor: theme.bg[0] }]}
-                    onPress={() => playQueue([{ surah: selectedSurah, ayah: item.ayah }], 0)}
-                  >
-                    <Text style={{ color: theme.primary, fontSize: 12 }}>▶</Text>
-                  </TouchableOpacity>
-                </View>
 
-                {/* Word by Word Flow - Letter-by-letter aligned */}
-                <View style={[styles.wordContainer, { backgroundColor: theme.wbwBg }]}>
-                  {item.words && item.words.map((word, idx) => {
-                    const isCurrentVerse = playbackStatus.currentVerse === `${selectedSurah}:${item.ayah}`;
-                    const isCurrentWord = isCurrentVerse && idx === playingWordIndex;
+                  {/* Word by Word Flow - Letter-by-letter aligned */}
+                  <View style={[styles.wordContainer, { backgroundColor: theme.wbwBg }]}>
+                    {item.words && item.words.map((word, idx) => {
+                      const isCurrentVerse = playbackStatus.currentVerse === `${selectedSurah}:${item.ayah}`;
+                      const isCurrentWord = isCurrentVerse && idx === playingWordIndex;
 
-                    return (
-                      <View
-                        key={idx}
-                        style={[
-                          styles.wordColumn,
-                          isCurrentWord && {
-                            backgroundColor: 'rgba(255, 215, 0, 0.2)',
-                            borderRadius: 4,
-                            shadowColor: '#ffd700',
-                            shadowRadius: 8,
-                            elevation: 3
+                      return (
+                        <View
+                          key={idx}
+                          style={[
+                            styles.wordColumn,
+                            isCurrentWord && {
+                              backgroundColor: 'rgba(255, 215, 0, 0.25)',
+                              borderRadius: 6,
+                              borderWidth: 1,
+                              borderColor: '#ffd700',
+                            }
+                          ]}
+                        >
+                          {/* Arabic Word */}
+                          {settings.tajweed ?
+                            renderTajweedText(
+                              word.arabic,
+                              [styles.wordArabic, { color: theme.arabic, fontSize: settings.fontSize }],
+                              true
+                            ) :
+                            renderArabicWithAllah(
+                              word.arabic,
+                              [styles.wordArabic, { color: theme.arabic, fontSize: settings.fontSize }],
+                              settings.allahHighlight
+                            )
                           }
-                        ]}
-                      >
-                        {settings.showTransliteration ?
-                          renderLetterByLetter(
-                            word.arabic,
-                            word.translit,
-                            [styles.wordArabic, { color: theme.arabic, fontSize: settings.fontSize }],
-                            [styles.wordTranslit, { color: theme.primary }],
-                            -1,
-                            '#ffd700'
-                          ) : (
-                            settings.tajweed ?
-                              renderTajweedText(
-                                word.arabic,
-                                [styles.wordArabic, { color: theme.arabic, fontSize: settings.fontSize }],
-                                true
-                              ) :
-                              renderArabicWithAllah(
-                                word.arabic,
-                                [styles.wordArabic, { color: theme.arabic, fontSize: settings.fontSize }],
-                                settings.allahHighlight
-                              )
-                          )
-                        }
-                      </View>
-                    );
-                  })}
-                </View>
+                          {/* Transliteration below Arabic */}
+                          {settings.showTransliteration && (
+                            <Text style={[
+                              styles.wordTranslit,
+                              { color: theme.primary, textAlign: 'center' },
+                              isCurrentWord && { color: '#ffd700', fontWeight: 'bold' }
+                            ]}>
+                              {cleanTranslit(word.translit)}
+                            </Text>
+                          )}
+                        </View>
+                      );
+                    })}
+                  </View>
 
-                {/* Translation */}
-                {settings.showTranslation && (
-                  <Text style={[styles.translation, { color: theme.subText }]}>{item.translation}</Text>
-                )}
+                  {/* Translation */}
+                  {settings.showTranslation && (
+                    <Text style={[styles.translation, { color: theme.subText }]}>{item.translation}</Text>
+                  )}
 
-                {/* Ihya Tafsir Button */}
-                {item.hasIhya && (
-                  <TouchableOpacity
-                    style={[styles.ihyaBar, { backgroundColor: theme.bg[0], borderColor: theme.primary }]}
-                    onPress={() => { setSelectedVerse({ surah: selectedSurah, ...item }); navigate('detail'); }}
-                  >
-                    <Text style={{ color: theme.primary, fontWeight: '600' }}>📖 Read Al-Ghazali's Commentary</Text>
-                  </TouchableOpacity>
-                )}
-              </Animated.View>
+                  {/* Ihya Tafsir Button */}
+                  {item.hasIhya && (
+                    <TouchableOpacity
+                      style={[styles.ihyaBar, { backgroundColor: theme.bg[0], borderColor: theme.primary }]}
+                      onPress={() => { setSelectedVerse({ surah: selectedSurah, ...item }); navigate('detail'); }}
+                    >
+                      <Text style={{ color: theme.primary, fontWeight: '600' }}>📖 Read Al-Ghazali's Commentary</Text>
+                    </TouchableOpacity>
+                  )}
+                </Animated.View>
+
+                {/* Verse Separator - manuscript style */}
+                <VerseSeparator theme={theme} />
+              </>
             );
-          }}
+          }
+          }
         />
-      </LinearGradient>
+      </LinearGradient >
     );
   };
 
