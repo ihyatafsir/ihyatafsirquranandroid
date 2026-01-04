@@ -248,7 +248,7 @@ export default function App() {
             const isPlaying = playbackStatus.currentVerse === `${selectedSurah}:${item.ayah}`;
             return (
               <View style={[styles.verseCard, { backgroundColor: theme.card, borderColor: isPlaying ? theme.primary : 'transparent', borderWidth: isPlaying ? 1 : 0 }]}>
-                {/* Actions Row */}
+                {/* Actions Row (Top) */}
                 <View style={styles.verseActions}>
                   <View style={[styles.verseBadge, { backgroundColor: theme.primary }]}>
                     <Text style={{ color: theme.bg[0], fontWeight: 'bold' }}>{item.ayah}</Text>
@@ -256,11 +256,6 @@ export default function App() {
                   <TouchableOpacity onPress={() => playQueue([{ surah: selectedSurah, ayah: item.ayah }], 0)}>
                     <Text>▶</Text>
                   </TouchableOpacity>
-                  {item.hasIhya && (
-                    <TouchableOpacity onPress={() => { setSelectedVerse({ surah: selectedSurah, ...item }); setScreen('detail'); }}>
-                      <Text style={{ color: theme.primary, marginLeft: 10, fontWeight: 'bold' }}>📚 Tafsir</Text>
-                    </TouchableOpacity>
-                  )}
                 </View>
 
                 {/* Word by Word Flow - RTL */}
@@ -283,6 +278,16 @@ export default function App() {
                 {settings.showTranslation && (
                   <Text style={[styles.translation, { color: theme.subText }]}>{item.translation}</Text>
                 )}
+
+                {/* Ihya Tafsir - New Style (Below) */}
+                {item.hasIhya && (
+                  <TouchableOpacity
+                    style={[styles.ihyaBar, { backgroundColor: theme.bg[0] }]}
+                    onPress={() => { setSelectedVerse({ surah: selectedSurah, ...item }); setScreen('detail'); }}
+                  >
+                    <Text style={{ color: theme.primary, fontWeight: 'bold' }}>✦ Read Al-Ghazali's Commentary</Text>
+                  </TouchableOpacity>
+                )}
               </View>
             );
           }}
@@ -293,7 +298,8 @@ export default function App() {
 
   const renderDetail = () => {
     if (!selectedVerse) return null;
-    const tafsir = ihyaTafsirData[`${selectedVerse.surah}:${selectedVerse.ayah}`];
+    const tafsirEntry = ihyaTafsirData[`${selectedVerse.surah}:${selectedVerse.ayah}`];
+    // Use first entry to show book title in header if needed, but we list all below
 
     return (
       <LinearGradient colors={theme.bg} style={styles.container}>
@@ -306,17 +312,25 @@ export default function App() {
           <View style={{ width: 40 }} />
         </View>
         <ScrollView style={{ padding: 16 }}>
-          <Text style={[styles.arabicBlock, { color: theme.arabic, fontSize: settings.fontSize * 1.2 }]}>
-            {selectedVerse.words.map(w => w.arabic).join(' ')}
-          </Text>
-          <Text style={[styles.translationBlock, { color: theme.subText }]}>
-            {selectedVerse.translation}
-          </Text>
+          {/* Verse Block */}
+          <View style={[styles.detailVerseBox, { backgroundColor: theme.card }]}>
+            <Text style={[styles.arabicBlock, { color: theme.arabic, fontSize: settings.fontSize * 1.2 }]}>
+              {selectedVerse.text}
+            </Text>
+            <Text style={[styles.translationBlock, { color: theme.subText }]}>
+              {selectedVerse.translation}
+            </Text>
+          </View>
 
-          {tafsir ? (
-            tafsir.map((t, i) => (
+          {/* Tafsir Entries */}
+          <Text style={[styles.sectionTitle, { color: theme.primary }]}>COMMENTARY BY AL-GHAZALI</Text>
+
+          {tafsirEntry ? (
+            tafsirEntry.map((t, i) => (
               <View key={i} style={[styles.tafsirCard, { backgroundColor: theme.card }]}>
-                <Text style={{ color: theme.primary, fontWeight: 'bold', marginBottom: 8 }}>Al-Ghazali ({t.book})</Text>
+                <View style={styles.bookBadge}>
+                  <Text style={{ color: theme.bg[0], fontWeight: 'bold', fontSize: 12 }}>BOOK: {t.book_title || "Ihya 'Ulum al-Din"}</Text>
+                </View>
                 <Text style={[styles.tafsirArabic, { color: theme.arabic }]}>{t.arabic}</Text>
                 <Text style={[styles.tafsirEnglish, { color: theme.text }]}>{t.english}</Text>
               </View>
@@ -441,12 +455,15 @@ const styles = StyleSheet.create({
   verseBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8, marginRight: 12 },
 
   // Word by Word RTL
-  wordContainer: { flexDirection: 'row-reverse', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'flex-start' },
+  wordContainer: { flexDirection: 'row-reverse', flexWrap: 'wrap', justifyContent: 'flex-start', marginBottom: 12 },
   wordColumn: { alignItems: 'center', margin: 4, minWidth: 40 },
   wordArabic: { textAlign: 'center', marginBottom: 4 },
   wordTranslit: { fontSize: 11, textAlign: 'center' },
 
-  translation: { marginTop: 16, fontSize: 15, lineHeight: 22 },
+  translation: { fontSize: 15, lineHeight: 22 },
+
+  // Ihya Bar
+  ihyaBar: { marginTop: 16, padding: 12, borderRadius: 8, alignItems: 'center', borderWidth: 1, borderColor: '#f59e0b' },
 
   sectionTitle: { fontSize: 14, fontWeight: 'bold', marginTop: 24, marginBottom: 12 },
   row: { flexDirection: 'row', alignItems: 'center' },
@@ -456,9 +473,12 @@ const styles = StyleSheet.create({
   listItem: { padding: 16, flexDirection: 'row', justifyContent: 'space-between', borderRadius: 8, marginBottom: 8 },
   toggleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 12 },
 
+  detailVerseBox: { padding: 16, borderRadius: 12, marginBottom: 20 },
   arabicBlock: { textAlign: 'right', lineHeight: 50, marginBottom: 20 },
-  translationBlock: { fontSize: 16, lineHeight: 24, marginBottom: 20 },
+  translationBlock: { fontSize: 16, lineHeight: 24 },
+
   tafsirCard: { padding: 16, borderRadius: 12, marginBottom: 16 },
+  bookBadge: { alignSelf: 'flex-start', backgroundColor: '#f59e0b', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4, marginBottom: 12 },
   tafsirArabic: { textAlign: 'right', fontSize: 18, marginBottom: 12, lineHeight: 30 },
   tafsirEnglish: { fontSize: 15, lineHeight: 22 },
 });
