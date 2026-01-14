@@ -31,6 +31,8 @@ import ihyaTafsirData from './assets/ihya_tafsir.json';
 import lisanIndexData from './assets/lisan_index.json';
 import ibnKathirData from './assets/ibn_kathir_en.json';
 import jalalaynData from './assets/jalalayn_en.json';
+import haleemData from './assets/haleem_en.json';
+import albanianData from './assets/albanian_sq.json';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // TAJWEED COLORS & RULES (from AlQuran APK)
@@ -489,7 +491,15 @@ const DEFAULT_SETTINGS = {
   allahHighlight: true,
   showIbnKathir: true,   // Ibn Kathir English tafsir
   showJalalayn: true,    // Al-Jalalayn English tafsir
+  translation: 'sahih',  // Translation: 'sahih', 'haleem', 'albanian'
 };
+
+// Translation options
+const TRANSLATIONS = [
+  { id: 'sahih', name: 'Saheeh International', lang: 'English' },
+  { id: 'haleem', name: 'Abdel Haleem', lang: 'English' },
+  { id: 'albanian', name: 'Sherif Ahmeti', lang: 'Albanian' },
+];
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ALLAH SHIMMER COMPONENT - Gold Holographic Effect
@@ -1144,9 +1154,15 @@ export default function App() {
                     })}
                   </View>
 
-                  {/* Translation */}
+                  {/* Translation - uses selected translator */}
                   {settings.showTranslation && (
-                    <Text style={[styles.translation, { color: theme.subText }]}>{item.translation}</Text>
+                    <Text style={[styles.translation, { color: theme.subText }]}>
+                      {settings.translation === 'haleem'
+                        ? haleemData[`${selectedSurah}:${item.ayah}`] || item.translation
+                        : settings.translation === 'albanian'
+                          ? albanianData[`${selectedSurah}:${item.ayah}`] || item.translation
+                          : item.translation}
+                    </Text>
                   )}
 
                   {/* Ibn Kathir Tafsir Inline - Tappable to expand */}
@@ -1336,7 +1352,27 @@ export default function App() {
           </TouchableOpacity>
         ))}
 
-        {/* Toggles */}
+        {/* Translation */}
+        <Text style={[styles.sectionTitle, { color: theme.primary }]}>📖 TRANSLATION</Text>
+        <View style={styles.rowWrap}>
+          {TRANSLATIONS.map(t => (
+            <TouchableOpacity
+              key={t.id}
+              style={[styles.chip, {
+                backgroundColor: settings.translation === t.id ? theme.primary : theme.card,
+                borderWidth: 1,
+                borderColor: settings.translation === t.id ? theme.primary : 'transparent'
+              }]}
+              onPress={() => setSettings({ ...settings, translation: t.id })}
+            >
+              <Text style={{ color: settings.translation === t.id ? theme.bg[0] : theme.text, fontWeight: '500', fontSize: 12 }}>
+                {t.name} ({t.lang})
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Display Options */}
         <Text style={[styles.sectionTitle, { color: theme.primary }]}>⚙️ DISPLAY OPTIONS</Text>
         <View style={[styles.toggleRow, { backgroundColor: theme.card, borderRadius: 12, padding: 16 }]}>
           <Text style={{ color: theme.text }}>Show Translation</Text>
