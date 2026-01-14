@@ -29,6 +29,8 @@ import surahsData from './assets/surahs.json';
 import versesData from './assets/verses_v4.json';
 import ihyaTafsirData from './assets/ihya_tafsir.json';
 import lisanIndexData from './assets/lisan_index.json';
+import ibnKathirData from './assets/ibn_kathir_en.json';
+import jalalaynData from './assets/jalalayn_en.json';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // TAJWEED COLORS & RULES (from AlQuran APK)
@@ -396,6 +398,8 @@ const DEFAULT_SETTINGS = {
   reciter: 'minshawi',
   tajweed: false,
   allahHighlight: true,
+  showIbnKathir: true,   // Ibn Kathir English tafsir
+  showJalalayn: true,    // Al-Jalalayn English tafsir
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1050,6 +1054,30 @@ export default function App() {
                     <Text style={[styles.translation, { color: theme.subText }]}>{item.translation}</Text>
                   )}
 
+                  {/* Ibn Kathir Tafsir Inline */}
+                  {settings.showIbnKathir && ibnKathirData[`${selectedSurah}:${item.ayah}`] && (
+                    <View style={{ marginTop: 8, padding: 10, backgroundColor: 'rgba(255, 140, 0, 0.08)', borderRadius: 8, borderLeftWidth: 3, borderLeftColor: '#ff8c00' }}>
+                      <Text style={{ color: '#ff8c00', fontWeight: 'bold', fontSize: 11, marginBottom: 4 }}>
+                        📙 Ibn Kathir
+                      </Text>
+                      <Text style={{ color: theme.text, fontSize: 12, lineHeight: 18 }} numberOfLines={4}>
+                        {ibnKathirData[`${selectedSurah}:${item.ayah}`]?.replace(/<[^>]*>/g, '').substring(0, 300)}...
+                      </Text>
+                    </View>
+                  )}
+
+                  {/* Jalalayn Tafsir Inline */}
+                  {settings.showJalalayn && jalalaynData[`${selectedSurah}:${item.ayah}`] && (
+                    <View style={{ marginTop: 6, padding: 10, backgroundColor: 'rgba(100, 140, 200, 0.08)', borderRadius: 8, borderLeftWidth: 3, borderLeftColor: '#648cc8' }}>
+                      <Text style={{ color: '#648cc8', fontWeight: 'bold', fontSize: 11, marginBottom: 4 }}>
+                        📗 Al-Jalalayn
+                      </Text>
+                      <Text style={{ color: theme.text, fontSize: 12, lineHeight: 18 }} numberOfLines={3}>
+                        {jalalaynData[`${selectedSurah}:${item.ayah}`]?.substring(0, 250)}...
+                      </Text>
+                    </View>
+                  )}
+
                   {/* Ihya Tafsir Button */}
                   {item.hasIhya && (
                     <TouchableOpacity
@@ -1233,6 +1261,22 @@ export default function App() {
             value={settings.tajweed}
             onValueChange={v => setSettings({ ...settings, tajweed: v })}
             trackColor={{ false: theme.subText, true: theme.primary }}
+          />
+        </View>
+        <View style={[styles.toggleRow, { backgroundColor: theme.card, borderRadius: 12, padding: 16, marginTop: 8 }]}>
+          <Text style={{ color: theme.text }}>📙 Ibn Kathir Tafsir</Text>
+          <Switch
+            value={settings.showIbnKathir}
+            onValueChange={v => setSettings({ ...settings, showIbnKathir: v })}
+            trackColor={{ false: theme.subText, true: '#ff8c00' }}
+          />
+        </View>
+        <View style={[styles.toggleRow, { backgroundColor: theme.card, borderRadius: 12, padding: 16, marginTop: 8 }]}>
+          <Text style={{ color: theme.text }}>📗 Al-Jalalayn Tafsir</Text>
+          <Switch
+            value={settings.showJalalayn}
+            onValueChange={v => setSettings({ ...settings, showJalalayn: v })}
+            trackColor={{ false: theme.subText, true: '#648cc8' }}
           />
         </View>
 
