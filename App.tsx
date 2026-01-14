@@ -36,53 +36,131 @@ import jalalaynData from './assets/jalalayn_en.json';
 // TAJWEED COLORS & RULES (from AlQuran APK)
 // ═══════════════════════════════════════════════════════════════════════════
 const TAJWEED_COLORS = {
-  ghunna: '#d16a00',      // Orange - Ghunna (nasalization)
-  idgham: '#b955c8',      // Purple - Idgham (merging)
-  idghamWo: '#aaaaaa',    // Gray - Idgham without ghunna
-  ikhfa: '#b60000',       // Red - Ikhfa (hiding)
-  iqlab: '#3164c5',       // Blue - Iqlab (conversion)
-  qalqala: '#2f9900',     // Green - Qalqala (echoing)
-  madd: '#ff6600',        // Madd (elongation)
+  ghunna: '#d16a00',      // Orange - Ghunna (nasalization) - نّ مّ
+  ikhfa: '#b60000',       // Red - Ikhfa (hiding) - نْ + certain letters
+  idgham: '#b955c8',      // Purple - Idgham with Ghunna - نْ + و م ن ي
+  idghamWG: '#aaaaaa',    // Gray - Idgham without Ghunna - نْ + ل ر
+  iqlab: '#3164c5',       // Blue - Iqlab (conversion) - نْ + ب → م
+  qalqala: '#2f9900',     // Green - Qalqala (echoing) - ق ط ب ج د
+  madd: '#ff6600',        // Orange - Madd (elongation)
 };
 
-// Qalqala letters: ق ط ب ج د
+// Qalqala letters: ق ط ب ج د (echoing sound when with sukun or at verse end)
 const QALQALA_LETTERS = ['ق', 'ط', 'ب', 'ج', 'د'];
-// Noon/Meem Sakinah indicators  
-const NOON_SAKINAH = 'نْ';
-const MEEM_SAKINAH = 'مْ';
+// Ikhfa letters (after نْ): hiding with nasal sound
+const IKHFA_LETTERS = ['ت', 'ث', 'ج', 'د', 'ذ', 'ز', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ف', 'ق', 'ك'];
+// Idgham with Ghunna letters (after نْ): merging with nasal
+const IDGHAM_LETTERS = ['و', 'م', 'ن', 'ي'];
+// Idgham without Ghunna letters (after نْ): merging without nasal
+const IDGHAM_WG_LETTERS = ['ل', 'ر'];
+// Sukun mark
+const SUKUN = 'ْ';
+// Shadda mark (for Ghunna)
+const SHADDA = 'ّ';
 
 // Helper to apply Tajweed colors to Arabic text
-const renderTajweedText = (text, baseStyle, enabled = false) => {
+const renderTajweedText = (text: string, baseStyle: any, enabled = false) => {
   if (!enabled || !text) return <Text style={baseStyle}>{text}</Text>;
 
   const chars = [...text];
-  return (
-    <Text style={baseStyle}>
-      {chars.map((char, i) => {
-        let color = null;
-        // Check for Qalqala letters
-        if (QALQALA_LETTERS.includes(char)) {
-          color = TAJWEED_COLORS.qalqala;
-        }
-        // Check for Noon with sukoon (rough approximation)
-        else if (char === 'ن' && chars[i + 1] === 'ْ') {
-          color = TAJWEED_COLORS.ghunna;
-        }
-        // Check for Meem with sukoon
-        else if (char === 'م' && chars[i + 1] === 'ْ') {
-          color = TAJWEED_COLORS.ghunna;
-        }
-        // Check for Madd (elongation mark)
-        else if (char === 'ٓ' || char === 'ٰ' || char === 'آ') {
-          color = TAJWEED_COLORS.madd;
-        }
+  const result: React.ReactNode[] = [];
 
-        return color ? (
-          <Text key={i} style={{ color, fontWeight: '600' }}>{char}</Text>
-        ) : char;
-      })}
-    </Text>
-  );
+  for (let i = 0; i < chars.length; i++) {
+    const char = chars[i];
+    const nextChar = chars[i + 1] || '';
+    const nextNextChar = chars[i + 2] || '';
+    let color: string | null = null;
+
+    // Skip diacritics - they'll be colored with their base letter
+    if (char === SUKUN || char === SHADDA || /[\u064B-\u0652\u0670]/.test(char)) {
+      result.push(char);
+      continue;
+    }
+
+    // 1. GHUNNA: نّ or مّ (noon/meem with shadda)
+    if ((char === 'ن' || char === 'م') && nextChar === SHADDA) {
+      color = TAJWEED_COLORS.ghunna;
+      result.push(<Text key={i} style={{ color, fontWeight: '600' }}>{char}{nextChar}</Text>);
+      i++; // Skip the shadda
+      continue;
+    }
+
+    // 2. NOON SAKINAH RULES: نْ followed by specific letters
+    if (char === 'ن' && nextChar === SUKUN) {
+      // Find the next base letter (skip diacritics)
+      let nextLetterIdx = i + 2;
+      while (nextLetterIdx < chars.length && /[\u064B-\u0652\u0670\u0651]/.test(chars[nextLetterIdx])) {
+        nextLetterIdx++;
+      }
+      const nextLetter = chars[nextLetterIdx] || '';
+
+      // IQLAB: نْ + ب → pronounced as م with nasal
+      if (nextLetter === 'ب') {
+        color = TAJWEED_COLORS.iqlab;
+      }
+      // IDGHAM with Ghunna: نْ + و م ن ي
+      else if (IDGHAM_LETTERS.includes(nextLetter)) {
+        color = TAJWEED_COLORS.idgham;
+      }
+      // IDGHAM without Ghunna: نْ + ل ر
+      else if (IDGHAM_WG_LETTERS.includes(nextLetter)) {
+        color = TAJWEED_COLORS.idghamWG;
+      }
+      // IKHFA: نْ + 15 letters
+      else if (IKHFA_LETTERS.includes(nextLetter)) {
+        color = TAJWEED_COLORS.ikhfa;
+      }
+
+      if (color) {
+        result.push(<Text key={i} style={{ color, fontWeight: '600' }}>{char}{nextChar}</Text>);
+        i++; // Skip the sukun
+        continue;
+      }
+    }
+
+    // 3. MEEM SAKINAH + BA (Ikhfa Shafawi): مْ + ب
+    if (char === 'م' && nextChar === SUKUN) {
+      let nextLetterIdx = i + 2;
+      while (nextLetterIdx < chars.length && /[\u064B-\u0652\u0670\u0651]/.test(chars[nextLetterIdx])) {
+        nextLetterIdx++;
+      }
+      if (chars[nextLetterIdx] === 'ب') {
+        color = TAJWEED_COLORS.ikhfa;
+        result.push(<Text key={i} style={{ color, fontWeight: '600' }}>{char}{nextChar}</Text>);
+        i++; // Skip the sukun
+        continue;
+      }
+    }
+
+    // 4. QALQALA: ق ط ب ج د with sukun or at word/verse end
+    if (QALQALA_LETTERS.includes(char)) {
+      // Check if followed by sukun
+      if (nextChar === SUKUN) {
+        color = TAJWEED_COLORS.qalqala;
+        result.push(<Text key={i} style={{ color, fontWeight: '600' }}>{char}{nextChar}</Text>);
+        i++; // Skip the sukun
+        continue;
+      }
+      // Check if at end of word (followed by space or nothing, or another word)
+      else if (!nextChar || nextChar === ' ' || nextChar === '۝') {
+        color = TAJWEED_COLORS.qalqala;
+      }
+    }
+
+    // 5. MADD: elongation marks
+    if (char === 'ٓ' || char === 'ٰ' || char === 'آ' || char === 'ـٓ') {
+      color = TAJWEED_COLORS.madd;
+    }
+
+    // Output the character with or without color
+    if (color) {
+      result.push(<Text key={i} style={{ color, fontWeight: '600' }}>{char}</Text>);
+    } else {
+      result.push(char);
+    }
+  }
+
+  return <Text style={baseStyle}>{result}</Text>;
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -379,6 +457,17 @@ const THEMES = {
     subText: '#93a1a1',
     arabic: '#000000',
     wbwBg: 'rgba(181, 137, 0, 0.1)',
+  },
+  matrix: {
+    name: 'Matrix Lisan',
+    bg: ['#0a0a0a', '#050505'],
+    card: 'rgba(51, 255, 51, 0.08)',
+    cardHighlight: 'rgba(51, 255, 51, 0.15)',
+    primary: '#33ff33',
+    text: '#33ff33',
+    subText: '#22aa22',
+    arabic: '#33c833',
+    wbwBg: 'rgba(34, 170, 34, 0.12)',
   }
 };
 
@@ -396,7 +485,7 @@ const DEFAULT_SETTINGS = {
   showTranslation: true,
   showTransliteration: true,
   reciter: 'minshawi',
-  tajweed: false,
+  tajweed: true,
   allahHighlight: true,
   showIbnKathir: true,   // Ibn Kathir English tafsir
   showJalalayn: true,    // Al-Jalalayn English tafsir
@@ -472,6 +561,10 @@ export default function App() {
   const [selectedSurah, setSelectedSurah] = useState(1);
   const [selectedVerse, setSelectedVerse] = useState(null);
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
+
+  // Expanded tafsir state - tracks which verse:tafsir combinations are expanded
+  const [expandedIbnKathir, setExpandedIbnKathir] = useState<{ [key: string]: boolean }>({});
+  const [expandedJalalayn, setExpandedJalalayn] = useState<{ [key: string]: boolean }>({});
 
   // Audio State
   const [sound, setSound] = useState<Audio.Sound | null>(null);
@@ -1014,14 +1107,16 @@ export default function App() {
                             }
                           ]}
                         >
-                          {/* Arabic word */}
-                          <Text style={[
-                            styles.wordArabic,
-                            { color: theme.arabic, fontSize: settings.fontSize },
-                            isCurrentWord && { color: '#ffd700' }
-                          ]}>
-                            {word.arabic}
-                          </Text>
+                          {/* Arabic word with Tajweed coloring */}
+                          {renderTajweedText(
+                            word.arabic,
+                            [
+                              styles.wordArabic,
+                              { color: theme.arabic, fontSize: settings.fontSize },
+                              isCurrentWord && { color: '#ffd700' }
+                            ],
+                            settings.tajweed && !isCurrentWord
+                          )}
                           {/* RTL Transliteration from DB (Latin + harakat) */}
                           {settings.showTransliteration && word.translit && (
                             <Text style={[
@@ -1054,28 +1149,40 @@ export default function App() {
                     <Text style={[styles.translation, { color: theme.subText }]}>{item.translation}</Text>
                   )}
 
-                  {/* Ibn Kathir Tafsir Inline */}
+                  {/* Ibn Kathir Tafsir Inline - Tappable to expand */}
                   {settings.showIbnKathir && ibnKathirData[`${selectedSurah}:${item.ayah}`] && (
-                    <View style={{ marginTop: 8, padding: 10, backgroundColor: 'rgba(255, 140, 0, 0.08)', borderRadius: 8, borderLeftWidth: 3, borderLeftColor: '#ff8c00' }}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        const key = `${selectedSurah}:${item.ayah}`;
+                        setExpandedIbnKathir(prev => ({ ...prev, [key]: !prev[key] }));
+                      }}
+                      style={{ marginTop: 8, padding: 10, backgroundColor: 'rgba(255, 140, 0, 0.08)', borderRadius: 8, borderLeftWidth: 3, borderLeftColor: '#ff8c00' }}
+                    >
                       <Text style={{ color: '#ff8c00', fontWeight: 'bold', fontSize: 11, marginBottom: 4 }}>
-                        📙 Ibn Kathir
+                        📙 Ibn Kathir {expandedIbnKathir[`${selectedSurah}:${item.ayah}`] ? '▼' : '▶'}
                       </Text>
-                      <Text style={{ color: theme.text, fontSize: 12, lineHeight: 18 }} numberOfLines={4}>
-                        {ibnKathirData[`${selectedSurah}:${item.ayah}`]?.replace(/<[^>]*>/g, '').substring(0, 300)}...
+                      <Text style={{ color: theme.text, fontSize: 13, lineHeight: 20 }} numberOfLines={expandedIbnKathir[`${selectedSurah}:${item.ayah}`] ? undefined : 3}>
+                        {ibnKathirData[`${selectedSurah}:${item.ayah}`]?.replace(/<[^>]*>/g, '')}
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   )}
 
-                  {/* Jalalayn Tafsir Inline */}
+                  {/* Jalalayn Tafsir Inline - Tappable to expand */}
                   {settings.showJalalayn && jalalaynData[`${selectedSurah}:${item.ayah}`] && (
-                    <View style={{ marginTop: 6, padding: 10, backgroundColor: 'rgba(100, 140, 200, 0.08)', borderRadius: 8, borderLeftWidth: 3, borderLeftColor: '#648cc8' }}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        const key = `${selectedSurah}:${item.ayah}`;
+                        setExpandedJalalayn(prev => ({ ...prev, [key]: !prev[key] }));
+                      }}
+                      style={{ marginTop: 6, padding: 10, backgroundColor: 'rgba(100, 140, 200, 0.08)', borderRadius: 8, borderLeftWidth: 3, borderLeftColor: '#648cc8' }}
+                    >
                       <Text style={{ color: '#648cc8', fontWeight: 'bold', fontSize: 11, marginBottom: 4 }}>
-                        📗 Al-Jalalayn
+                        📗 Al-Jalalayn {expandedJalalayn[`${selectedSurah}:${item.ayah}`] ? '▼' : '▶'}
                       </Text>
-                      <Text style={{ color: theme.text, fontSize: 12, lineHeight: 18 }} numberOfLines={3}>
-                        {jalalaynData[`${selectedSurah}:${item.ayah}`]?.substring(0, 250)}...
+                      <Text style={{ color: theme.text, fontSize: 13, lineHeight: 20 }} numberOfLines={expandedJalalayn[`${selectedSurah}:${item.ayah}`] ? undefined : 2}>
+                        {jalalaynData[`${selectedSurah}:${item.ayah}`]}
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   )}
 
                   {/* Ihya Tafsir Button */}
