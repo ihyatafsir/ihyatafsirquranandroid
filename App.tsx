@@ -15,10 +15,12 @@ import {
   Alert,
   BackHandler,
   Platform,
+  Modal,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Audio } from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Paths, File, Directory } from 'expo-file-system';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // DATA IMPORT
@@ -26,6 +28,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import surahsData from './assets/surahs.json';
 import versesData from './assets/verses_v4.json';
 import ihyaTafsirData from './assets/ihya_tafsir.json';
+import lisanIndexData from './assets/lisan_index.json';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // TAJWEED COLORS & RULES (from AlQuran APK)
@@ -80,82 +83,140 @@ const renderTajweedText = (text, baseStyle, enabled = false) => {
   );
 };
 
-// Helper to clean transliteration (data is RTL-reversed with Arabic diacritics embedded)
-const cleanTranslit = (translit: string): string => {
-  if (!translit) return '';
-  // Remove Arabic diacritics (harakat)
-  const cleaned = translit.replace(/[\u064B-\u0652\u0670\u0640\u0671]/g, '');
-  // Reverse the string (data is stored RTL)
-  return [...cleaned].reverse().join('');
+// ═══════════════════════════════════════════════════════════════════════════
+// TRANSLITERATION SYSTEM - RTL with proper diacritics
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Arabic diacritics (harakat) - these are stored in the transliteration data
+const ARABIC_HARAKAT = /[\u064B-\u0652\u0670\u0651]/g;
+const ARABIC_HARAKAT_SINGLE = /[\u064B-\u0652\u0670\u0651]/;
+
+// Map Arabic diacritics to Latin vowel marks
+const HARAKAT_TO_LATIN: { [key: string]: string } = {
+  '\u064E': 'a',   // Fatḥa → a
+  '\u0650': 'i',   // Kasra → i  
+  '\u064F': 'u',   // Ḍamma → u
+  '\u0652': '',    // Sukūn → silent (no vowel)
+  '\u064B': 'an',  // Fatḥatān → an (tanween)
+  '\u064D': 'in',  // Kasratān → in (tanween)
+  '\u064C': 'un',  // Ḍammatān → un (tanween)
+  '\u0651': '',    // Shadda → handled separately (doubling)
+  '\u0670': 'ā',   // Superscript alif → long a
+};
+
+// Arabic letter to Latin mapping with scholarly transliteration
+const ARABIC_TO_LATIN: { [key: string]: string } = {
+  'ا': 'ā', 'ٱ': '', 'أ': 'ʾ', 'إ': 'ʾi', 'آ': 'ʾā',
+  'ب': 'b', 'ت': 't', 'ث': 'th', 'ج': 'j', 'ح': 'ḥ',
+  'خ': 'kh', 'د': 'd', 'ذ': 'dh', 'ر': 'r', 'ز': 'z',
+  'س': 's', 'ش': 'sh', 'ص': 'ṣ', 'ض': 'ḍ', 'ط': 'ṭ',
+  'ظ': 'ẓ', 'ع': 'ʿ', 'غ': 'gh', 'ف': 'f', 'ق': 'q',
+  'ك': 'k', 'ل': 'l', 'م': 'm', 'ن': 'n', 'ه': 'h',
+  'و': 'w', 'ي': 'y', 'ى': 'ā', 'ة': 'h', 'ء': 'ʾ',
+  'ئ': 'ʾ', 'ؤ': 'ʾ', 'ـ': '',
+};
+
+// Parse Arabic word into segments: { letter, diacritics[], hasShadda }
+interface ArabicSegment {
+  letter: string;
+  diacritics: string[];
+  hasShadda: boolean;
+}
+
+const parseArabicWord = (arabic: string): ArabicSegment[] => {
+  if (!arabic) return [];
+
+  const segments: ArabicSegment[] = [];
+  let currentLetter = '';
+  let currentDiacritics: string[] = [];
+  let hasShadda = false;
+
+  for (const char of arabic) {
+    if (ARABIC_HARAKAT_SINGLE.test(char)) {
+      // This is a diacritic - add to current letter
+      if (char === '\u0651') {
+        hasShadda = true;
+      } else {
+        currentDiacritics.push(char);
+      }
+    } else {
+      // This is a base letter - save previous and start new
+      if (currentLetter) {
+        segments.push({ letter: currentLetter, diacritics: currentDiacritics, hasShadda });
+      }
+      currentLetter = char;
+      currentDiacritics = [];
+      hasShadda = false;
+    }
+  }
+  // Don't forget the last letter
+  if (currentLetter) {
+    segments.push({ letter: currentLetter, diacritics: currentDiacritics, hasShadda });
+  }
+
+  return segments;
+};
+
+// Convert Arabic segment to Latin with proper diacritics
+const segmentToLatin = (seg: ArabicSegment): string => {
+  let base = ARABIC_TO_LATIN[seg.letter] || seg.letter;
+
+  // Apply shadda (double the consonant)
+  if (seg.hasShadda && base.length > 0) {
+    // For digraphs like sh, th, kh, gh, dh - just double them
+    base = base + base;
+  }
+
+  // Add vowel marks from diacritics
+  let vowels = '';
+  for (const d of seg.diacritics) {
+    const v = HARAKAT_TO_LATIN[d];
+    if (v) vowels += v;
+  }
+
+  return base + vowels;
 };
 
 // Helper to render Arabic and Transliteration letter-by-letter aligned
-const renderLetterByLetter = (arabic, translit, arabicStyle, translitStyle, isCurrentWord = false) => {
-  // Clean and reverse the transliteration first
-  const cleanedTranslit = cleanTranslit(translit);
+// This uses the Arabic text directly to generate accurate transliteration
+const renderLetterByLetter = (
+  arabic: string,
+  _translit: string, // Not used - we generate from Arabic directly
+  arabicStyle: any,
+  translitStyle: any,
+  isCurrentWord = false
+) => {
+  // Parse Arabic into segments
+  const segments = parseArabicWord(arabic);
 
-  // Arabic diacritics pattern (harakat that attach to letters)
-  const arabicDiacritics = /[\u064B-\u0652\u0670\u0640\u0671]/;
-
-  // Group Arabic chars: base letter + following diacritics
-  const arabicChars = [...(arabic || '')];
-  const arabicGroups: string[] = [];
-  let currentGroup = '';
-
-  for (const char of arabicChars) {
-    if (arabicDiacritics.test(char) && currentGroup) {
-      currentGroup += char; // Add diacritic to current group
-    } else {
-      if (currentGroup) arabicGroups.push(currentGroup);
-      currentGroup = char;
-    }
-  }
-  if (currentGroup) arabicGroups.push(currentGroup);
-
-  // Group Latin digraphs: th, kh, sh, gh, dh, ṭh, etc. should stay together
-  const latinDigraphs = ['th', 'kh', 'sh', 'gh', 'dh', 'zh', 'ḥ', 'ṣ', 'ṭ', 'ḍ', 'ẓ', 'ā', 'ū', 'ī', 'ʿ', 'ʾ'];
-  const translitGroups: string[] = [];
-  let i = 0;
-  const translitLower = cleanedTranslit.toLowerCase();
-
-  while (i < cleanedTranslit.length) {
-    // Check for digraphs (2-char combinations)
-    const twoChar = cleanedTranslit.slice(i, i + 2).toLowerCase();
-    if (i + 1 < cleanedTranslit.length && latinDigraphs.includes(twoChar)) {
-      translitGroups.push(cleanedTranslit.slice(i, i + 2));
-      i += 2;
-    } else {
-      // Single special char or regular char
-      const oneChar = cleanedTranslit[i];
-      if (latinDigraphs.includes(oneChar.toLowerCase())) {
-        translitGroups.push(oneChar);
-      } else {
-        translitGroups.push(oneChar);
-      }
-      i++;
-    }
-  }
-
-  // Create pairs - align transliteration groups with Arabic groups
-  const pairCount = Math.max(arabicGroups.length, translitGroups.length);
+  // Generate Latin for each segment
+  const latinParts = segments.map(seg => segmentToLatin(seg));
 
   return (
     <View style={{ flexDirection: 'row-reverse', alignItems: 'flex-start', flexWrap: 'wrap', justifyContent: 'center' }}>
-      {Array.from({ length: pairCount }).map((_, idx) => (
-        <View key={idx} style={{ alignItems: 'center', marginHorizontal: 1, minWidth: 14 }}>
+      {segments.map((seg, idx) => (
+        <View key={idx} style={{ alignItems: 'center', marginHorizontal: 1, minWidth: 16 }}>
+          {/* Arabic letter with its diacritics */}
           <Text style={[
             arabicStyle,
             { textAlign: 'center' },
             isCurrentWord && { color: '#ffd700' }
           ]}>
-            {arabicGroups[idx] || ''}
+            {seg.letter}{seg.hasShadda ? '\u0651' : ''}{seg.diacritics.join('')}
           </Text>
+          {/* Latin transliteration - RTL aligned */}
           <Text style={[
             translitStyle,
-            { textAlign: 'center', fontSize: 9, minWidth: 10 },
+            {
+              textAlign: 'center',
+              fontSize: 10,
+              minWidth: 12,
+              letterSpacing: 0.5,
+              writingDirection: 'rtl',
+            },
             isCurrentWord && { color: '#ffd700', fontWeight: 'bold' }
           ]}>
-            {translitGroups[idx] || ''}
+            {latinParts[idx] || ''}
           </Text>
         </View>
       ))}
@@ -163,21 +224,32 @@ const renderLetterByLetter = (arabic, translit, arabicStyle, translitStyle, isCu
   );
 };
 
+
+
 // ═══════════════════════════════════════════════════════════════════════════
-// MANUSCRIPT-INSPIRED DECORATIVE COMPONENTS (Mamluk/Baybars Style)
+// MANUSCRIPT-INSPIRED DECORATIVE COMPONENTS (Mamluk/Baybars/Blue Quran Style)
 // ═══════════════════════════════════════════════════════════════════════════
 const MANUSCRIPT_COLORS = {
+  // Classic Gold Tones
   gold: '#ffd700',
   deepGold: '#daa520',
   royalGold: '#b8860b',
+  antiqueGold: '#c5a572',
+  // Blue Quran Palette (9th c. Tunisia)
   indigo: '#1a237e',
+  deepIndigo: '#0a1628',
   azure: '#0d47a1',
+  lapis: '#1e3a5f',
+  // Mamluk/Ottoman Accents
   parchment: '#f5f0e1',
   cream: '#fdfcf8',
   forest: '#2e7d32',
   ruby: '#a31545',
+  vermilion: '#e74c3c',
+  // Metallic Accents
   silver: '#c0c0c0',
   bronze: '#cd7f32',
+  copper: '#b87333',
 };
 
 // Verse separator component - Mamluk style (۝)
@@ -261,6 +333,17 @@ const THEMES = {
     subText: '#9ca3af',
     arabic: '#fef3c7',
     wbwBg: 'rgba(174, 208, 175, 0.15)',
+  },
+  blueQuran: {
+    name: 'Blue Quran',
+    bg: ['#0a1628', '#0d1f3c'],
+    card: 'rgba(13, 71, 161, 0.25)',
+    cardHighlight: 'rgba(255, 215, 0, 0.12)',
+    primary: '#ffd700',
+    text: '#c5a572',
+    subText: '#8b9dc3',
+    arabic: '#ffd700',
+    wbwBg: 'rgba(255, 215, 0, 0.06)',
   },
   midnight: {
     name: 'Midnight Gold',
@@ -394,6 +477,34 @@ export default function App() {
   const flatListRef = useRef(null);
   const wordTimerRef = useRef<any>(null);
 
+  // ═══════════════════════════════════════════════════════════════════════════
+  // LAST-READ TRACKING
+  // ═══════════════════════════════════════════════════════════════════════════
+  const [lastRead, setLastRead] = useState<{ surah: number; ayah: number; timestamp: number } | null>(null);
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // OFFLINE AUDIO DOWNLOADS
+  // ═══════════════════════════════════════════════════════════════════════════
+  const [downloadedSurahs, setDownloadedSurahs] = useState<{ [key: number]: boolean }>({});
+  const [downloadProgress, setDownloadProgress] = useState<{ [key: number]: number }>({});
+  const [isDownloading, setIsDownloading] = useState<{ [key: number]: boolean }>({});
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // LISAN AL-ARAB MODAL STATE
+  // ═══════════════════════════════════════════════════════════════════════════
+  const [lisanModalVisible, setLisanModalVisible] = useState(false);
+  const [lisanWord, setLisanWord] = useState<{ arabic: string; root: string; meaning: string } | null>(null);
+
+  // Show Lisan al-Arab etymology for a word
+  const showLisanModal = (arabic: string, root: string) => {
+    const meaning = lisanIndexData[root] || 'لا يوجد تفسير في لسان العرب';
+    setLisanWord({ arabic, root, meaning });
+    setLisanModalVisible(true);
+  };
+
+  // Audio cache directory - uses expo-file-system Paths API
+  const audioCacheDir = Platform.OS !== 'web' ? new Directory(Paths.cache, 'audio_cache') : null;
+
   // Theme
   const theme = THEMES[settings.theme] || THEMES.emerald;
 
@@ -415,6 +526,24 @@ export default function App() {
     return false; // Let system handle (exit app only at home)
   }, [navigationStack]);
 
+  // Track visible items for last-read functionality (must be at top level to avoid hook order issues)
+  const handleViewableItemsChanged = useCallback(({ viewableItems }: { viewableItems: any[] }) => {
+    if (viewableItems.length > 0) {
+      const firstVisible = viewableItems[0].item;
+      if (firstVisible?.ayah && selectedSurah) {
+        // Save to AsyncStorage
+        const data = { surah: selectedSurah, ayah: firstVisible.ayah, timestamp: Date.now() };
+        setLastRead(data);
+        AsyncStorage.setItem('lastRead', JSON.stringify(data)).catch(console.log);
+      }
+    }
+  }, [selectedSurah]);
+
+  // Stable viewability config - must not change between renders
+  const viewabilityConfig = useMemo(() => ({
+    itemVisiblePercentThreshold: 50,
+  }), []);
+
   // Android Hardware Back Button Handler
   useEffect(() => {
     if (Platform.OS === 'android' || Platform.OS === 'web') {
@@ -430,13 +559,49 @@ export default function App() {
     }
   }, [screen, goBack]);
 
-  // Load Settings
+  // Load Settings & Last Read on Startup
   useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-      setScreen('home');
-      setNavigationStack(['home']);
-    }, 2000);
+    const loadAppState = async () => {
+      try {
+        // Load last read position
+        const savedLastRead = await AsyncStorage.getItem('lastRead');
+        if (savedLastRead) {
+          setLastRead(JSON.parse(savedLastRead));
+        }
+
+        // Load settings
+        const savedSettings = await AsyncStorage.getItem('settings');
+        if (savedSettings) {
+          setSettings({ ...DEFAULT_SETTINGS, ...JSON.parse(savedSettings) });
+        }
+
+        // Check downloaded surahs (mobile only)
+        if (Platform.OS !== 'web' && audioCacheDir) {
+          try {
+            if (audioCacheDir.exists) {
+              const contents = await audioCacheDir.list();
+              const downloaded: { [key: number]: boolean } = {};
+              contents.forEach(item => {
+                const match = item.name.match(/surah_(\d+)/);
+                if (match) downloaded[parseInt(match[1])] = true;
+              });
+              setDownloadedSurahs(downloaded);
+            }
+          } catch (e) {
+            console.log('Audio cache check error:', e);
+          }
+        }
+      } catch (e) {
+        console.log('Error loading app state:', e);
+      }
+
+      setTimeout(() => {
+        setLoading(false);
+        setScreen('home');
+        setNavigationStack(['home']);
+      }, 2000);
+    };
+    loadAppState();
   }, []);
 
   // Audio Playback Logic
@@ -540,6 +705,93 @@ export default function App() {
   };
 
   // ═════════════════════════════════════════════════════════════════════════
+  // LAST-READ HELPERS
+  // ═════════════════════════════════════════════════════════════════════════
+  const saveLastRead = async (surah: number, ayah: number) => {
+    const data = { surah, ayah, timestamp: Date.now() };
+    setLastRead(data);
+    await AsyncStorage.setItem('lastRead', JSON.stringify(data));
+  };
+
+  const getRelativeTime = (timestamp: number) => {
+    const diff = Date.now() - timestamp;
+    const mins = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+    if (days > 0) return `${days} day${days > 1 ? 's' : ''} ago`;
+    if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    if (mins > 0) return `${mins} min${mins > 1 ? 's' : ''} ago`;
+    return 'Just now';
+  };
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // OFFLINE AUDIO DOWNLOAD
+  // ═════════════════════════════════════════════════════════════════════════
+  const downloadSurahAudio = async (surahNum: number) => {
+    if (Platform.OS === 'web' || !audioCacheDir) {
+      Alert.alert('Not Available', 'Offline downloads are only available on mobile devices.');
+      return;
+    }
+
+    const surah = surahsData.find(s => s.number === surahNum);
+    const verseCount = surah?.verses || 0;
+    const reciter = RECITERS.find(r => r.id === settings.reciter);
+    if (!reciter) return;
+
+    setIsDownloading(prev => ({ ...prev, [surahNum]: true }));
+    setDownloadProgress(prev => ({ ...prev, [surahNum]: 0 }));
+
+    try {
+      // Create cache directory if needed
+      if (!audioCacheDir.exists) {
+        await audioCacheDir.create();
+      }
+
+      // Download each verse audio file
+      for (let ayah = 1; ayah <= verseCount; ayah++) {
+        let globalId = 0;
+        for (let i = 1; i < surahNum; i++) {
+          const s = surahsData.find(s => s.number === i);
+          globalId += s?.verses || 0;
+        }
+        globalId += ayah;
+
+        const url = `${reciter.url}${globalId}.mp3`;
+        const audioFile = new File(audioCacheDir, `surah_${surahNum}_ayah_${ayah}.mp3`);
+
+        // Download using fetch and save to file
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const reader = new FileReader();
+
+        await new Promise<void>((resolve, reject) => {
+          reader.onloadend = async () => {
+            try {
+              const base64 = (reader.result as string).split(',')[1];
+              await audioFile.write(base64, { encoding: 'base64' });
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+
+        setDownloadProgress(prev => ({ ...prev, [surahNum]: Math.round((ayah / verseCount) * 100) }));
+      }
+
+      setDownloadedSurahs(prev => ({ ...prev, [surahNum]: true }));
+      Alert.alert('Download Complete', `${surah?.name || 'Surah'} audio is now available offline.`);
+    } catch (e) {
+      console.log('Download error:', e);
+      Alert.alert('Download Failed', 'Please check your connection and try again.');
+    } finally {
+      setIsDownloading(prev => ({ ...prev, [surahNum]: false }));
+    }
+  };
+
+  // ═════════════════════════════════════════════════════════════════════════
   // RENDERERS
   // ═════════════════════════════════════════════════════════════════════════
 
@@ -549,7 +801,7 @@ export default function App() {
       <View style={styles.splashContent}>
         <Text style={[styles.splashTitle, { color: theme.primary }]}>بِسْمِ ٱللَّهِ</Text>
         <Text style={[styles.splashSub, { color: theme.text, marginTop: 12 }]}>IHYA QURAN</Text>
-        <Text style={[styles.splashTag, { color: theme.subText }]}>Perfection Edition</Text>
+        <Text style={[styles.splashTag, { color: theme.subText }]}>Illuminated Edition</Text>
         <ActivityIndicator size="large" color={theme.primary} style={{ marginTop: 30 }} />
       </View>
     </LinearGradient>
@@ -567,6 +819,53 @@ export default function App() {
           <Text style={{ fontSize: 22 }}>⚙️</Text>
         </TouchableOpacity>
       </View>
+
+      {/* ═══ CONTINUE READING CARD - Illuminated Style ═══ */}
+      {lastRead && (
+        <TouchableOpacity
+          style={[styles.continueCard, { backgroundColor: theme.cardHighlight }]}
+          onPress={() => {
+            setSelectedSurah(lastRead.surah);
+            navigate('surah');
+          }}
+          activeOpacity={0.85}
+        >
+          {/* Corner decorations */}
+          <View style={{ position: 'absolute', top: -6, left: -6 }}>
+            <Text style={{ color: MANUSCRIPT_COLORS.gold, fontSize: 16 }}>✾</Text>
+          </View>
+          <View style={{ position: 'absolute', top: -6, right: -6 }}>
+            <Text style={{ color: MANUSCRIPT_COLORS.gold, fontSize: 16 }}>✾</Text>
+          </View>
+          <View style={{ position: 'absolute', bottom: -6, left: -6 }}>
+            <Text style={{ color: MANUSCRIPT_COLORS.gold, fontSize: 16 }}>✾</Text>
+          </View>
+          <View style={{ position: 'absolute', bottom: -6, right: -6 }}>
+            <Text style={{ color: MANUSCRIPT_COLORS.gold, fontSize: 16 }}>✾</Text>
+          </View>
+
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={[styles.continueIcon, { backgroundColor: theme.primary }]}>
+              <Text style={{ fontSize: 18 }}>📖</Text>
+            </View>
+            <View style={{ flex: 1, marginLeft: 12 }}>
+              <Text style={{ color: theme.primary, fontWeight: '700', fontSize: 13, letterSpacing: 1 }}>
+                ✦ CONTINUE READING ✦
+              </Text>
+              <Text style={{ color: theme.text, fontSize: 16, fontWeight: '600', marginTop: 4 }}>
+                {surahsData.find(s => s.number === lastRead.surah)?.name} - Ayah {lastRead.ayah}
+              </Text>
+              <Text style={{ color: theme.subText, fontSize: 12, marginTop: 2 }}>
+                {getRelativeTime(lastRead.timestamp)}
+              </Text>
+            </View>
+            <Text style={{ color: theme.arabic, fontSize: 28 }}>
+              {surahsData.find(s => s.number === lastRead.surah)?.arabic}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      )}
+
       <FlatList
         data={surahsData}
         keyExtractor={item => item.number.toString()}
@@ -585,7 +884,12 @@ export default function App() {
             </View>
             <View style={{ flex: 1, paddingHorizontal: 12 }}>
               <Text style={[styles.surahName, { color: theme.text }]}>{item.name}</Text>
-              <Text style={{ color: theme.subText, fontSize: 12 }}>{item.type} • {item.verses} Ayat</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={{ color: theme.subText, fontSize: 12 }}>{item.type} • {item.verses} Ayat</Text>
+                {downloadedSurahs[item.number] && (
+                  <Text style={{ color: theme.primary, fontSize: 10, marginLeft: 6 }}>✓ Offline</Text>
+                )}
+              </View>
             </View>
             <Text style={[styles.surahArabic, { color: theme.arabic }]}>{item.arabic}</Text>
           </TouchableOpacity>
@@ -601,7 +905,7 @@ export default function App() {
     return (
       <LinearGradient colors={theme.bg} style={styles.container}>
         <StatusBar style="light" />
-        {/* Header */}
+        {/* Header with Download Button */}
         <View style={styles.header}>
           <TouchableOpacity onPress={goBack} style={styles.backBtnContainer}>
             <Text style={[styles.backBtn, { color: theme.primary }]}>←</Text>
@@ -610,6 +914,27 @@ export default function App() {
             <Text style={[styles.headerTitle, { color: theme.text }]}>{surah.name}</Text>
             <Text style={{ color: theme.primary, fontSize: 18 }}>{surah.arabic}</Text>
           </View>
+
+          {/* Download Button */}
+          {!downloadedSurahs[selectedSurah] && !isDownloading[selectedSurah] && (
+            <TouchableOpacity
+              style={[styles.downloadBtn, { backgroundColor: theme.card }]}
+              onPress={() => downloadSurahAudio(selectedSurah)}
+            >
+              <Text style={{ color: theme.primary, fontSize: 14 }}>⬇️</Text>
+            </TouchableOpacity>
+          )}
+          {isDownloading[selectedSurah] && (
+            <View style={[styles.downloadBtn, { backgroundColor: theme.card }]}>
+              <Text style={{ color: theme.primary, fontSize: 10 }}>{downloadProgress[selectedSurah]}%</Text>
+            </View>
+          )}
+          {downloadedSurahs[selectedSurah] && !isDownloading[selectedSurah] && (
+            <View style={[styles.downloadBtn, { backgroundColor: theme.cardHighlight }]}>
+              <Text style={{ color: theme.primary, fontSize: 12 }}>✓</Text>
+            </View>
+          )}
+
           <TouchableOpacity
             style={[styles.playBtn, { backgroundColor: playbackStatus.isPlaying ? theme.primary : theme.card }]}
             onPress={() => playbackStatus.isPlaying ? stopAudio() : playSurah(selectedSurah)}
@@ -637,6 +962,8 @@ export default function App() {
           keyExtractor={item => `${selectedSurah}:${item.ayah}`}
           contentContainerStyle={{ padding: 12, paddingBottom: 40 }}
           onScrollToIndexFailed={() => { }}
+          onViewableItemsChanged={handleViewableItemsChanged}
+          viewabilityConfig={viewabilityConfig}
           renderItem={({ item }) => {
             const isPlaying = playbackStatus.currentVerse === `${selectedSurah}:${item.ayah}`;
             return (
@@ -669,8 +996,10 @@ export default function App() {
                       const isCurrentWord = isCurrentVerse && idx === playingWordIndex;
 
                       return (
-                        <View
+                        <TouchableOpacity
                           key={idx}
+                          activeOpacity={0.7}
+                          onLongPress={() => word.root && showLisanModal(word.arabic, word.root)}
                           style={[
                             styles.wordColumn,
                             isCurrentWord && {
@@ -681,29 +1010,37 @@ export default function App() {
                             }
                           ]}
                         >
-                          {/* Letter-by-letter when transliteration enabled, otherwise word-level */}
-                          {settings.showTransliteration ? (
-                            renderLetterByLetter(
-                              word.arabic,
-                              word.translit,
-                              [styles.wordArabic, { color: theme.arabic, fontSize: settings.fontSize }],
-                              [styles.wordTranslit, { color: theme.primary }],
-                              isCurrentWord
-                            )
-                          ) : (
-                            settings.tajweed ?
-                              renderTajweedText(
-                                word.arabic,
-                                [styles.wordArabic, { color: theme.arabic, fontSize: settings.fontSize }],
-                                true
-                              ) :
-                              renderArabicWithAllah(
-                                word.arabic,
-                                [styles.wordArabic, { color: theme.arabic, fontSize: settings.fontSize }],
-                                settings.allahHighlight
-                              )
+                          {/* Arabic word */}
+                          <Text style={[
+                            styles.wordArabic,
+                            { color: theme.arabic, fontSize: settings.fontSize },
+                            isCurrentWord && { color: '#ffd700' }
+                          ]}>
+                            {word.arabic}
+                          </Text>
+                          {/* RTL Transliteration from DB (Latin + harakat) */}
+                          {settings.showTransliteration && word.translit && (
+                            <Text style={[
+                              styles.wordTranslit,
+                              {
+                                color: theme.primary,
+                                writingDirection: 'rtl',
+                                textAlign: 'center',
+                                fontSize: 11,
+                                letterSpacing: 0.5,
+                              },
+                              isCurrentWord && { color: '#ffd700', fontWeight: 'bold' }
+                            ]}>
+                              {word.translit}
+                            </Text>
                           )}
-                        </View>
+                          {/* Root indicator (tap hint) */}
+                          {word.root && (
+                            <Text style={{ fontSize: 8, color: theme.subText, opacity: 0.6 }}>
+                              [{word.root}]
+                            </Text>
+                          )}
+                        </TouchableOpacity>
                       );
                     })}
                   </View>
@@ -912,6 +1249,90 @@ export default function App() {
       {screen === 'surah' && renderSurah()}
       {screen === 'detail' && renderDetail()}
       {screen === 'settings' && renderSettings()}
+
+      {/* ═══════════════════════════════════════════════════════════════════════ */}
+      {/* LISAN AL-ARAB MODAL - Etymology/Deeper Meaning Display */}
+      {/* ═══════════════════════════════════════════════════════════════════════ */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={lisanModalVisible}
+        onRequestClose={() => setLisanModalVisible(false)}
+      >
+        <View style={{
+          flex: 1,
+          backgroundColor: 'rgba(0, 0, 0, 0.85)',
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: 20,
+        }}>
+          <View style={{
+            backgroundColor: theme.bg[0],
+            borderRadius: 16,
+            padding: 20,
+            width: '100%',
+            maxHeight: '80%',
+            borderWidth: 2,
+            borderColor: MANUSCRIPT_COLORS.gold,
+          }}>
+            {/* Ornate Header */}
+            <View style={{ alignItems: 'center', marginBottom: 16 }}>
+              <Text style={{ color: MANUSCRIPT_COLORS.gold, fontSize: 14 }}>
+                ✾ لسان العرب ✾
+              </Text>
+              <Text style={{ color: theme.arabic, fontSize: 36, fontWeight: 'bold', marginVertical: 8 }}>
+                {lisanWord?.arabic}
+              </Text>
+              <View style={{
+                backgroundColor: 'rgba(255, 215, 0, 0.15)',
+                paddingHorizontal: 16,
+                paddingVertical: 6,
+                borderRadius: 20,
+                borderWidth: 1,
+                borderColor: MANUSCRIPT_COLORS.deepGold,
+              }}>
+                <Text style={{ color: theme.primary, fontWeight: '600' }}>
+                  جذر: {lisanWord?.root}
+                </Text>
+              </View>
+            </View>
+
+            {/* Geometric Border */}
+            <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 10 }}>
+              <Text style={{ color: MANUSCRIPT_COLORS.gold, fontSize: 10 }}>
+                ◆ ❖ ◆ ❖ ◆ ❖ ◆ ❖ ◆
+              </Text>
+            </View>
+
+            {/* Meaning Scroll */}
+            <ScrollView style={{ maxHeight: 300 }}>
+              <Text style={{
+                color: theme.text,
+                fontSize: 16,
+                lineHeight: 28,
+                textAlign: 'right',
+                writingDirection: 'rtl',
+              }}>
+                {lisanWord?.meaning}
+              </Text>
+            </ScrollView>
+
+            {/* Close Button */}
+            <TouchableOpacity
+              style={{
+                marginTop: 20,
+                backgroundColor: theme.primary,
+                paddingVertical: 12,
+                borderRadius: 12,
+                alignItems: 'center',
+              }}
+              onPress={() => setLisanModalVisible(false)}
+            >
+              <Text style={{ color: theme.bg[0], fontWeight: 'bold' }}>إغلاق</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -928,6 +1349,29 @@ const styles = StyleSheet.create({
   backBtnContainer: { padding: 4 },
   backBtn: { fontSize: 22, fontWeight: '600' },
   playBtn: { width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center' },
+  downloadBtn: { width: 36, height: 36, borderRadius: 18, justifyContent: 'center', alignItems: 'center', marginRight: 8 },
+
+  // Continue Reading Card - Illuminated Style
+  continueCard: {
+    marginHorizontal: 12,
+    marginBottom: 12,
+    padding: 16,
+    borderRadius: 14,
+    borderWidth: 2,
+    borderColor: '#daa520',
+    shadowColor: '#ffd700',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  continueIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 
   surahItem: { flexDirection: 'row', alignItems: 'center', padding: 14, marginHorizontal: 12, marginVertical: 5, borderRadius: 12, elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 2 },
   surahNum: { width: 42, height: 42, borderRadius: 21, justifyContent: 'center', alignItems: 'center' },
@@ -968,6 +1412,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: '500',
     letterSpacing: 0.3,
+    writingDirection: 'rtl',
   },
 
   translation: { fontSize: 15, lineHeight: 24, marginTop: 8 },

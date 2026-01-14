@@ -231,15 +231,16 @@ def process_data():
         words_map[key] = {"translit": r[3] if r[3] else ""}
     conn_words.close()
     
-    # CORPUS (Arabic)
+    # CORPUS (Arabic + Root)
     conn_corpus = sqlite3.connect(f"{ALQURAN_DB_DIR}/corpus.db")
     cursor_corpus = conn_corpus.cursor()
-    cursor_corpus.execute("SELECT surah, ayah, word, ar1, ar2, ar3, ar4, ar5 FROM corpus ORDER BY surah, ayah, word")
+    cursor_corpus.execute("SELECT surah, ayah, word, ar1, ar2, ar3, ar4, ar5, root_ar FROM corpus ORDER BY surah, ayah, word")
     
     verses_words = {}
     for r in cursor_corpus:
         sura, ayah, word_num = r[0], r[1], r[2]
-        arabic_word = "".join([seg for seg in r[3:] if seg])
+        arabic_word = "".join([seg for seg in r[3:8] if seg])
+        root_ar = r[8] if r[8] else ""
         
         word_key = f"{sura}:{ayah}:{word_num}"
         verse_key = f"{sura}:{ayah}"
@@ -254,7 +255,8 @@ def process_data():
         verses_words[verse_key].append({
             "id": word_num,
             "arabic": arabic_word,
-            "translit": translit
+            "translit": translit,
+            "root": root_ar
         })
     conn_corpus.close()
 
