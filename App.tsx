@@ -752,6 +752,7 @@ export default function App() {
     if (reciter.id === 'mah') {
       // MAH audio files are hosted on local server (full surah recordings)
       const mahAudioMap = {
+        36: 'http://10.20.1.145:8899/mah_audio/yasin_36.mp3',
         47: 'http://10.20.1.145:8899/mah_audio/muhammad_47.mp3',
         75: 'http://10.20.1.145:8899/mah_audio/qiyamah_75.mp3',
       };
