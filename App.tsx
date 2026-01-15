@@ -33,6 +33,7 @@ import ibnKathirData from './assets/ibn_kathir_en.json';
 import jalalaynData from './assets/jalalayn_en.json';
 import haleemData from './assets/haleem_en.json';
 import albanianData from './assets/albanian_sq.json';
+import timingAlafasy from './assets/timing_alafasy.json';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // TAJWEED COLORS & RULES (from AlQuran APK)
@@ -764,27 +765,35 @@ export default function App() {
       setSound(newSound);
       setPlaybackStatus({ isPlaying: true, currentVerse: `${item.surah}:${item.ayah}` });
 
-      // Start word cycling timer
-      let currentWordIdx = 0;
-      wordTimerRef.current = setInterval(() => {
-        currentWordIdx++;
-        if (currentWordIdx < wordCount) {
-          setPlayingWordIndex(currentWordIdx);
-        }
-      }, wordInterval);
+      // Get word timing data for this verse (Alafasy reciter)
+      const verseKey = `${item.surah}:${item.ayah}`;
+      const verseTiming = timingAlafasy[verseKey] || [];
 
       // Scroll to current verse
       if (flatListRef.current) {
         flatListRef.current.scrollToIndex({ index: item.ayah - 1, animated: true, viewPosition: 0.3 });
       }
 
+      // Real-time position tracking with word timing lookup
       newSound.setOnPlaybackStatusUpdate(status => {
-        if (status.didJustFinish) {
-          // Clear timer and reset word index before next verse
-          if (wordTimerRef.current) {
-            clearInterval(wordTimerRef.current);
-            wordTimerRef.current = null;
+        if (status.isLoaded && status.isPlaying) {
+          const posMs = status.positionMillis || 0;
+
+          // Find current word from timing data
+          let currentWordIdx = -1;
+          for (let i = 0; i < verseTiming.length; i++) {
+            const [wordIdx, startMs, endMs] = verseTiming[i];
+            if (posMs >= startMs && posMs < endMs) {
+              currentWordIdx = wordIdx - 1; // Convert 1-indexed to 0-indexed
+              break;
+            }
           }
+          if (currentWordIdx !== -1) {
+            setPlayingWordIndex(currentWordIdx);
+          }
+        }
+
+        if (status.didJustFinish) {
           setPlayingWordIndex(-1);
           playQueue(queue, index + 1);
         }
