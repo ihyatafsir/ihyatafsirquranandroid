@@ -50,8 +50,10 @@ import timingMahN07 from './assets/audio_mah/timing_taraweeh_n07.json';
 import timingMahN08 from './assets/audio_mah/timing_taraweeh_n08.json';
 import timingMahN09 from './assets/audio_mah/timing_taraweeh_n09.json';
 import timingMahN10 from './assets/audio_mah/timing_taraweeh_n10.json';
+import timingMahYasin from './assets/audio_mah/timing_yasin.json';
 // MAH letter-level timing (derived from word timing)
 import letterTimingQiyamah from './assets/audio_mah/letter_timing_qiyamah.json';
+import letterTimingYasin from './assets/audio_mah/letter_timing_yasin.json';
 import letterTimingN01 from './assets/audio_mah/letter_timing_n01.json';
 import letterTimingN02 from './assets/audio_mah/letter_timing_n02.json';
 import letterTimingN03 from './assets/audio_mah/letter_timing_n03.json';
@@ -840,8 +842,10 @@ export default function App() {
       const isMah = settings.reciter === 'mah';
 
       // MAH timing: Whisper-generated {word, start, end} objects for full surah
-      const mahTimingMap = {
-        75: timingMahQiyamah,  // Al-Qiyamah
+      const mahTimingMap: { [key: number]: any[] } = {
+        36: timingMahYasin,     // Yasin
+        75: timingMahQiyamah,   // Al-Qiyamah
+        // Taraweeh surahs use seek position, timing matched to offset
       };
 
       // Standard reciters: [wordIdx, startMs, endMs] tuples per verse
@@ -879,7 +883,11 @@ export default function App() {
             }
 
             // MAH: Also find current letter for letter-level highlighting
-            const letterTiming = item.surah === 75 ? letterTimingQiyamah : [];
+            const letterTimingMap: { [key: number]: any[] } = {
+              36: letterTimingYasin,
+              75: letterTimingQiyamah,
+            };
+            const letterTiming = letterTimingMap[item.surah] || [];
             for (let i = 0; i < letterTiming.length; i++) {
               const lt = letterTiming[i];
               if (posMs >= lt.start && posMs < lt.end) {
