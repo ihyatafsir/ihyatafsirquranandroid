@@ -33,7 +33,11 @@ import ibnKathirData from './assets/ibn_kathir_en.json';
 import jalalaynData from './assets/jalalayn_en.json';
 import haleemData from './assets/haleem_en.json';
 import albanianData from './assets/albanian_sq.json';
+import ridaGermanData from './assets/rida_german.json';
 import timingAlafasy from './assets/timing_alafasy.json';
+import timingAbdulBasit from './assets/timing_abdulbasit.json';
+import timingHusary from './assets/timing_husary.json';
+import timingMinshawi from './assets/timing_minshawi.json';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // TAJWEED COLORS & RULES (from AlQuran APK)
@@ -500,6 +504,7 @@ const TRANSLATIONS = [
   { id: 'sahih', name: 'Saheeh International', lang: 'English' },
   { id: 'haleem', name: 'Abdel Haleem', lang: 'English' },
   { id: 'albanian', name: 'Sherif Ahmeti', lang: 'Albanian' },
+  { id: 'german', name: 'Abu Rida', lang: 'German' },
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -765,9 +770,15 @@ export default function App() {
       setSound(newSound);
       setPlaybackStatus({ isPlaying: true, currentVerse: `${item.surah}:${item.ayah}` });
 
-      // Get word timing data for this verse (Alafasy reciter)
+      // Get word timing data for this verse (based on selected reciter)
       const verseKey = `${item.surah}:${item.ayah}`;
-      const verseTiming = timingAlafasy[verseKey] || [];
+      const timingMap =
+        settings.reciter === 'alafasy' ? timingAlafasy :
+          settings.reciter === 'abdulbasit' ? timingAbdulBasit :
+            settings.reciter === 'husary' ? timingHusary :
+              settings.reciter === 'minshawi' ? timingMinshawi :
+                timingAlafasy; // fallback
+      const verseTiming = timingMap[verseKey] || [];
 
       // Scroll to current verse
       if (flatListRef.current) {
@@ -1170,7 +1181,9 @@ export default function App() {
                         ? haleemData[`${selectedSurah}:${item.ayah}`] || item.translation
                         : settings.translation === 'albanian'
                           ? albanianData[`${selectedSurah}:${item.ayah}`] || item.translation
-                          : item.translation}
+                          : settings.translation === 'german'
+                            ? ridaGermanData[`${selectedSurah}:${item.ayah}`] || item.translation
+                            : item.translation}
                     </Text>
                   )}
 
