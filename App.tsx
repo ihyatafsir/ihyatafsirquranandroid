@@ -40,9 +40,28 @@ import timingHusary from './assets/timing_husary.json';
 import timingMinshawi from './assets/timing_minshawi.json';
 // MAH timing data (Whisper-generated, full surah)
 import timingMahQiyamah from './assets/audio_mah/timing_qiyamah.json';
-import timingMahTaraweehN29 from './assets/audio_mah/timing_taraweeh_n29.json';
+import timingMahN01 from './assets/audio_mah/timing_taraweeh_n01.json';
+import timingMahN02 from './assets/audio_mah/timing_taraweeh_n02.json';
+import timingMahN03 from './assets/audio_mah/timing_taraweeh_n03.json';
+import timingMahN04 from './assets/audio_mah/timing_taraweeh_n04.json';
+import timingMahN05 from './assets/audio_mah/timing_taraweeh_n05.json';
+import timingMahN06 from './assets/audio_mah/timing_taraweeh_n06.json';
+import timingMahN07 from './assets/audio_mah/timing_taraweeh_n07.json';
+import timingMahN08 from './assets/audio_mah/timing_taraweeh_n08.json';
+import timingMahN09 from './assets/audio_mah/timing_taraweeh_n09.json';
+import timingMahN10 from './assets/audio_mah/timing_taraweeh_n10.json';
 // MAH letter-level timing (derived from word timing)
 import letterTimingQiyamah from './assets/audio_mah/letter_timing_qiyamah.json';
+import letterTimingN01 from './assets/audio_mah/letter_timing_n01.json';
+import letterTimingN02 from './assets/audio_mah/letter_timing_n02.json';
+import letterTimingN03 from './assets/audio_mah/letter_timing_n03.json';
+import letterTimingN04 from './assets/audio_mah/letter_timing_n04.json';
+import letterTimingN05 from './assets/audio_mah/letter_timing_n05.json';
+import letterTimingN06 from './assets/audio_mah/letter_timing_n06.json';
+import letterTimingN07 from './assets/audio_mah/letter_timing_n07.json';
+import letterTimingN08 from './assets/audio_mah/letter_timing_n08.json';
+import letterTimingN09 from './assets/audio_mah/letter_timing_n09.json';
+import letterTimingN10 from './assets/audio_mah/letter_timing_n10.json';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // TAJWEED COLORS & RULES (from AlQuran APK)
