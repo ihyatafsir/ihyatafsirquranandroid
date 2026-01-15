@@ -41,6 +41,8 @@ import timingMinshawi from './assets/timing_minshawi.json';
 // MAH timing data (Whisper-generated, full surah)
 import timingMahQiyamah from './assets/audio_mah/timing_qiyamah.json';
 import timingMahTaraweehN29 from './assets/audio_mah/timing_taraweeh_n29.json';
+// MAH letter-level timing (derived from word timing)
+import letterTimingQiyamah from './assets/audio_mah/letter_timing_qiyamah.json';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // TAJWEED COLORS & RULES (from AlQuran APK)
@@ -591,6 +593,8 @@ export default function App() {
   const [playbackStatus, setPlaybackStatus] = useState({ isPlaying: false, currentVerse: null });
   const [playbackQueue, setPlaybackQueue] = useState([]);
   const [playingWordIndex, setPlayingWordIndex] = useState(-1); // Word-level highlighting
+  const [playingLetterIdx, setPlayingLetterIdx] = useState(-1); // Letter-level highlighting for MAH
+  const [playingLetterDuration, setPlayingLetterDuration] = useState(0); // Duration for intensity
   const flatListRef = useRef(null);
   const wordTimerRef = useRef<any>(null);
 
@@ -816,6 +820,8 @@ export default function App() {
           const posMs = status.positionMillis || 0;
 
           let currentWordIdx = -1;
+          let currentLetterIdx = -1;
+          let letterDuration = 0;
 
           if (isMah && mahTiming.length > 0) {
             // MAH: Find word from Whisper timing (full surah, 0-indexed)
@@ -823,6 +829,17 @@ export default function App() {
               const { start, end } = mahTiming[i];
               if (posMs >= start && posMs < end) {
                 currentWordIdx = i;
+                break;
+              }
+            }
+
+            // MAH: Also find current letter for letter-level highlighting
+            const letterTiming = item.surah === 75 ? letterTimingQiyamah : [];
+            for (let i = 0; i < letterTiming.length; i++) {
+              const lt = letterTiming[i];
+              if (posMs >= lt.start && posMs < lt.end) {
+                currentLetterIdx = i;
+                letterDuration = lt.duration;
                 break;
               }
             }
@@ -839,6 +856,10 @@ export default function App() {
 
           if (currentWordIdx !== -1) {
             setPlayingWordIndex(currentWordIdx);
+          }
+          if (currentLetterIdx !== -1) {
+            setPlayingLetterIdx(currentLetterIdx);
+            setPlayingLetterDuration(letterDuration);
           }
         }
 
