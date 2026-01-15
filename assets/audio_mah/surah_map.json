@@ -1,0 +1,83 @@
+{
+  "36": {
+    "file": "yasin_36.mp3",
+    "audio_url": "https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/yasin_36.mp3",
+    "start_ms": 0,
+    "word_timing": "timing_yasin.json",
+    "letter_timing": "letter_timing_yasin.json"
+  },
+  "47": {
+    "file": "muhammad_47.mp3",
+    "audio_url": "https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/muhammad_47.mp3",
+    "start_ms": 0
+  },
+  "75": {
+    "file": "qiyamah_75.mp3",
+    "audio_url": "https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/qiyamah_75.mp3",
+    "start_ms": 0,
+    "word_timing": "timing_qiyamah.json",
+    "letter_timing": "letter_timing_qiyamah.json"
+  },
+  "89": {
+    "file": "taraweeh_n01.mp3",
+    "audio_url": "https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/taraweeh_n01.mp3",
+    "start_ms": 100820,
+    "end_ms": 285819,
+    "name": "Al-Fajr",
+    "name_ar": "الفجر"
+  },
+  "90": {
+    "file": "taraweeh_n01.mp3",
+    "audio_url": "https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/taraweeh_n01.mp3",
+    "start_ms": 285820,
+    "end_ms": 393739,
+    "name": "Al-Balad",
+    "name_ar": "البلد"
+  },
+  "91": {
+    "file": "taraweeh_n01.mp3",
+    "audio_url": "https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/taraweeh_n01.mp3",
+    "start_ms": 393740,
+    "end_ms": 470059,
+    "name": "Ash-Shams",
+    "name_ar": "الشمس"
+  },
+  "92": {
+    "file": "taraweeh_n01.mp3",
+    "audio_url": "https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/taraweeh_n01.mp3",
+    "start_ms": 470060,
+    "end_ms": 566639,
+    "name": "Al-Layl",
+    "name_ar": "الليل"
+  },
+  "93": {
+    "file": "taraweeh_n01.mp3",
+    "audio_url": "https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/taraweeh_n01.mp3",
+    "start_ms": 566640,
+    "name": "Ad-Duha",
+    "name_ar": "الضحى"
+  },
+  "87": {
+    "file": "taraweeh_n03.mp3",
+    "audio_url": "https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/taraweeh_n03.mp3",
+    "start_ms": 41040,
+    "end_ms": 143959,
+    "name": "Al-A'la",
+    "name_ar": "الأعلى"
+  },
+  "109": {
+    "file": "taraweeh_n03.mp3",
+    "audio_url": "https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/taraweeh_n03.mp3",
+    "start_ms": 143960,
+    "end_ms": 180379,
+    "name": "Al-Kafirun",
+    "name_ar": "الكافرون"
+  },
+  "112": {
+    "file": "taraweeh_n03.mp3",
+    "audio_url": "https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/taraweeh_n03.mp3",
+    "start_ms": 180380,
+    "name": "Al-Ikhlas",
+    "name_ar": "الإخلاص"
+  }
+}

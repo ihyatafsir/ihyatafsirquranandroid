@@ -775,14 +775,33 @@ export default function App() {
 
     // MAH uses custom hosted audio files (full surah, not per-verse)
     let url: string;
+    let mahSeekPosition = 0; // Seek position for taraweeh segments
     if (reciter.id === 'mah') {
       // MAH audio files hosted on GitHub (global access)
-      const mahAudioMap = {
-        36: 'https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/yasin_36.mp3',
-        47: 'https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/muhammad_47.mp3',
-        75: 'https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/qiyamah_75.mp3',
+      // Some surahs are segments within taraweeh recordings - use seek position
+      const mahAudioMap: { [key: number]: { url: string; seek_ms?: number } } = {
+        // Full surah files
+        36: { url: 'https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/yasin_36.mp3' },
+        47: { url: 'https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/muhammad_47.mp3' },
+        75: { url: 'https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/qiyamah_75.mp3' },
+        // Surahs from taraweeh_n01 (Night 29)
+        89: { url: 'https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/taraweeh_n01.mp3', seek_ms: 100820 },
+        90: { url: 'https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/taraweeh_n01.mp3', seek_ms: 285820 },
+        91: { url: 'https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/taraweeh_n01.mp3', seek_ms: 393740 },
+        92: { url: 'https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/taraweeh_n01.mp3', seek_ms: 470060 },
+        93: { url: 'https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/taraweeh_n01.mp3', seek_ms: 566640 },
+        // Surahs from taraweeh_n03 (Night 22)
+        87: { url: 'https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/taraweeh_n03.mp3', seek_ms: 41040 },
+        109: { url: 'https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/taraweeh_n03.mp3', seek_ms: 143960 },
+        112: { url: 'https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/taraweeh_n03.mp3', seek_ms: 180380 },
       };
-      url = mahAudioMap[item.surah] || `${RECITERS[0].url}${globalId}.mp3`; // fallback to Minshawi if no MAH audio
+      const mahEntry = mahAudioMap[item.surah];
+      if (mahEntry) {
+        url = mahEntry.url;
+        mahSeekPosition = mahEntry.seek_ms || 0;
+      } else {
+        url = `${RECITERS[0].url}${globalId}.mp3`; // fallback to Minshawi
+      }
     } else {
       url = `${reciter.url}${globalId}.mp3`;
     }
@@ -805,7 +824,14 @@ export default function App() {
       const estimatedDuration = 6000 + (wordCount * 600);
       const wordInterval = Math.floor(estimatedDuration / wordCount);
 
-      const { sound: newSound } = await Audio.Sound.createAsync({ uri: url }, { shouldPlay: true });
+      const { sound: newSound } = await Audio.Sound.createAsync({ uri: url }, { shouldPlay: false });
+
+      // Seek to position for taraweeh segments (MAH surahs within full night recordings)
+      if (mahSeekPosition > 0) {
+        await newSound.setPositionAsync(mahSeekPosition);
+      }
+      await newSound.playAsync();
+
       setSound(newSound);
       setPlaybackStatus({ isPlaying: true, currentVerse: `${item.surah}:${item.ayah}` });
 
