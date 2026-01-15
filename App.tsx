@@ -747,7 +747,18 @@ export default function App() {
     }
     globalId += item.ayah;
 
-    const url = `${reciter.url}${globalId}.mp3`;
+    // MAH uses custom hosted audio files (full surah, not per-verse)
+    let url: string;
+    if (reciter.id === 'mah') {
+      // MAH audio files are hosted on local server (full surah recordings)
+      const mahAudioMap = {
+        47: 'http://10.20.1.145:8899/mah_audio/muhammad_47.mp3',
+        75: 'http://10.20.1.145:8899/mah_audio/qiyamah_75.mp3',
+      };
+      url = mahAudioMap[item.surah] || `${RECITERS[0].url}${globalId}.mp3`; // fallback to Minshawi if no MAH audio
+    } else {
+      url = `${reciter.url}${globalId}.mp3`;
+    }
 
     try {
       if (sound) await sound.unloadAsync();
