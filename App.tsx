@@ -483,6 +483,7 @@ const RECITERS = [
   { id: 'abdulbasit', name: 'Abdul Basit', url: 'https://cdn.islamic.network/quran/audio/128/ar.abdulbasit/' },
   { id: 'alafasy', name: 'Mishary Alafasy', url: 'https://cdn.islamic.network/quran/audio/128/ar.alafasy/' },
   { id: 'husary', name: 'Al-Husary', url: 'https://cdn.islamic.network/quran/audio/128/ar.husary/' },
+  { id: 'mah', name: 'M. Ahmad Hassan ⭐', url: 'local', letterSync: true, matrixGlow: true },
 ];
 
 const DEFAULT_SETTINGS = {
@@ -1133,8 +1134,13 @@ export default function App() {
                               // Always have border to prevent layout shift when highlighted
                               borderRadius: 6,
                               borderWidth: 1,
-                              borderColor: isCurrentWord ? '#ffd700' : 'transparent',
-                              backgroundColor: isCurrentWord ? 'rgba(255, 215, 0, 0.25)' : 'transparent',
+                              // Matrix green hologram for MAH, gold for others
+                              borderColor: isCurrentWord
+                                ? (settings.reciter === 'mah' ? '#00ff88' : '#ffd700')
+                                : 'transparent',
+                              backgroundColor: isCurrentWord
+                                ? (settings.reciter === 'mah' ? 'rgba(0, 255, 136, 0.15)' : 'rgba(255, 215, 0, 0.25)')
+                                : 'transparent',
                             }
                           ]}
                         >
@@ -1143,7 +1149,18 @@ export default function App() {
                             word.arabic,
                             [
                               styles.wordArabic,
-                              { color: isCurrentWord ? '#ffd700' : theme.arabic, fontSize: settings.fontSize }
+                              {
+                                color: isCurrentWord
+                                  ? (settings.reciter === 'mah' ? '#00ff88' : '#ffd700')
+                                  : theme.arabic,
+                                fontSize: settings.fontSize,
+                                // Matrix hologram glow effect for MAH
+                                ...(isCurrentWord && settings.reciter === 'mah' ? {
+                                  textShadowColor: '#00ff88',
+                                  textShadowOffset: { width: 0, height: 0 },
+                                  textShadowRadius: 12,
+                                } : {})
+                              }
                             ],
                             settings.tajweed  // Always render same way - no conditional on isCurrentWord
                           )}
