@@ -92,11 +92,16 @@ const SUKUN = 'ْ';
 const SHADDA = 'ّ';
 
 // Helper to apply Tajweed colors to Arabic text
-const renderTajweedText = (text: string, baseStyle: any, enabled = false) => {
+const renderTajweedText = (text: string, baseStyle: any, enabled = false, highlightCharIdx = -1) => {
   if (!enabled || !text) return <Text style={baseStyle}>{text}</Text>;
 
   const chars = [...text];
   const result: React.ReactNode[] = [];
+
+  // Track base letter index (excluding diacritics) for MAH letter-level highlighting
+  let baseLetterIdx = 0;
+  // Green MAH glow style for current letter
+  const mahGlowStyle = { color: '#00ff88', textShadowColor: '#00ff88', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 15, fontWeight: '700' as const };
 
   for (let i = 0; i < chars.length; i++) {
     const char = chars[i];
@@ -186,11 +191,20 @@ const renderTajweedText = (text: string, baseStyle: any, enabled = false) => {
     }
 
     // Output the character with or without color
-    if (color) {
+    // Check if this letter should have MAH green glow
+    const isCurrentLetter = highlightCharIdx !== -1 && baseLetterIdx === highlightCharIdx;
+
+    if (isCurrentLetter) {
+      // MAH letter-level hologram glow (overrides tajweed color)
+      result.push(<Text key={i} style={mahGlowStyle}>{char}</Text>);
+    } else if (color) {
       result.push(<Text key={i} style={{ color, fontWeight: '600' }}>{char}</Text>);
     } else {
       result.push(char);
     }
+
+    // Increment base letter index after processing each base letter
+    baseLetterIdx++;
   }
 
   return <Text style={baseStyle}>{result}</Text>;
@@ -614,8 +628,8 @@ export default function App() {
   const [playbackStatus, setPlaybackStatus] = useState({ isPlaying: false, currentVerse: null });
   const [playbackQueue, setPlaybackQueue] = useState([]);
   const [playingWordIndex, setPlayingWordIndex] = useState(-1); // Word-level highlighting
-  const [playingLetterIdx, setPlayingLetterIdx] = useState(-1); // Letter-level highlighting for MAH
-  const [playingLetterDuration, setPlayingLetterDuration] = useState(0); // Duration for intensity
+  const [playingMahWordIdx, setPlayingMahWordIdx] = useState(-1); // MAH letter-level: current word index in timing
+  const [playingMahCharIdx, setPlayingMahCharIdx] = useState(-1); // MAH letter-level: current char index in word
   const flatListRef = useRef(null);
   const wordTimerRef = useRef<any>(null);
 
@@ -869,8 +883,8 @@ export default function App() {
           const posMs = status.positionMillis || 0;
 
           let currentWordIdx = -1;
-          let currentLetterIdx = -1;
-          let letterDuration = 0;
+          let mahWordIdx = -1;
+          let mahCharIdx = -1;
 
           if (isMah && mahTiming.length > 0) {
             // MAH: Find word from Whisper timing (full surah, 0-indexed)
@@ -891,8 +905,8 @@ export default function App() {
             for (let i = 0; i < letterTiming.length; i++) {
               const lt = letterTiming[i];
               if (posMs >= lt.start && posMs < lt.end) {
-                currentLetterIdx = i;
-                letterDuration = lt.duration;
+                mahWordIdx = lt.wordIdx;
+                mahCharIdx = lt.charIdx;
                 break;
               }
             }
@@ -910,14 +924,16 @@ export default function App() {
           if (currentWordIdx !== -1) {
             setPlayingWordIndex(currentWordIdx);
           }
-          if (currentLetterIdx !== -1) {
-            setPlayingLetterIdx(currentLetterIdx);
-            setPlayingLetterDuration(letterDuration);
+          if (mahWordIdx !== -1) {
+            setPlayingMahWordIdx(mahWordIdx);
+            setPlayingMahCharIdx(mahCharIdx);
           }
         }
 
         if (status.didJustFinish) {
           setPlayingWordIndex(-1);
+          setPlayingMahWordIdx(-1);
+          setPlayingMahCharIdx(-1);
           playQueue(queue, index + 1);
         }
       });
@@ -1273,7 +1289,9 @@ export default function App() {
                                 } : {})
                               }
                             ],
-                            settings.tajweed  // Always render same way - no conditional on isCurrentWord
+                            settings.tajweed,  // Always render same way - no conditional on isCurrentWord
+                            // Pass current MAH char index for per-letter glow when this word is playing
+                            (settings.reciter === 'mah' && isCurrentVerse && idx === playingMahWordIdx) ? playingMahCharIdx : -1
                           )}
                           {/* RTL Transliteration from DB (Latin + harakat) */}
                           {settings.showTransliteration && word.translit && (
