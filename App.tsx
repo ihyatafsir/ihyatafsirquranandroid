@@ -1129,23 +1129,23 @@ export default function App() {
                           onLongPress={() => word.root && showLisanModal(word.arabic, word.root)}
                           style={[
                             styles.wordColumn,
-                            isCurrentWord && {
-                              backgroundColor: 'rgba(255, 215, 0, 0.25)',
+                            {
+                              // Always have border to prevent layout shift when highlighted
                               borderRadius: 6,
                               borderWidth: 1,
-                              borderColor: '#ffd700',
+                              borderColor: isCurrentWord ? '#ffd700' : 'transparent',
+                              backgroundColor: isCurrentWord ? 'rgba(255, 215, 0, 0.25)' : 'transparent',
                             }
                           ]}
                         >
-                          {/* Arabic word with Tajweed coloring */}
+                          {/* Arabic word with Tajweed coloring - always enabled for consistency */}
                           {renderTajweedText(
                             word.arabic,
                             [
                               styles.wordArabic,
-                              { color: theme.arabic, fontSize: settings.fontSize },
-                              isCurrentWord && { color: '#ffd700' }
+                              { color: isCurrentWord ? '#ffd700' : theme.arabic, fontSize: settings.fontSize }
                             ],
-                            settings.tajweed && !isCurrentWord
+                            settings.tajweed  // Always render same way - no conditional on isCurrentWord
                           )}
                           {/* RTL Transliteration from DB (Latin + harakat) */}
                           {settings.showTransliteration && word.translit && (
