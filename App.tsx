@@ -1602,14 +1602,16 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginBottom: 16,
     paddingVertical: 12,
-    paddingHorizontal: 8,
+    paddingHorizontal: 4,  // Reduced from 8 to allow more space for words
     borderRadius: 10,
+    marginHorizontal: -8,  // Extend to full width
   },
   wordColumn: {
     alignItems: 'center',
-    marginHorizontal: 8,
-    marginVertical: 10,
-    minWidth: 50,
+    marginHorizontal: 4,   // Reduced from 8
+    marginVertical: 8,     // Reduced from 10
+    minWidth: 40,          // Reduced from 50 to fit more words
+    paddingHorizontal: 2,  // Small padding
   },
   wordArabic: {
     textAlign: 'center',
