@@ -902,11 +902,16 @@ export default function App() {
               75: letterTimingQiyamah,
             };
             const letterTiming = letterTimingMap[item.surah] || [];
+            if (letterTiming.length > 0 && posMs % 500 < 50) {
+              // Log every ~500ms to avoid spam
+              console.log(`[MAH] surah=${item.surah} posMs=${posMs} letters=${letterTiming.length}`);
+            }
             for (let i = 0; i < letterTiming.length; i++) {
               const lt = letterTiming[i];
               if (posMs >= lt.start && posMs < lt.end) {
                 mahWordIdx = lt.wordIdx;
                 mahCharIdx = lt.charIdx;
+                console.log(`[MAH MATCH] wordIdx=${mahWordIdx} charIdx=${mahCharIdx} char=${lt.char}`);
                 break;
               }
             }
@@ -1290,8 +1295,9 @@ export default function App() {
                               }
                             ],
                             settings.tajweed,  // Always render same way - no conditional on isCurrentWord
-                            // Pass current MAH char index for per-letter glow when this word is playing
-                            (settings.reciter === 'mah' && isCurrentVerse && idx === playingMahWordIdx) ? playingMahCharIdx : -1
+                            // Pass current MAH char index for per-letter glow when this word is currently playing
+                            // Use isCurrentWord (which uses playingWordIndex derived from time-based lookup, already works)
+                            (settings.reciter === 'mah' && isCurrentWord) ? playingMahCharIdx : -1
                           )}
                           {/* RTL Transliteration from DB (Latin + harakat) */}
                           {settings.showTransliteration && word.translit && (
