@@ -750,11 +750,11 @@ export default function App() {
     // MAH uses custom hosted audio files (full surah, not per-verse)
     let url: string;
     if (reciter.id === 'mah') {
-      // MAH audio files are hosted on local server (full surah recordings)
+      // MAH audio files hosted on GitHub (global access)
       const mahAudioMap = {
-        36: 'http://10.20.1.145:8899/mah_audio/yasin_36.mp3',
-        47: 'http://10.20.1.145:8899/mah_audio/muhammad_47.mp3',
-        75: 'http://10.20.1.145:8899/mah_audio/qiyamah_75.mp3',
+        36: 'https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/yasin_36.mp3',
+        47: 'https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/muhammad_47.mp3',
+        75: 'https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/qiyamah_75.mp3',
       };
       url = mahAudioMap[item.surah] || `${RECITERS[0].url}${globalId}.mp3`; // fallback to Minshawi if no MAH audio
     } else {
