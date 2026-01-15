@@ -38,6 +38,9 @@ import timingAlafasy from './assets/timing_alafasy.json';
 import timingAbdulBasit from './assets/timing_abdulbasit.json';
 import timingHusary from './assets/timing_husary.json';
 import timingMinshawi from './assets/timing_minshawi.json';
+// MAH timing data (Whisper-generated, full surah)
+import timingMahQiyamah from './assets/audio_mah/timing_qiyamah.json';
+import timingMahTaraweehN29 from './assets/audio_mah/timing_taraweeh_n29.json';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // TAJWEED COLORS & RULES (from AlQuran APK)
@@ -783,15 +786,24 @@ export default function App() {
       setSound(newSound);
       setPlaybackStatus({ isPlaying: true, currentVerse: `${item.surah}:${item.ayah}` });
 
-      // Get word timing data for this verse (based on selected reciter)
+      // Get word timing data (MAH uses different format - Whisper-generated full surah)
       const verseKey = `${item.surah}:${item.ayah}`;
-      const timingMap =
+      const isMah = settings.reciter === 'mah';
+
+      // MAH timing: Whisper-generated {word, start, end} objects for full surah
+      const mahTimingMap = {
+        75: timingMahQiyamah,  // Al-Qiyamah
+      };
+
+      // Standard reciters: [wordIdx, startMs, endMs] tuples per verse
+      const standardTimingMap =
         settings.reciter === 'alafasy' ? timingAlafasy :
           settings.reciter === 'abdulbasit' ? timingAbdulBasit :
             settings.reciter === 'husary' ? timingHusary :
               settings.reciter === 'minshawi' ? timingMinshawi :
                 timingAlafasy; // fallback
-      const verseTiming = timingMap[verseKey] || [];
+      const verseTiming = isMah ? [] : (standardTimingMap[verseKey] || []);
+      const mahTiming = isMah ? (mahTimingMap[item.surah] || []) : [];
 
       // Scroll to current verse
       if (flatListRef.current) {
@@ -803,15 +815,28 @@ export default function App() {
         if (status.isLoaded && status.isPlaying) {
           const posMs = status.positionMillis || 0;
 
-          // Find current word from timing data
           let currentWordIdx = -1;
-          for (let i = 0; i < verseTiming.length; i++) {
-            const [wordIdx, startMs, endMs] = verseTiming[i];
-            if (posMs >= startMs && posMs < endMs) {
-              currentWordIdx = wordIdx - 1; // Convert 1-indexed to 0-indexed
-              break;
+
+          if (isMah && mahTiming.length > 0) {
+            // MAH: Find word from Whisper timing (full surah, 0-indexed)
+            for (let i = 0; i < mahTiming.length; i++) {
+              const { start, end } = mahTiming[i];
+              if (posMs >= start && posMs < end) {
+                currentWordIdx = i;
+                break;
+              }
+            }
+          } else {
+            // Standard reciters: verse-relative timing
+            for (let i = 0; i < verseTiming.length; i++) {
+              const [wordIdx, startMs, endMs] = verseTiming[i];
+              if (posMs >= startMs && posMs < endMs) {
+                currentWordIdx = wordIdx - 1; // Convert 1-indexed to 0-indexed
+                break;
+              }
             }
           }
+
           if (currentWordIdx !== -1) {
             setPlayingWordIndex(currentWordIdx);
           }
