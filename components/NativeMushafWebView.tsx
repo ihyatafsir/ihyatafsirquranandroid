@@ -181,8 +181,28 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
     const surahNumber = ${surahNumber};
     const letterTimingMap = ${timingJson};
     const wordTimingMap = ${wordTimingJson};
-    let currentVerseKey = "${currentVerseKey || ""}";
-    let isPlaying = ${isPlaying ? "true" : "false"};
+
+    // Pre-cache DOM elements for O(1) instantaneous lookup (Zero getElementById per frame)
+    const wordCache = {};
+    const ayahCache = {};
+
+    document.querySelectorAll(".word").forEach(function(el) {
+      const a = el.getAttribute("data-ayah");
+      const w = el.getAttribute("data-word-idx");
+      if (!wordCache[a]) wordCache[a] = {};
+      wordCache[a][w] = el;
+    });
+
+    document.querySelectorAll(".ayah-block").forEach(function(el) {
+      const a = el.getAttribute("data-ayah");
+      ayahCache[a] = el;
+    });
+
+    // High-Precision Hardware Refresh Rate Sync State (60 - 120 FPS)
+    let anchorAudioTimeMs = 0;
+    let anchorPerfTime = 0;
+    let isPlaying = false;
+    let currentVerseKey = "";
 
     let currentRecitingWordEl = null;
     let currentActiveAyahEl = null;
@@ -190,123 +210,19 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
     let lastActiveWordIdx = -1;
     let lastScrolledAyah = -1;
 
+    // Direct playback sync entrypoint
     window.updatePlayback = function(timeMs, vKey, playing) {
-      isPlaying = playing;
-      currentVerseKey = vKey;
+      currentVerseKey = vKey || "";
+      isPlaying = !!playing;
+      anchorAudioTimeMs = timeMs || 0;
+      anchorPerfTime = performance.now();
 
-      if (!vKey || !playing) {
+      if (!isPlaying || !currentVerseKey) {
         if (currentRecitingWordEl) {
           currentRecitingWordEl.classList.remove("reciting");
           currentRecitingWordEl = null;
         }
         lastActiveWordIdx = -1;
-        return;
-      }
-
-      const parts = vKey.split(":");
-      const aNum = parseInt(parts[1], 10);
-
-      // 1. Highlight Active Ayah & smooth auto-scroll only when Ayah changes
-      if (aNum !== lastActiveAyahNum) {
-        const ayahEl = document.getElementById("ayah-" + aNum);
-        if (ayahEl && ayahEl !== currentActiveAyahEl) {
-          if (currentActiveAyahEl) currentActiveAyahEl.classList.remove("active-ayah");
-          ayahEl.classList.add("active-ayah");
-          currentActiveAyahEl = ayahEl;
-
-          if (aNum !== lastScrolledAyah) {
-            lastScrolledAyah = aNum;
-            ayahEl.scrollIntoView({ behavior: "smooth", block: "center" });
-          }
-        }
-        lastActiveAyahNum = aNum;
-      }
-
-      // 2. Highlight Active Word in Emerald Glow
-      const timingList = wordTimingMap[vKey] || letterTimingMap[vKey] || [];
-      if (timingList && timingList.length > 0) {
-        let activeIdx = -1;
-        for (let i = 0; i < timingList.length; i++) {
-          const entry = timingList[i];
-          let st = 0;
-          let en = 0;
-          let wIdx = -1;
-
-          if (Array.isArray(entry)) {
-            // [wordNum, startMs, endMs] (wordNum is 1-based)
-            wIdx = (typeof entry[0] === "number" && entry[0] >= 1) ? entry[0] - 1 : i;
-            st = entry[1] || 0;
-            en = entry[2] || 0;
-          } else if (entry && typeof entry === "object") {
-            // Object: { wordIdx, start, end } or { s, e, w }
-            wIdx = entry.wordIdx !== undefined ? entry.wordIdx :
-                   (entry.w !== undefined ? entry.w :
-                   (entry.word !== undefined && typeof entry.word === "number" ? entry.word - 1 : i));
-            st = entry.start !== undefined ? entry.start : (entry.s !== undefined ? entry.s : 0);
-            en = entry.end !== undefined ? entry.end : (entry.e !== undefined ? entry.e : 0);
-          }
-
-          // Auto-convert seconds to ms if necessary
-          if (st > 0 && st < 100 && en > 0 && en < 300) {
-            st = st * 1000;
-            en = en * 1000;
-          }
-
-          // Extend to next word start if there is an inter-word pause (< 800ms)
-          let effectiveEnd = en;
-          const nextEntry = timingList[i + 1];
-          if (nextEntry) {
-            let nextSt = en;
-            if (Array.isArray(nextEntry)) {
-              nextSt = nextEntry[1] || en;
-            } else if (nextEntry && typeof nextEntry === "object") {
-              nextSt = nextEntry.start !== undefined ? nextEntry.start : (nextEntry.s !== undefined ? nextEntry.s : en);
-              if (nextSt > 0 && nextSt < 100) nextSt = nextSt * 1000;
-            }
-            if (nextSt >= en && (nextSt - en) < 800) {
-              effectiveEnd = nextSt;
-            }
-          }
-
-          if (timeMs >= st && timeMs < effectiveEnd) {
-            activeIdx = wIdx;
-            break;
-          }
-        }
-
-        // If audio position has passed the start of the last word, keep the last word active until verse completes
-        if (activeIdx < 0 && timingList.length > 0) {
-          const lastEntry = timingList[timingList.length - 1];
-          let lastSt = 0;
-          let lastWIdx = -1;
-          if (Array.isArray(lastEntry)) {
-            lastWIdx = (typeof lastEntry[0] === "number" && lastEntry[0] >= 1) ? lastEntry[0] - 1 : timingList.length - 1;
-            lastSt = lastEntry[1] || 0;
-          } else if (lastEntry && typeof lastEntry === "object") {
-            lastWIdx = lastEntry.wordIdx !== undefined ? lastEntry.wordIdx : (lastEntry.w !== undefined ? lastEntry.w : timingList.length - 1);
-            lastSt = lastEntry.start !== undefined ? lastEntry.start : (lastEntry.s !== undefined ? lastEntry.s : 0);
-          }
-          if (lastSt > 0 && lastSt < 100) lastSt = lastSt * 1000;
-          if (timeMs >= lastSt) {
-            activeIdx = lastWIdx;
-          }
-        }
-
-        // Only touch the DOM when the active word actually changes!
-        if (activeIdx !== lastActiveWordIdx) {
-          if (activeIdx >= 0) {
-            const wEl = document.getElementById("w-" + aNum + "-" + activeIdx);
-            if (wEl && wEl !== currentRecitingWordEl) {
-              if (currentRecitingWordEl) currentRecitingWordEl.classList.remove("reciting");
-              wEl.classList.add("reciting");
-              currentRecitingWordEl = wEl;
-            }
-          } else if (currentRecitingWordEl) {
-            currentRecitingWordEl.classList.remove("reciting");
-            currentRecitingWordEl = null;
-          }
-          lastActiveWordIdx = activeIdx;
-        }
       }
     };
 
@@ -325,6 +241,117 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
       window.updatePlayback(${currentTimeMs || 0}, currentVerseKey, true);
     }
 
+    // Hardware-locked 120 FPS requestAnimationFrame render loop with monotonic time extrapolation
+    function renderFrame() {
+      if (isPlaying && currentVerseKey) {
+        const elapsed = performance.now() - anchorPerfTime;
+        const timeMs = anchorAudioTimeMs + elapsed;
+
+        const parts = currentVerseKey.split(":");
+        const aNum = parseInt(parts[1], 10);
+
+        // 1. Ayah highlight & center scroll only when Ayah transitions
+        if (aNum !== lastActiveAyahNum) {
+          const ayahEl = ayahCache[aNum];
+          if (ayahEl && ayahEl !== currentActiveAyahEl) {
+            if (currentActiveAyahEl) currentActiveAyahEl.classList.remove("active-ayah");
+            ayahEl.classList.add("active-ayah");
+            currentActiveAyahEl = ayahEl;
+
+            if (aNum !== lastScrolledAyah) {
+              lastScrolledAyah = aNum;
+              ayahEl.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+          }
+          lastActiveAyahNum = aNum;
+        }
+
+        // 2. Continuous Word Highlighting
+        const timingList = wordTimingMap[currentVerseKey] || letterTimingMap[currentVerseKey] || [];
+        if (timingList && timingList.length > 0) {
+          let activeIdx = -1;
+          for (let i = 0; i < timingList.length; i++) {
+            const entry = timingList[i];
+            let st = 0;
+            let en = 0;
+            let wIdx = -1;
+
+            if (Array.isArray(entry)) {
+              wIdx = (typeof entry[0] === "number" && entry[0] >= 1) ? entry[0] - 1 : i;
+              st = entry[1] || 0;
+              en = entry[2] || 0;
+            } else if (entry && typeof entry === "object") {
+              wIdx = entry.wordIdx !== undefined ? entry.wordIdx :
+                     (entry.w !== undefined ? entry.w :
+                     (entry.word !== undefined && typeof entry.word === "number" ? entry.word - 1 : i));
+              st = entry.start !== undefined ? entry.start : (entry.s !== undefined ? entry.s : 0);
+              en = entry.end !== undefined ? entry.end : (entry.e !== undefined ? entry.e : 0);
+            }
+
+            if (st > 0 && st < 100 && en > 0 && en < 300) {
+              st = st * 1000;
+              en = en * 1000;
+            }
+
+            let effectiveEnd = en;
+            const nextEntry = timingList[i + 1];
+            if (nextEntry) {
+              let nextSt = en;
+              if (Array.isArray(nextEntry)) {
+                nextSt = nextEntry[1] || en;
+              } else if (nextEntry && typeof nextEntry === "object") {
+                nextSt = nextEntry.start !== undefined ? nextEntry.start : (nextEntry.s !== undefined ? nextEntry.s : en);
+                if (nextSt > 0 && nextSt < 100) nextSt = nextSt * 1000;
+              }
+              if (nextSt >= en && (nextSt - en) < 800) {
+                effectiveEnd = nextSt;
+              }
+            }
+
+            if (timeMs >= st && timeMs < effectiveEnd) {
+              activeIdx = wIdx;
+              break;
+            }
+          }
+
+          // Keep final word active until verse completes
+          if (activeIdx < 0 && timingList.length > 0) {
+            const lastEntry = timingList[timingList.length - 1];
+            let lastSt = 0;
+            let lastWIdx = -1;
+            if (Array.isArray(lastEntry)) {
+              lastWIdx = (typeof lastEntry[0] === "number" && lastEntry[0] >= 1) ? lastEntry[0] - 1 : timingList.length - 1;
+              lastSt = lastEntry[1] || 0;
+            } else if (lastEntry && typeof lastEntry === "object") {
+              lastWIdx = lastEntry.wordIdx !== undefined ? lastEntry.wordIdx : (lastEntry.w !== undefined ? lastEntry.w : timingList.length - 1);
+              lastSt = lastEntry.start !== undefined ? lastEntry.start : (lastEntry.s !== undefined ? lastEntry.s : 0);
+            }
+            if (lastSt > 0 && lastSt < 100) lastSt = lastSt * 1000;
+            if (timeMs >= lastSt) {
+              activeIdx = lastWIdx;
+            }
+          }
+
+          if (activeIdx !== lastActiveWordIdx) {
+            if (activeIdx >= 0) {
+              const wEl = wordCache[aNum] ? wordCache[aNum][activeIdx] : null;
+              if (wEl && wEl !== currentRecitingWordEl) {
+                if (currentRecitingWordEl) currentRecitingWordEl.classList.remove("reciting");
+                wEl.classList.add("reciting");
+                currentRecitingWordEl = wEl;
+              }
+            } else if (currentRecitingWordEl) {
+              currentRecitingWordEl.classList.remove("reciting");
+              currentRecitingWordEl = null;
+            }
+            lastActiveWordIdx = activeIdx;
+          }
+        }
+      }
+      requestAnimationFrame(renderFrame);
+    }
+    requestAnimationFrame(renderFrame);
+
     // Interactive Tap Handling
     let lastTapTime = 0;
     let lastTapTarget = null;
@@ -339,7 +366,7 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
         const wordIdx = parseInt(wordEl.getAttribute("data-word-idx"), 10);
         const wordText = decodeURIComponent(wordEl.getAttribute("data-word-text") || "");
 
-        // Double Tap on a word -> Open Word Learn HUD
+        // Double Tap -> Open Word Learn HUD
         if (lastTapTarget === wordEl && (now - lastTapTime) < 350) {
           if (window.ReactNativeWebView) {
             window.ReactNativeWebView.postMessage(JSON.stringify({
@@ -358,7 +385,7 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
         lastTapTime = now;
         lastTapTarget = wordEl;
 
-        // Single Tap -> Seek and continuous playback of full Ayah with Abdul Basit
+        // Single Tap -> Seek and continuous playback of full Ayah
         if (window.ReactNativeWebView) {
           window.ReactNativeWebView.postMessage(JSON.stringify({
             type: "SEEK_AYAH",
@@ -381,7 +408,9 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
   </script>
 </body>
 </html>`;
-  }, [verses, surahTiming, surahWordTiming, surahNumber]);
+  }, [surahNumber, verses?.length]);
+
+  const webViewSource = useMemo(() => ({ html: htmlContent }), [htmlContent]);
 
   const lastPlaybackUpdateRef = useRef({ timeMs: -1, verseKey: "", isPlaying: false });
 
@@ -432,7 +461,7 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
       <WebView
         ref={webViewRef}
         originWhitelist={["*"]}
-        source={{ html: htmlContent }}
+        source={webViewSource}
         style={styles.webview}
         androidLayerType="hardware"
         javaScriptEnabled={true}

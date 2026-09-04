@@ -28,7 +28,10 @@ import {
   BackHandler,
   Platform,
   Modal,
+  StatusBar as RNStatusBar,
 } from 'react-native';
+
+const ANDROID_STATUS_BAR_HEIGHT = Platform.OS === 'android' ? (RNStatusBar.currentHeight || 36) : 0;
 import { LinearGradient } from 'expo-linear-gradient';
 import { Audio } from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -2247,7 +2250,7 @@ export default function App() {
         {/* ═══════════════════════════════════════════════════════════════════ */}
         <View style={{
           paddingHorizontal: 16,
-          paddingTop: 8,
+          paddingTop: ANDROID_STATUS_BAR_HEIGHT + 10,
           paddingBottom: 8,
           flexDirection: 'row',
           alignItems: 'center',
@@ -2548,7 +2551,8 @@ export default function App() {
         {viewMode === "mushaf" && Platform.OS !== "web" && (
           <View style={{ flex: 1, paddingBottom: 10 }}>
             <NativeMushafWebView
-              verses={verses.map(v => ({ ...v, surah: selectedSurah }))}
+              key={`mushaf-webview-${selectedSurah}`}
+              verses={verses}
               wordTimingMap={
                 settings.reciter === 'husary' ? timingHusary :
                 settings.reciter === 'minshawi' ? timingMinshawi :
@@ -3995,7 +3999,14 @@ const styles = StyleSheet.create({
   splashTitle: { fontSize: 42, fontWeight: 'bold' },
   splashSub: { fontSize: 18, fontWeight: '600', letterSpacing: 3 },
   splashTag: { fontSize: 14, marginTop: 4 },
-  header: { padding: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  header: {
+    paddingHorizontal: 16,
+    paddingTop: (Platform.OS === 'android' ? (RNStatusBar.currentHeight || 36) : 0) + 10,
+    paddingBottom: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   headerTitle: { fontSize: 20, fontWeight: 'bold' },
   settingsBtn: { padding: 8 },
   backBtnContainer: { padding: 4 },
