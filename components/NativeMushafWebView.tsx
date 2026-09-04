@@ -130,7 +130,7 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
       display: inline;
       padding: 2px 0;
       border-radius: 8px;
-      transition: background 0.3s ease;
+      transition: background 0.2s ease;
     }
     .ayah-block.active-ayah {
       background: rgba(251, 191, 36, 0.08);
@@ -138,18 +138,18 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
     }
     .word {
       display: inline-block;
-      padding: 0 3px;
+      padding: 0 4px;
       margin: 0 1px;
       border-radius: 6px;
       cursor: pointer;
       color: #cbd5e1;
-      transition: color 0.15s ease, text-shadow 0.15s ease, background 0.15s ease, transform 0.15s ease;
+      will-change: color, text-shadow, background;
+      transition: color 0.1s ease, text-shadow 0.1s ease, background 0.1s ease;
     }
     .word.reciting {
       color: #00ffaa !important;
-      text-shadow: 0 0 14px rgba(0, 255, 170, 0.95);
-      background: rgba(0, 255, 170, 0.22);
-      transform: scale(1.05);
+      text-shadow: 0 0 16px rgba(0, 255, 170, 0.95), 0 0 30px rgba(0, 255, 170, 0.4);
+      background: rgba(0, 255, 170, 0.25);
     }
     .ayah-medallion {
       display: inline-block;
@@ -186,6 +186,8 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
 
     let currentRecitingWordEl = null;
     let currentActiveAyahEl = null;
+    let lastActiveAyahNum = -1;
+    let lastActiveWordIdx = -1;
     let lastScrolledAyah = -1;
 
     window.updatePlayback = function(timeMs, vKey, playing) {
@@ -197,24 +199,27 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
           currentRecitingWordEl.classList.remove("reciting");
           currentRecitingWordEl = null;
         }
+        lastActiveWordIdx = -1;
         return;
       }
 
       const parts = vKey.split(":");
-      const sNum = parseInt(parts[0], 10);
       const aNum = parseInt(parts[1], 10);
 
-      // 1. Highlight Active Ayah & smooth auto-scroll
-      const ayahEl = document.getElementById("ayah-" + aNum);
-      if (ayahEl && ayahEl !== currentActiveAyahEl) {
-        if (currentActiveAyahEl) currentActiveAyahEl.classList.remove("active-ayah");
-        ayahEl.classList.add("active-ayah");
-        currentActiveAyahEl = ayahEl;
+      // 1. Highlight Active Ayah & smooth auto-scroll only when Ayah changes
+      if (aNum !== lastActiveAyahNum) {
+        const ayahEl = document.getElementById("ayah-" + aNum);
+        if (ayahEl && ayahEl !== currentActiveAyahEl) {
+          if (currentActiveAyahEl) currentActiveAyahEl.classList.remove("active-ayah");
+          ayahEl.classList.add("active-ayah");
+          currentActiveAyahEl = ayahEl;
 
-        if (aNum !== lastScrolledAyah) {
-          lastScrolledAyah = aNum;
-          ayahEl.scrollIntoView({ behavior: "smooth", block: "center" });
+          if (aNum !== lastScrolledAyah) {
+            lastScrolledAyah = aNum;
+            ayahEl.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
         }
+        lastActiveAyahNum = aNum;
       }
 
       // 2. Highlight Active Word in Emerald Glow
@@ -287,16 +292,20 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
           }
         }
 
-        if (activeIdx >= 0) {
-          const wEl = document.getElementById("w-" + aNum + "-" + activeIdx);
-          if (wEl && wEl !== currentRecitingWordEl) {
-            if (currentRecitingWordEl) currentRecitingWordEl.classList.remove("reciting");
-            wEl.classList.add("reciting");
-            currentRecitingWordEl = wEl;
+        // Only touch the DOM when the active word actually changes!
+        if (activeIdx !== lastActiveWordIdx) {
+          if (activeIdx >= 0) {
+            const wEl = document.getElementById("w-" + aNum + "-" + activeIdx);
+            if (wEl && wEl !== currentRecitingWordEl) {
+              if (currentRecitingWordEl) currentRecitingWordEl.classList.remove("reciting");
+              wEl.classList.add("reciting");
+              currentRecitingWordEl = wEl;
+            }
+          } else if (currentRecitingWordEl) {
+            currentRecitingWordEl.classList.remove("reciting");
+            currentRecitingWordEl = null;
           }
-        } else if (currentRecitingWordEl) {
-          currentRecitingWordEl.classList.remove("reciting");
-          currentRecitingWordEl = null;
+          lastActiveWordIdx = activeIdx;
         }
       }
     };
@@ -372,25 +381,38 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
   </script>
 </body>
 </html>`;
-  }, [verses, surahTiming, surahWordTiming, surahNumber, currentVerseKey, isPlaying]);
+  }, [verses, surahTiming, surahWordTiming, surahNumber]);
+
+  const lastPlaybackUpdateRef = useRef({ timeMs: -1, verseKey: "", isPlaying: false });
 
   // Send real-time playback updates to the WebView without reloading
   useEffect(() => {
     if (!webViewRef.current) return;
+
+    const last = lastPlaybackUpdateRef.current;
+    const timeDelta = Math.abs((currentTimeMs || 0) - last.timeMs);
+    const keyChanged = currentVerseKey !== last.verseKey;
+    const playChanged = isPlaying !== last.isPlaying;
+
+    // Throttle sub-25ms updates to preserve 120 FPS frame budget
+    if (!keyChanged && !playChanged && timeDelta < 25) {
+      return;
+    }
+
+    lastPlaybackUpdateRef.current = {
+      timeMs: currentTimeMs || 0,
+      verseKey: currentVerseKey || "",
+      isPlaying,
+    };
+
     const msg = JSON.stringify({
       type: "UPDATE_PLAYBACK",
-      currentTimeMs,
-      currentVerseKey,
+      currentTimeMs: currentTimeMs || 0,
+      currentVerseKey: currentVerseKey || "",
       isPlaying,
     });
     try {
       webViewRef.current.postMessage(msg);
-      webViewRef.current.injectJavaScript(`
-        if (window.updatePlayback) {
-          window.updatePlayback(${currentTimeMs || 0}, "${currentVerseKey || ''}", ${isPlaying ? 'true' : 'false'});
-        }
-        true;
-      `);
     } catch (e) {}
   }, [currentTimeMs, currentVerseKey, isPlaying]);
 

@@ -1029,27 +1029,35 @@ export default function App() {
         const hasDaggerAlif = cleanGrapheme.includes('ٰ');
         const hasMaddah = cleanGrapheme.includes('ٓ');
         const hasSukun = cleanGrapheme.includes('ْ');
-        const hasTanween = cleanGrapheme.includes('ً') || cleanGrapheme.includes('ٍ') || cleanGrapheme.includes('ٌ');
+        const hasTanweenFath = cleanGrapheme.includes('ً');
+        const hasTanweenKasr = cleanGrapheme.includes('ٍ');
+        const hasTanweenDamm = cleanGrapheme.includes('ٌ');
+        const hasTanween = hasTanweenFath || hasTanweenKasr || hasTanweenDamm;
 
         if (mode === 'vowel' && hasSukun) {
-          // Classical Tajweed / Noorani Qaidah onset for Sukūn (e.g. 'أَمْ' / 'أَلْ')
+          // Classical Tajweed / Noorani Qaidah onset for Sukūn (e.g. 'أَمْ' / 'أَلْ' / 'أَتْ')
           textToSpeak = baseChar ? `أَ${baseChar}ْ` : (letterArabicName || 'أَلِف');
         } else if (hasDaggerAlif || hasMaddah) {
-          // Dagger Alif (ٰ) -> speak as prolonged 'aa' e.g. 'مَا'
+          // Dagger Alif (ٰ) or Maddah -> prolonged 'aa' e.g. 'مَا' or 'تَا'
           textToSpeak = baseChar ? `${baseChar}ا` : (letterArabicName || 'أَلِف');
+        } else if (hasKasrah && !hasSukun) {
+          // Kasrah [i]: Appending Yā' ensures Google TTS pronounces true, crystal-clear "Ti" / "Bi" / "Si" instead of dialectal "Teh"
+          textToSpeak = baseChar ? `${baseChar}ِي` : 'إِي';
+        } else if (hasDammah && !hasSukun) {
+          // Dammah [u]: Appending Wāw ensures Google TTS pronounces true, resonant "Tu" / "Bu" / "Su" instead of clipped stop
+          textToSpeak = baseChar ? `${baseChar}ُو` : 'أُو';
         } else if (hasFathah && !hasSukun) {
           textToSpeak = `${baseChar}َ`;
-        } else if (hasKasrah && !hasSukun) {
-          textToSpeak = `${baseChar}ِ`;
-        } else if (hasDammah && !hasSukun) {
-          textToSpeak = `${baseChar}ُ`;
-        } else if (hasTanween) {
-          textToSpeak = cleanGrapheme;
-        } else if (hasSukun || (!hasFathah && !hasKasrah && !hasDammah)) {
-          // BARE LETTER (like 'ل' in 'ٱلـ' or 'م' in 'الم') or SUKUN ('مْ', 'لْ'):
+        } else if (hasTanweenFath) {
+          textToSpeak = baseChar ? `${baseChar}ًا` : (letterArabicName || 'أَلِف');
+        } else if (hasTanweenKasr) {
+          textToSpeak = baseChar ? `${baseChar}ٍ` : (letterArabicName || 'أَلِف');
+        } else if (hasTanweenDamm) {
+          textToSpeak = baseChar ? `${baseChar}ٌ` : (letterArabicName || 'أَلِف');
+        } else if (hasSukun || (!hasFathah && !hasKasrah && !hasDammah && !hasTanween)) {
+          // BARE LETTER (like silent 'ل' in 'ٱلـ' or 'م' in 'الم') or SUKUN:
           // In Google TTS, a bare consonant cannot be voiced in isolation without an onset vowel.
-          // For learners, speak the full Arabic letter name ('لاَم' / 'مِيم' / 'سِين' / 'كَاف')
-          // which Google TTS pronounces with 100% loud, crystal clarity!
+          // For learners, speak the full Arabic letter name ('لاَم' / 'مِيم' / 'تَاء' / 'سِين')
           textToSpeak = letterArabicName || (baseChar ? `أَ${baseChar}ْ` : 'أَلِف');
         } else {
           textToSpeak = letterArabicName || cleanGrapheme || 'أَلِف';
