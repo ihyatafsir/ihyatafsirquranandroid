@@ -1,0 +1,38 @@
+[
+  {
+    "ayah": 1,
+    "start_ms": 4476,
+    "end_ms": 6319,
+    "startWordIdx": 4
+  },
+  {
+    "ayah": 2,
+    "start_ms": 6399,
+    "end_ms": 11225,
+    "startWordIdx": 7
+  },
+  {
+    "ayah": 3,
+    "start_ms": 11405,
+    "end_ms": 17833,
+    "startWordIdx": 11
+  },
+  {
+    "ayah": 4,
+    "start_ms": 17973,
+    "end_ms": 23079,
+    "startWordIdx": 16
+  },
+  {
+    "ayah": 5,
+    "start_ms": 23319,
+    "end_ms": 29913,
+    "startWordIdx": 21
+  },
+  {
+    "ayah": 6,
+    "start_ms": 30033,
+    "end_ms": 34758,
+    "startWordIdx": 26
+  }
+]

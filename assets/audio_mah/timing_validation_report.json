@@ -1,0 +1,1017 @@
+[
+  {
+    "file": "letter_timing_1.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 139,
+      "unique_words": 29,
+      "duration_ms": 40390,
+      "first_start": 5410,
+      "last_end": 45800
+    }
+  },
+  {
+    "file": "letter_timing_10.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 7676,
+      "unique_words": 1860,
+      "duration_ms": 2081040,
+      "first_start": 0,
+      "last_end": 2081040
+    }
+  },
+  {
+    "file": "letter_timing_102.json",
+    "issues": [
+      "Large gap (220135ms) between entries 133 and 134"
+    ],
+    "stats": {
+      "total_entries": 139,
+      "unique_words": 34,
+      "duration_ms": 1239999,
+      "first_start": 0,
+      "last_end": 1239999
+    }
+  },
+  {
+    "file": "letter_timing_103.json",
+    "issues": [
+      "Large gap (7700ms) between entries 656 and 657"
+    ],
+    "stats": {
+      "total_entries": 668,
+      "unique_words": 140,
+      "duration_ms": 1639000,
+      "first_start": 0,
+      "last_end": 1639000
+    }
+  },
+  {
+    "file": "letter_timing_104.json",
+    "issues": [
+      "Word index jump at entry 2046: 473 -> 1",
+      "Large gap (6540ms) between entries 1069 and 1070",
+      "Large gap (122886ms) between entries 2058 and 2059"
+    ],
+    "stats": {
+      "total_entries": 2062,
+      "unique_words": 477,
+      "duration_ms": 1000000,
+      "first_start": 0,
+      "last_end": 1000000
+    }
+  },
+  {
+    "file": "letter_timing_105.json",
+    "issues": [
+      "Large gap (7700ms) between entries 656 and 657"
+    ],
+    "stats": {
+      "total_entries": 668,
+      "unique_words": 140,
+      "duration_ms": 1639000,
+      "first_start": 0,
+      "last_end": 1639000
+    }
+  },
+  {
+    "file": "letter_timing_107.json",
+    "issues": [
+      "Large gap (212691ms) between entries 201 and 202"
+    ],
+    "stats": {
+      "total_entries": 211,
+      "unique_words": 25,
+      "duration_ms": 1340000,
+      "first_start": 0,
+      "last_end": 1340000
+    }
+  },
+  {
+    "file": "letter_timing_109.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 95,
+      "unique_words": 26,
+      "duration_ms": 15615,
+      "first_start": 4455,
+      "last_end": 20070
+    }
+  },
+  {
+    "file": "letter_timing_11.json",
+    "issues": [
+      "Large gap (19427ms) between entries 2934 and 2935"
+    ],
+    "stats": {
+      "total_entries": 2939,
+      "unique_words": 710,
+      "duration_ms": 2259000,
+      "first_start": 0,
+      "last_end": 2259000
+    }
+  },
+  {
+    "file": "letter_timing_110.json",
+    "issues": [
+      "Word index jump at entry 1167: 270 -> 1",
+      "Word index jump at entry 2710: 630 -> 2",
+      "Large gap (7801ms) between entries 6057 and 6058",
+      "Large gap (5080ms) between entries 8280 and 8281",
+      "Large gap (5521ms) between entries 9807 and 9808",
+      "Large gap (8980ms) between entries 12565 and 12566",
+      "Large gap (5479ms) between entries 12622 and 12623",
+      "Large gap (5360ms) between entries 12701 and 12702"
+    ],
+    "stats": {
+      "total_entries": 28001,
+      "unique_words": 6214,
+      "duration_ms": 7631579,
+      "first_start": 0,
+      "last_end": 7631579
+    }
+  },
+  {
+    "file": "letter_timing_112.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 47,
+      "unique_words": 15,
+      "duration_ms": 7501,
+      "first_start": 5183,
+      "last_end": 12684
+    }
+  },
+  {
+    "file": "letter_timing_113.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 71,
+      "unique_words": 23,
+      "duration_ms": 11234,
+      "first_start": 2353,
+      "last_end": 13587
+    }
+  },
+  {
+    "file": "letter_timing_114.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 80,
+      "unique_words": 20,
+      "duration_ms": 15947,
+      "first_start": 2759,
+      "last_end": 18706
+    }
+  },
+  {
+    "file": "letter_timing_12.json",
+    "issues": [
+      "Word index jump at entry 8033: 1863 -> 1829",
+      "Large gap (6700ms) between entries 7894 and 7895"
+    ],
+    "stats": {
+      "total_entries": 8083,
+      "unique_words": 1864,
+      "duration_ms": 2034245,
+      "first_start": 0,
+      "last_end": 2034245
+    }
+  },
+  {
+    "file": "letter_timing_14.json",
+    "issues": [
+      "Word index jump at entry 998: 238 -> 1",
+      "Word index jump at entry 2573: 606 -> 2"
+    ],
+    "stats": {
+      "total_entries": 3858,
+      "unique_words": 907,
+      "duration_ms": 1161925,
+      "first_start": 0,
+      "last_end": 1161925
+    }
+  },
+  {
+    "file": "letter_timing_18.json",
+    "issues": [
+      "Word index jump at entry 909: 288 -> 0",
+      "Word index jump at entry 915: 288 -> 1",
+      "Word index jump at entry 930: 290 -> 3",
+      "Word index jump at entry 1337: 387 -> 4",
+      "Word index jump at entry 1358: 390 -> 6",
+      "Word index jump at entry 2261: 611 -> 8",
+      "Word index jump at entry 2269: 611 -> 10",
+      "Word index jump at entry 2653: 707 -> 13",
+      "Word index jump at entry 3694: 945 -> 14",
+      "Word index jump at entry 3713: 948 -> 15",
+      "Word index jump at entry 3717: 948 -> 16",
+      "Word index jump at entry 4632: 1180 -> 18",
+      "Word index jump at entry 4691: 1192 -> 19",
+      "Word index jump at entry 5799: 1468 -> 20",
+      "Word index jump at entry 5816: 1470 -> 21",
+      "Many short durations (6067/6480 < 30ms)"
+    ],
+    "stats": {
+      "total_entries": 6480,
+      "unique_words": 1579,
+      "duration_ms": 1033269,
+      "first_start": 1034,
+      "last_end": 1034303
+    }
+  },
+  {
+    "file": "letter_timing_19.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 5178,
+      "unique_words": 979,
+      "duration_ms": 1087599,
+      "first_start": 2880,
+      "last_end": 1090479
+    }
+  },
+  {
+    "file": "letter_timing_2.json",
+    "issues": [
+      "Many short durations (20100/25864 < 30ms)"
+    ],
+    "stats": {
+      "total_entries": 25864,
+      "unique_words": 6116,
+      "duration_ms": 999941,
+      "first_start": 98,
+      "last_end": 1000039
+    }
+  },
+  {
+    "file": "letter_timing_20.json",
+    "issues": [
+      "Word index jump at entry 2497: 626 -> 1",
+      "Large gap (6480ms) between entries 3134 and 3135"
+    ],
+    "stats": {
+      "total_entries": 5475,
+      "unique_words": 1370,
+      "duration_ms": 1631959,
+      "first_start": 0,
+      "last_end": 1631959
+    }
+  },
+  {
+    "file": "letter_timing_3.json",
+    "issues": [
+      "Large gap (8201ms) between entries 15810 and 15811"
+    ],
+    "stats": {
+      "total_entries": 15825,
+      "unique_words": 3520,
+      "duration_ms": 3806539,
+      "first_start": 0,
+      "last_end": 3806539
+    }
+  },
+  {
+    "file": "letter_timing_36.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 3015,
+      "unique_words": 725,
+      "duration_ms": 554931,
+      "first_start": 8035,
+      "last_end": 562966
+    }
+  },
+  {
+    "file": "letter_timing_4.json",
+    "issues": [
+      "Large gap (32082ms) between entries 20 and 21",
+      "Large gap (6521ms) between entries 2355 and 2356",
+      "Large gap (8841ms) between entries 4815 and 4816",
+      "Large gap (6840ms) between entries 8673 and 8674",
+      "Large gap (7980ms) between entries 18439 and 18440"
+    ],
+    "stats": {
+      "total_entries": 18448,
+      "unique_words": 3716,
+      "duration_ms": 4005679,
+      "first_start": 0,
+      "last_end": 4005679
+    }
+  },
+  {
+    "file": "letter_timing_47.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 2385,
+      "unique_words": 539,
+      "duration_ms": 397658,
+      "first_start": 4848,
+      "last_end": 402506
+    }
+  },
+  {
+    "file": "letter_timing_48.json",
+    "issues": [
+      "Large gap (167631ms) between entries 2569 and 2570"
+    ],
+    "stats": {
+      "total_entries": 2571,
+      "unique_words": 573,
+      "duration_ms": 1100000,
+      "first_start": 0,
+      "last_end": 1100000
+    }
+  },
+  {
+    "file": "letter_timing_5.json",
+    "issues": [
+      "Large gap (52742ms) between entries 20 and 21",
+      "Large gap (15281ms) between entries 44 and 45",
+      "Large gap (30681ms) between entries 68 and 69",
+      "Large gap (8560ms) between entries 3533 and 3534"
+    ],
+    "stats": {
+      "total_entries": 14734,
+      "unique_words": 2766,
+      "duration_ms": 2910380,
+      "first_start": 0,
+      "last_end": 2910380
+    }
+  },
+  {
+    "file": "letter_timing_50.json",
+    "issues": [
+      "Word index jump at entry 909: 194 -> 1",
+      "Large gap (5160ms) between entries 1370 and 1371"
+    ],
+    "stats": {
+      "total_entries": 1663,
+      "unique_words": 356,
+      "duration_ms": 1678999,
+      "first_start": 0,
+      "last_end": 1678999
+    }
+  },
+  {
+    "file": "letter_timing_53.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 1419,
+      "unique_words": 360,
+      "duration_ms": 267668,
+      "first_start": 10435,
+      "last_end": 278103
+    }
+  },
+  {
+    "file": "letter_timing_54.json",
+    "issues": [
+      "Large gap (125793ms) between entries 1483 and 1484"
+    ],
+    "stats": {
+      "total_entries": 1489,
+      "unique_words": 347,
+      "duration_ms": 1519000,
+      "first_start": 0,
+      "last_end": 1519000
+    }
+  },
+  {
+    "file": "letter_timing_55.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 1652,
+      "unique_words": 351,
+      "duration_ms": 290221,
+      "first_start": 839,
+      "last_end": 291060
+    }
+  },
+  {
+    "file": "letter_timing_56.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 1714,
+      "unique_words": 379,
+      "duration_ms": 314585,
+      "first_start": 4062,
+      "last_end": 318647
+    }
+  },
+  {
+    "file": "letter_timing_59.json",
+    "issues": [
+      "Word index jump at entry 1234: 285 -> 1",
+      "Large gap (93737ms) between entries 2098 and 2099"
+    ],
+    "stats": {
+      "total_entries": 2103,
+      "unique_words": 486,
+      "duration_ms": 1259000,
+      "first_start": 0,
+      "last_end": 1259000
+    }
+  },
+  {
+    "file": "letter_timing_6.json",
+    "issues": [
+      "Word index jump at entry 1999: 489 -> 1",
+      "Large gap (10760ms) between entries 2346 and 2347",
+      "Large gap (6701ms) between entries 7704 and 7705",
+      "Large gap (6560ms) between entries 8787 and 8788",
+      "Large gap (11341ms) between entries 9708 and 9709",
+      "Large gap (7500ms) between entries 11722 and 11723"
+    ],
+    "stats": {
+      "total_entries": 13482,
+      "unique_words": 3097,
+      "duration_ms": 3188559,
+      "first_start": 0,
+      "last_end": 3188559
+    }
+  },
+  {
+    "file": "letter_timing_67.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 1328,
+      "unique_words": 333,
+      "duration_ms": 206332,
+      "first_start": 7223,
+      "last_end": 213555
+    }
+  },
+  {
+    "file": "letter_timing_69.json",
+    "issues": [
+      "Large gap (12900ms) between entries 39 and 40",
+      "Large gap (7621ms) between entries 481 and 482",
+      "Large gap (7259ms) between entries 747 and 748",
+      "Large gap (9461ms) between entries 926 and 927",
+      "Large gap (7980ms) between entries 1064 and 1065",
+      "Large gap (15459ms) between entries 1172 and 1173"
+    ],
+    "stats": {
+      "total_entries": 1175,
+      "unique_words": 269,
+      "duration_ms": 1080000,
+      "first_start": 0,
+      "last_end": 1080000
+    }
+  },
+  {
+    "file": "letter_timing_71.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 952,
+      "unique_words": 226,
+      "duration_ms": 177660,
+      "first_start": 140,
+      "last_end": 177800
+    }
+  },
+  {
+    "file": "letter_timing_73.json",
+    "issues": [
+      "Large gap (7700ms) between entries 666 and 667"
+    ],
+    "stats": {
+      "total_entries": 678,
+      "unique_words": 140,
+      "duration_ms": 1639000,
+      "first_start": 0,
+      "last_end": 1639000
+    }
+  },
+  {
+    "file": "letter_timing_74.json",
+    "issues": [
+      "Large gap (7700ms) between entries 656 and 657"
+    ],
+    "stats": {
+      "total_entries": 668,
+      "unique_words": 140,
+      "duration_ms": 1639000,
+      "first_start": 0,
+      "last_end": 1639000
+    }
+  },
+  {
+    "file": "letter_timing_75.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 667,
+      "unique_words": 164,
+      "duration_ms": 105278,
+      "first_start": 11120,
+      "last_end": 116398
+    }
+  },
+  {
+    "file": "letter_timing_75_ctc.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 473,
+      "unique_words": 89,
+      "duration_ms": 135661,
+      "first_start": 31,
+      "last_end": 135692
+    }
+  },
+  {
+    "file": "letter_timing_78.json",
+    "issues": [
+      "Large gap (5199ms) between entries 1470 and 1471"
+    ],
+    "stats": {
+      "total_entries": 2953,
+      "unique_words": 362,
+      "duration_ms": 561359,
+      "first_start": 3720,
+      "last_end": 565079
+    }
+  },
+  {
+    "file": "letter_timing_80.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 546,
+      "unique_words": 133,
+      "duration_ms": 92719,
+      "first_start": 3094,
+      "last_end": 95813
+    }
+  },
+  {
+    "file": "letter_timing_82.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 328,
+      "unique_words": 80,
+      "duration_ms": 117832,
+      "first_start": 395,
+      "last_end": 118227
+    }
+  },
+  {
+    "file": "letter_timing_83.json",
+    "issues": [
+      "Word index jump at entry 2046: 473 -> 1",
+      "Large gap (6540ms) between entries 1069 and 1070",
+      "Large gap (122886ms) between entries 2058 and 2059"
+    ],
+    "stats": {
+      "total_entries": 2062,
+      "unique_words": 477,
+      "duration_ms": 1000000,
+      "first_start": 0,
+      "last_end": 1000000
+    }
+  },
+  {
+    "file": "letter_timing_84.json",
+    "issues": [
+      "Large gap (7700ms) between entries 656 and 657"
+    ],
+    "stats": {
+      "total_entries": 668,
+      "unique_words": 140,
+      "duration_ms": 1639000,
+      "first_start": 0,
+      "last_end": 1639000
+    }
+  },
+  {
+    "file": "letter_timing_85.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 463,
+      "unique_words": 109,
+      "duration_ms": 132375,
+      "first_start": 1405,
+      "last_end": 133780
+    }
+  },
+  {
+    "file": "letter_timing_86.json",
+    "issues": [
+      "Word index jump at entry 2229: 502 -> 1",
+      "Word index jump at entry 5211: 1203 -> 2",
+      "Word index jump at entry 15231: 3657 -> 3656",
+      "Large gap (30001ms) between entries 5649 and 5650",
+      "Large gap (9761ms) between entries 8896 and 8897"
+    ],
+    "stats": {
+      "total_entries": 45243,
+      "unique_words": 10519,
+      "duration_ms": 6833809,
+      "first_start": 0,
+      "last_end": 6833809
+    }
+  },
+  {
+    "file": "letter_timing_87.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 296,
+      "unique_words": 72,
+      "duration_ms": 50377,
+      "first_start": 4155,
+      "last_end": 54532
+    }
+  },
+  {
+    "file": "letter_timing_89.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 575,
+      "unique_words": 137,
+      "duration_ms": 88965,
+      "first_start": 3484,
+      "last_end": 92449
+    }
+  },
+  {
+    "file": "letter_timing_90.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 336,
+      "unique_words": 82,
+      "duration_ms": 54873,
+      "first_start": 4060,
+      "last_end": 58933
+    }
+  },
+  {
+    "file": "letter_timing_91.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 250,
+      "unique_words": 54,
+      "duration_ms": 38200,
+      "first_start": 3040,
+      "last_end": 41240
+    }
+  },
+  {
+    "file": "letter_timing_92.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 314,
+      "unique_words": 71,
+      "duration_ms": 44981,
+      "first_start": 3499,
+      "last_end": 48480
+    }
+  },
+  {
+    "file": "letter_timing_93.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 165,
+      "unique_words": 40,
+      "duration_ms": 23676,
+      "first_start": 3744,
+      "last_end": 27420
+    }
+  },
+  {
+    "file": "letter_timing_96.json",
+    "issues": [
+      "Large gap (7700ms) between entries 666 and 667"
+    ],
+    "stats": {
+      "total_entries": 678,
+      "unique_words": 140,
+      "duration_ms": 1639000,
+      "first_start": 0,
+      "last_end": 1639000
+    }
+  },
+  {
+    "file": "letter_timing_97.json",
+    "issues": [
+      "Large gap (7700ms) between entries 656 and 657"
+    ],
+    "stats": {
+      "total_entries": 668,
+      "unique_words": 140,
+      "duration_ms": 1639000,
+      "first_start": 0,
+      "last_end": 1639000
+    }
+  },
+  {
+    "file": "letter_timing_n01.json",
+    "issues": [
+      "Large gap (26415ms) between entries 7 and 8"
+    ],
+    "stats": {
+      "total_entries": 1948,
+      "unique_words": 461,
+      "duration_ms": 623120,
+      "first_start": 0,
+      "last_end": 623120
+    }
+  },
+  {
+    "file": "letter_timing_n02.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 2874,
+      "unique_words": 666,
+      "duration_ms": 782833,
+      "first_start": 0,
+      "last_end": 782833
+    }
+  },
+  {
+    "file": "letter_timing_n03.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 634,
+      "unique_words": 156,
+      "duration_ms": 198820,
+      "first_start": 0,
+      "last_end": 198820
+    }
+  },
+  {
+    "file": "letter_timing_n04.json",
+    "issues": [
+      "Large gap (5200ms) between entries 652 and 653"
+    ],
+    "stats": {
+      "total_entries": 2709,
+      "unique_words": 656,
+      "duration_ms": 863480,
+      "first_start": 0,
+      "last_end": 863480
+    }
+  },
+  {
+    "file": "letter_timing_n05.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 3015,
+      "unique_words": 734,
+      "duration_ms": 830480,
+      "first_start": 0,
+      "last_end": 830480
+    }
+  },
+  {
+    "file": "letter_timing_n06.json",
+    "issues": [
+      "Large gap (5205ms) between entries 93 and 94",
+      "Large gap (5106ms) between entries 236 and 237"
+    ],
+    "stats": {
+      "total_entries": 872,
+      "unique_words": 196,
+      "duration_ms": 300476,
+      "first_start": 0,
+      "last_end": 300476
+    }
+  },
+  {
+    "file": "letter_timing_n07.json",
+    "issues": [
+      "Large gap (7240ms) between entries 159 and 160",
+      "Large gap (7960ms) between entries 167 and 168",
+      "Large gap (5460ms) between entries 301 and 302",
+      "Large gap (5100ms) between entries 310 and 311"
+    ],
+    "stats": {
+      "total_entries": 2896,
+      "unique_words": 659,
+      "duration_ms": 834743,
+      "first_start": 1420,
+      "last_end": 836163
+    }
+  },
+  {
+    "file": "letter_timing_n08.json",
+    "issues": [
+      "Large gap (37700ms) between entries 85 and 86",
+      "Large gap (5979ms) between entries 153 and 154",
+      "Large gap (7261ms) between entries 161 and 162"
+    ],
+    "stats": {
+      "total_entries": 2551,
+      "unique_words": 575,
+      "duration_ms": 906643,
+      "first_start": 0,
+      "last_end": 906643
+    }
+  },
+  {
+    "file": "letter_timing_n09.json",
+    "issues": [
+      "Large gap (5160ms) between entries 187 and 188"
+    ],
+    "stats": {
+      "total_entries": 2742,
+      "unique_words": 645,
+      "duration_ms": 834140,
+      "first_start": 0,
+      "last_end": 834140
+    }
+  },
+  {
+    "file": "letter_timing_n10.json",
+    "issues": [
+      "Large gap (5804ms) between entries 145 and 146"
+    ],
+    "stats": {
+      "total_entries": 1026,
+      "unique_words": 236,
+      "duration_ms": 329570,
+      "first_start": 0,
+      "last_end": 329570
+    }
+  },
+  {
+    "file": "letter_timing_qiyamah.json",
+    "issues": [
+      "Word index jump at entry 593: 146 -> 145",
+      "Word index jump at entry 621: 154 -> 153"
+    ],
+    "stats": {
+      "total_entries": 667,
+      "unique_words": 164,
+      "duration_ms": 105303,
+      "first_start": 11095,
+      "last_end": 116398
+    }
+  },
+  {
+    "file": "letter_timing_yasin.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 3153,
+      "unique_words": 783,
+      "duration_ms": 1084659,
+      "first_start": 0,
+      "last_end": 1084659
+    }
+  },
+  {
+    "file": "letter_timing_36.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 3290,
+      "unique_words": 753,
+      "duration_ms": 1086382,
+      "first_start": 31,
+      "last_end": 1086413
+    }
+  },
+  {
+    "file": "letter_timing_47.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 2673,
+      "unique_words": 560,
+      "duration_ms": 749000,
+      "first_start": 31,
+      "last_end": 749031
+    }
+  },
+  {
+    "file": "letter_timing_75.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 388,
+      "unique_words": 91,
+      "duration_ms": 135661,
+      "first_start": 31,
+      "last_end": 135692
+    }
+  },
+  {
+    "file": "letter_timing_n01.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 2201,
+      "unique_words": 475,
+      "duration_ms": 624074,
+      "first_start": 31,
+      "last_end": 624105
+    }
+  },
+  {
+    "file": "letter_timing_n02.json",
+    "issues": [
+      "Large gap (5909ms) between entries 1852 and 1853"
+    ],
+    "stats": {
+      "total_entries": 2868,
+      "unique_words": 664,
+      "duration_ms": 783644,
+      "first_start": 31,
+      "last_end": 783675
+    }
+  },
+  {
+    "file": "letter_timing_n03.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 667,
+      "unique_words": 154,
+      "duration_ms": 199685,
+      "first_start": 31,
+      "last_end": 199716
+    }
+  },
+  {
+    "file": "letter_timing_n04.json",
+    "issues": [
+      "Large gap (8333ms) between entries 661 and 662"
+    ],
+    "stats": {
+      "total_entries": 2610,
+      "unique_words": 618,
+      "duration_ms": 865117,
+      "first_start": 31,
+      "last_end": 865148
+    }
+  },
+  {
+    "file": "letter_timing_n05.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 3098,
+      "unique_words": 726,
+      "duration_ms": 831671,
+      "first_start": 31,
+      "last_end": 831702
+    }
+  },
+  {
+    "file": "letter_timing_n06.json",
+    "issues": [
+      "Large gap (5211ms) between entries 70 and 71",
+      "Large gap (6174ms) between entries 212 and 213"
+    ],
+    "stats": {
+      "total_entries": 844,
+      "unique_words": 188,
+      "duration_ms": 301727,
+      "first_start": 31,
+      "last_end": 301758
+    }
+  },
+  {
+    "file": "letter_timing_n07.json",
+    "issues": [
+      "Large gap (7355ms) between entries 158 and 159",
+      "Large gap (6089ms) between entries 174 and 175",
+      "Large gap (5608ms) between entries 1782 and 1783"
+    ],
+    "stats": {
+      "total_entries": 2742,
+      "unique_words": 612,
+      "duration_ms": 834556,
+      "first_start": 2444,
+      "last_end": 837000
+    }
+  },
+  {
+    "file": "letter_timing_n08.json",
+    "issues": [
+      "Large gap (20163ms) between entries 82 and 83"
+    ],
+    "stats": {
+      "total_entries": 2822,
+      "unique_words": 602,
+      "duration_ms": 907743,
+      "first_start": 31,
+      "last_end": 907774
+    }
+  },
+  {
+    "file": "letter_timing_n09.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 2736,
+      "unique_words": 624,
+      "duration_ms": 835348,
+      "first_start": 31,
+      "last_end": 835379
+    }
+  },
+  {
+    "file": "letter_timing_n10.json",
+    "issues": [],
+    "stats": {
+      "total_entries": 1022,
+      "unique_words": 236,
+      "duration_ms": 331462,
+      "first_start": 31,
+      "last_end": 331493
+    }
+  }
+]

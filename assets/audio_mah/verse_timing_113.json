@@ -1,0 +1,32 @@
+[
+  {
+    "ayah": 1,
+    "start_ms": 31,
+    "end_ms": 5380,
+    "startWordIdx": 0
+  },
+  {
+    "ayah": 2,
+    "start_ms": 5520,
+    "end_ms": 8745,
+    "startWordIdx": 4
+  },
+  {
+    "ayah": 3,
+    "start_ms": 8866,
+    "end_ms": 13634,
+    "startWordIdx": 8
+  },
+  {
+    "ayah": 4,
+    "start_ms": 13734,
+    "end_ms": 18842,
+    "startWordIdx": 13
+  },
+  {
+    "ayah": 5,
+    "start_ms": 18962,
+    "end_ms": 23490,
+    "startWordIdx": 18
+  }
+]

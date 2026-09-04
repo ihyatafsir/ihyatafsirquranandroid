@@ -1,0 +1,68 @@
+[
+  {
+    "ayah": 1,
+    "start_ms": 3736,
+    "end_ms": 4837,
+    "startWordIdx": 4
+  },
+  {
+    "ayah": 2,
+    "start_ms": 4917,
+    "end_ms": 7681,
+    "startWordIdx": 5
+  },
+  {
+    "ayah": 3,
+    "start_ms": 7701,
+    "end_ms": 13148,
+    "startWordIdx": 8
+  },
+  {
+    "ayah": 4,
+    "start_ms": 13168,
+    "end_ms": 18135,
+    "startWordIdx": 13
+  },
+  {
+    "ayah": 5,
+    "start_ms": 18195,
+    "end_ms": 23642,
+    "startWordIdx": 18
+  },
+  {
+    "ayah": 6,
+    "start_ms": 23622,
+    "end_ms": 28935,
+    "startWordIdx": 22
+  },
+  {
+    "ayah": 7,
+    "start_ms": 29035,
+    "end_ms": 35470,
+    "startWordIdx": 26
+  },
+  {
+    "ayah": 8,
+    "start_ms": 35550,
+    "end_ms": 41344,
+    "startWordIdx": 29
+  },
+  {
+    "ayah": 9,
+    "start_ms": 41560,
+    "end_ms": 46459,
+    "startWordIdx": 32
+  },
+  {
+    "ayah": 10,
+    "start_ms": 46559,
+    "end_ms": 51979,
+    "startWordIdx": 36
+  },
+  {
+    "ayah": 11,
+    "start_ms": 52080,
+    "end_ms": 57460,
+    "startWordIdx": 40
+  }
+]

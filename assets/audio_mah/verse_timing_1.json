@@ -1,0 +1,44 @@
+[
+  {
+    "ayah": 1,
+    "start_ms": 7387,
+    "end_ms": 11376,
+    "startWordIdx": 9
+  },
+  {
+    "ayah": 2,
+    "start_ms": 11596,
+    "end_ms": 16146,
+    "startWordIdx": 13
+  },
+  {
+    "ayah": 3,
+    "start_ms": 16206,
+    "end_ms": 19372,
+    "startWordIdx": 17
+  },
+  {
+    "ayah": 4,
+    "start_ms": 19432,
+    "end_ms": 23616,
+    "startWordIdx": 19
+  },
+  {
+    "ayah": 5,
+    "start_ms": 23716,
+    "end_ms": 28360,
+    "startWordIdx": 22
+  },
+  {
+    "ayah": 6,
+    "start_ms": 28400,
+    "end_ms": 31002,
+    "startWordIdx": 26
+  },
+  {
+    "ayah": 7,
+    "start_ms": 31103,
+    "end_ms": 46997,
+    "startWordIdx": 29
+  }
+]

@@ -39,3 +39,48 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# Builds & Binary Archives
+*.apk
+*.txt
+tajweedtts_ref/
+tajweedsst_ref/
+
+# Large Audio / Video Files
+assets/audio_mah/new_surahs/
+assets/audio_mah/youtube_downloads/
+assets/audio_mah/*.mp3
+assets/audio_mah/processed/
+assets/audio_mah/split_surahs/
+assets/audio_mah/runpod_output/
+*.backup.json
+minshawi_waveform_windows.json
+*.mp3
+*.webm
+*.wav
+*.ipynb
+assets/audio_mah/chunks/
+assets/audio_mah/audio_mah
+__pycache__/
+
+# Builds & Binary Archives
+*.apk
+*.txt
+tajweedtts_ref/
+tajweedsst_ref/
+
+# Audio / Media files
+*.mp3
+*.wav
+*.webm
+*.mp4
+assets/audio_mah/new_surahs/
+assets/audio_mah/youtube_downloads/
+assets/audio_mah/processed/
+assets/audio_mah/split_surahs/
+assets/audio_mah/runpod_output/
+assets/audio_mah/chunks/
+assets/audio_mah/audio_mah
+*.backup.json
+minshawi_waveform_windows.json
+__pycache__/

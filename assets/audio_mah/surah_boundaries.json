@@ -1,0 +1,68 @@
+{
+  "taraweeh_n01": {
+    "night": 29,
+    "surahs": [
+      {
+        "surah": 89,
+        "name": "Al-Fajr",
+        "name_ar": "الفجر",
+        "start_ms": 100820,
+        "context": "والفجر"
+      },
+      {
+        "surah": 90,
+        "name": "Al-Balad",
+        "name_ar": "البلد",
+        "start_ms": 285820,
+        "context": "لا أقسم بهذا البلد"
+      },
+      {
+        "surah": 91,
+        "name": "Ash-Shams",
+        "name_ar": "الشمس",
+        "start_ms": 393740,
+        "context": "والشمس وضحيها"
+      },
+      {
+        "surah": 92,
+        "name": "Al-Layl",
+        "name_ar": "الليل",
+        "start_ms": 470060,
+        "context": "والليل إذا يغشي"
+      },
+      {
+        "surah": 93,
+        "name": "Ad-Duha",
+        "name_ar": "الضحى",
+        "start_ms": 566640,
+        "context": "والضحى"
+      }
+    ]
+  },
+  "taraweeh_n03": {
+    "night": 22,
+    "surahs": [
+      {
+        "surah": 87,
+        "name": "Al-A'la",
+        "name_ar": "الأعلى",
+        "start_ms": 41040,
+        "context": "سبح اسم ربك الأعلى"
+      },
+      {
+        "surah": 109,
+        "name": "Al-Kafirun",
+        "name_ar": "الكافرون",
+        "start_ms": 143960,
+        "context": "قل يا أيها الكافرون"
+      },
+      {
+        "surah": 112,
+        "name": "Al-Ikhlas",
+        "name_ar": "الإخلاص",
+        "start_ms": 180380,
+        "context": "قل هو الله أحد"
+      }
+    ]
+  }
+}

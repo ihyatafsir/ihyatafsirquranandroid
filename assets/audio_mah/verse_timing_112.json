@@ -1,0 +1,26 @@
+[
+  {
+    "ayah": 1,
+    "start_ms": 5009,
+    "end_ms": 8521,
+    "startWordIdx": 4
+  },
+  {
+    "ayah": 2,
+    "start_ms": 8541,
+    "end_ms": 11150,
+    "startWordIdx": 8
+  },
+  {
+    "ayah": 3,
+    "start_ms": 11291,
+    "end_ms": 14703,
+    "startWordIdx": 10
+  },
+  {
+    "ayah": 4,
+    "start_ms": 14783,
+    "end_ms": 19339,
+    "startWordIdx": 14
+  }
+]

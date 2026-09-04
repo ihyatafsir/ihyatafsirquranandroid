@@ -1,0 +1,128 @@
+[
+  {
+    "ayah": 1,
+    "start_ms": 3538,
+    "end_ms": 5743,
+    "startWordIdx": 4
+  },
+  {
+    "ayah": 2,
+    "start_ms": 5843,
+    "end_ms": 9471,
+    "startWordIdx": 7
+  },
+  {
+    "ayah": 3,
+    "start_ms": 9571,
+    "end_ms": 14201,
+    "startWordIdx": 10
+  },
+  {
+    "ayah": 4,
+    "start_ms": 14341,
+    "end_ms": 17668,
+    "startWordIdx": 14
+  },
+  {
+    "ayah": 5,
+    "start_ms": 17648,
+    "end_ms": 22816,
+    "startWordIdx": 17
+  },
+  {
+    "ayah": 6,
+    "start_ms": 22836,
+    "end_ms": 25800,
+    "startWordIdx": 21
+  },
+  {
+    "ayah": 7,
+    "start_ms": 25820,
+    "end_ms": 29426,
+    "startWordIdx": 23
+  },
+  {
+    "ayah": 8,
+    "start_ms": 29526,
+    "end_ms": 33992,
+    "startWordIdx": 25
+  },
+  {
+    "ayah": 9,
+    "start_ms": 34073,
+    "end_ms": 36676,
+    "startWordIdx": 29
+  },
+  {
+    "ayah": 10,
+    "start_ms": 36797,
+    "end_ms": 40843,
+    "startWordIdx": 31
+  },
+  {
+    "ayah": 11,
+    "start_ms": 40923,
+    "end_ms": 47132,
+    "startWordIdx": 33
+  },
+  {
+    "ayah": 12,
+    "start_ms": 47112,
+    "end_ms": 51362,
+    "startWordIdx": 39
+  },
+  {
+    "ayah": 13,
+    "start_ms": 51442,
+    "end_ms": 56955,
+    "startWordIdx": 42
+  },
+  {
+    "ayah": 14,
+    "start_ms": 57055,
+    "end_ms": 62488,
+    "startWordIdx": 46
+  },
+  {
+    "ayah": 15,
+    "start_ms": 62468,
+    "end_ms": 68115,
+    "startWordIdx": 49
+  },
+  {
+    "ayah": 16,
+    "start_ms": 68556,
+    "end_ms": 72140,
+    "startWordIdx": 53
+  },
+  {
+    "ayah": 17,
+    "start_ms": 72240,
+    "end_ms": 75925,
+    "startWordIdx": 56
+  },
+  {
+    "ayah": 18,
+    "start_ms": 75945,
+    "end_ms": 78128,
+    "startWordIdx": 58
+  },
+  {
+    "ayah": 19,
+    "start_ms": 78248,
+    "end_ms": 85717,
+    "startWordIdx": 62
+  },
+  {
+    "ayah": 20,
+    "start_ms": 85737,
+    "end_ms": 92489,
+    "startWordIdx": 68
+  },
+  {
+    "ayah": 21,
+    "start_ms": 92510,
+    "end_ms": 95759,
+    "startWordIdx": 73
+  }
+]

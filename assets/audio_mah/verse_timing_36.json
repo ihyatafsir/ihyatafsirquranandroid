@@ -1,0 +1,500 @@
+[
+  {
+    "ayah": 1,
+    "start_ms": 8108,
+    "end_ms": 8710,
+    "startWordIdx": 9
+  },
+  {
+    "ayah": 2,
+    "start_ms": 8730,
+    "end_ms": 12498,
+    "startWordIdx": 10
+  },
+  {
+    "ayah": 3,
+    "start_ms": 12638,
+    "end_ms": 16647,
+    "startWordIdx": 12
+  },
+  {
+    "ayah": 4,
+    "start_ms": 16707,
+    "end_ms": 21574,
+    "startWordIdx": 15
+  },
+  {
+    "ayah": 5,
+    "start_ms": 21675,
+    "end_ms": 26619,
+    "startWordIdx": 18
+  },
+  {
+    "ayah": 6,
+    "start_ms": 26699,
+    "end_ms": 37390,
+    "startWordIdx": 21
+  },
+  {
+    "ayah": 7,
+    "start_ms": 37510,
+    "end_ms": 45498,
+    "startWordIdx": 28
+  },
+  {
+    "ayah": 8,
+    "start_ms": 45618,
+    "end_ms": 59152,
+    "startWordIdx": 36
+  },
+  {
+    "ayah": 9,
+    "start_ms": 59393,
+    "end_ms": 74709,
+    "startWordIdx": 46
+  },
+  {
+    "ayah": 10,
+    "start_ms": 74830,
+    "end_ms": 87684,
+    "startWordIdx": 58
+  },
+  {
+    "ayah": 11,
+    "start_ms": 87785,
+    "end_ms": 103728,
+    "startWordIdx": 66
+  },
+  {
+    "ayah": 12,
+    "start_ms": 104849,
+    "end_ms": 123697,
+    "startWordIdx": 78
+  },
+  {
+    "ayah": 13,
+    "start_ms": 123717,
+    "end_ms": 134082,
+    "startWordIdx": 92
+  },
+  {
+    "ayah": 14,
+    "start_ms": 134202,
+    "end_ms": 152641,
+    "startWordIdx": 100
+  },
+  {
+    "ayah": 15,
+    "start_ms": 152661,
+    "end_ms": 170659,
+    "startWordIdx": 111
+  },
+  {
+    "ayah": 16,
+    "start_ms": 170859,
+    "end_ms": 179687,
+    "startWordIdx": 126
+  },
+  {
+    "ayah": 17,
+    "start_ms": 179788,
+    "end_ms": 187058,
+    "startWordIdx": 132
+  },
+  {
+    "ayah": 18,
+    "start_ms": 187078,
+    "end_ms": 208051,
+    "startWordIdx": 137
+  },
+  {
+    "ayah": 19,
+    "start_ms": 208211,
+    "end_ms": 223913,
+    "startWordIdx": 149
+  },
+  {
+    "ayah": 20,
+    "start_ms": 224053,
+    "end_ms": 236164,
+    "startWordIdx": 158
+  },
+  {
+    "ayah": 21,
+    "start_ms": 236584,
+    "end_ms": 246033,
+    "startWordIdx": 168
+  },
+  {
+    "ayah": 22,
+    "start_ms": 246133,
+    "end_ms": 255504,
+    "startWordIdx": 175
+  },
+  {
+    "ayah": 23,
+    "start_ms": 255605,
+    "end_ms": 277678,
+    "startWordIdx": 183
+  },
+  {
+    "ayah": 24,
+    "start_ms": 278452,
+    "end_ms": 285423,
+    "startWordIdx": 198
+  },
+  {
+    "ayah": 25,
+    "start_ms": 285523,
+    "end_ms": 291833,
+    "startWordIdx": 203
+  },
+  {
+    "ayah": 26,
+    "start_ms": 292093,
+    "end_ms": 305033,
+    "startWordIdx": 207
+  },
+  {
+    "ayah": 27,
+    "start_ms": 305013,
+    "end_ms": 313324,
+    "startWordIdx": 214
+  },
+  {
+    "ayah": 28,
+    "start_ms": 313384,
+    "end_ms": 330993,
+    "startWordIdx": 221
+  },
+  {
+    "ayah": 29,
+    "start_ms": 331133,
+    "end_ms": 344503,
+    "startWordIdx": 234
+  },
+  {
+    "ayah": 30,
+    "start_ms": 344483,
+    "end_ms": 359532,
+    "startWordIdx": 242
+  },
+  {
+    "ayah": 31,
+    "start_ms": 359712,
+    "end_ms": 374708,
+    "startWordIdx": 253
+  },
+  {
+    "ayah": 32,
+    "start_ms": 374848,
+    "end_ms": 381839,
+    "startWordIdx": 264
+  },
+  {
+    "ayah": 33,
+    "start_ms": 381979,
+    "end_ms": 398497,
+    "startWordIdx": 270
+  },
+  {
+    "ayah": 34,
+    "start_ms": 398777,
+    "end_ms": 413593,
+    "startWordIdx": 280
+  },
+  {
+    "ayah": 35,
+    "start_ms": 413793,
+    "end_ms": 426754,
+    "startWordIdx": 290
+  },
+  {
+    "ayah": 36,
+    "start_ms": 426814,
+    "end_ms": 446191,
+    "startWordIdx": 298
+  },
+  {
+    "ayah": 37,
+    "start_ms": 446211,
+    "end_ms": 459878,
+    "startWordIdx": 311
+  },
+  {
+    "ayah": 38,
+    "start_ms": 460347,
+    "end_ms": 469539,
+    "startWordIdx": 320
+  },
+  {
+    "ayah": 39,
+    "start_ms": 469639,
+    "end_ms": 481173,
+    "startWordIdx": 328
+  },
+  {
+    "ayah": 40,
+    "start_ms": 481413,
+    "end_ms": 502449,
+    "startWordIdx": 335
+  },
+  {
+    "ayah": 41,
+    "start_ms": 502509,
+    "end_ms": 513938,
+    "startWordIdx": 350
+  },
+  {
+    "ayah": 42,
+    "start_ms": 514038,
+    "end_ms": 523917,
+    "startWordIdx": 358
+  },
+  {
+    "ayah": 43,
+    "start_ms": 524057,
+    "end_ms": 537116,
+    "startWordIdx": 364
+  },
+  {
+    "ayah": 44,
+    "start_ms": 537217,
+    "end_ms": 543244,
+    "startWordIdx": 373
+  },
+  {
+    "ayah": 45,
+    "start_ms": 543344,
+    "end_ms": 561333,
+    "startWordIdx": 379
+  },
+  {
+    "ayah": 46,
+    "start_ms": 561413,
+    "end_ms": 575322,
+    "startWordIdx": 390
+  },
+  {
+    "ayah": 47,
+    "start_ms": 575342,
+    "end_ms": 605159,
+    "startWordIdx": 401
+  },
+  {
+    "ayah": 48,
+    "start_ms": 605279,
+    "end_ms": 614671,
+    "startWordIdx": 425
+  },
+  {
+    "ayah": 49,
+    "start_ms": 614792,
+    "end_ms": 623548,
+    "startWordIdx": 432
+  },
+  {
+    "ayah": 50,
+    "start_ms": 623808,
+    "end_ms": 633164,
+    "startWordIdx": 440
+  },
+  {
+    "ayah": 51,
+    "start_ms": 633264,
+    "end_ms": 649369,
+    "startWordIdx": 447
+  },
+  {
+    "ayah": 52,
+    "start_ms": 649509,
+    "end_ms": 667040,
+    "startWordIdx": 457
+  },
+  {
+    "ayah": 53,
+    "start_ms": 667201,
+    "end_ms": 680158,
+    "startWordIdx": 469
+  },
+  {
+    "ayah": 54,
+    "start_ms": 680178,
+    "end_ms": 695169,
+    "startWordIdx": 479
+  },
+  {
+    "ayah": 55,
+    "start_ms": 695290,
+    "end_ms": 705185,
+    "startWordIdx": 490
+  },
+  {
+    "ayah": 56,
+    "start_ms": 705485,
+    "end_ms": 714660,
+    "startWordIdx": 497
+  },
+  {
+    "ayah": 57,
+    "start_ms": 714680,
+    "end_ms": 723489,
+    "startWordIdx": 504
+  },
+  {
+    "ayah": 58,
+    "start_ms": 723589,
+    "end_ms": 729755,
+    "startWordIdx": 510
+  },
+  {
+    "ayah": 59,
+    "start_ms": 729775,
+    "end_ms": 735401,
+    "startWordIdx": 515
+  },
+  {
+    "ayah": 60,
+    "start_ms": 735561,
+    "end_ms": 755765,
+    "startWordIdx": 519
+  },
+  {
+    "ayah": 61,
+    "start_ms": 756045,
+    "end_ms": 762758,
+    "startWordIdx": 532
+  },
+  {
+    "ayah": 62,
+    "start_ms": 762798,
+    "end_ms": 771286,
+    "startWordIdx": 537
+  },
+  {
+    "ayah": 63,
+    "start_ms": 771306,
+    "end_ms": 777957,
+    "startWordIdx": 545
+  },
+  {
+    "ayah": 64,
+    "start_ms": 778057,
+    "end_ms": 786370,
+    "startWordIdx": 550
+  },
+  {
+    "ayah": 65,
+    "start_ms": 786590,
+    "end_ms": 805751,
+    "startWordIdx": 555
+  },
+  {
+    "ayah": 66,
+    "start_ms": 805891,
+    "end_ms": 820806,
+    "startWordIdx": 566
+  },
+  {
+    "ayah": 67,
+    "start_ms": 821186,
+    "end_ms": 834930,
+    "startWordIdx": 575
+  },
+  {
+    "ayah": 68,
+    "start_ms": 835011,
+    "end_ms": 845271,
+    "startWordIdx": 585
+  },
+  {
+    "ayah": 69,
+    "start_ms": 845331,
+    "end_ms": 864074,
+    "startWordIdx": 592
+  },
+  {
+    "ayah": 70,
+    "start_ms": 864094,
+    "end_ms": 878294,
+    "startWordIdx": 604
+  },
+  {
+    "ayah": 71,
+    "start_ms": 878414,
+    "end_ms": 896732,
+    "startWordIdx": 612
+  },
+  {
+    "ayah": 72,
+    "start_ms": 896852,
+    "end_ms": 903741,
+    "startWordIdx": 624
+  },
+  {
+    "ayah": 73,
+    "start_ms": 903761,
+    "end_ms": 913353,
+    "startWordIdx": 630
+  },
+  {
+    "ayah": 74,
+    "start_ms": 913373,
+    "end_ms": 924767,
+    "startWordIdx": 636
+  },
+  {
+    "ayah": 75,
+    "start_ms": 924747,
+    "end_ms": 936665,
+    "startWordIdx": 643
+  },
+  {
+    "ayah": 76,
+    "start_ms": 936826,
+    "end_ms": 950102,
+    "startWordIdx": 650
+  },
+  {
+    "ayah": 77,
+    "start_ms": 950223,
+    "end_ms": 968190,
+    "startWordIdx": 659
+  },
+  {
+    "ayah": 78,
+    "start_ms": 968330,
+    "end_ms": 984937,
+    "startWordIdx": 670
+  },
+  {
+    "ayah": 79,
+    "start_ms": 985037,
+    "end_ms": 998320,
+    "startWordIdx": 681
+  },
+  {
+    "ayah": 80,
+    "start_ms": 998440,
+    "end_ms": 1012919,
+    "startWordIdx": 691
+  },
+  {
+    "ayah": 81,
+    "start_ms": 1012959,
+    "end_ms": 1031017,
+    "startWordIdx": 702
+  },
+  {
+    "ayah": 82,
+    "start_ms": 1031037,
+    "end_ms": 1046684,
+    "startWordIdx": 716
+  },
+  {
+    "ayah": 83,
+    "start_ms": 1046784,
+    "end_ms": 1057478,
+    "startWordIdx": 726
+  }
+]
