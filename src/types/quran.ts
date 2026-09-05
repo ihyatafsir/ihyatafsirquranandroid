@@ -42,12 +42,19 @@ export interface LetterTimingEntry {
 }
 
 export interface TafsirEntry {
-  surah: number;
-  ayah: number;
-  arabic?: string;
-  english?: string;
-  commentary?: string;
-  source?: string;
+  surah?: number;
+  ayah?: number;
+  verse_key?: string;
+  arabic: string;
+  english: string;
+  book_title?: string;
+  section_title_ar?: string;
+  section_title_en?: string;
+  section_index?: number;
+  anchors?: string | null;
+  content_type?: string;
+  topic?: string;
+  badge?: string;
 }
 
 export interface ReciterConfig {

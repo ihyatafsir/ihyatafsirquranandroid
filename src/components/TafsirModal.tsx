@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Modal,
   View,
@@ -8,12 +8,12 @@ import {
   StyleSheet,
   SafeAreaView,
 } from 'react-native';
-import { Verse } from '../types/quran';
+import { Verse, TafsirEntry } from '../types/quran';
 
 interface TafsirModalProps {
   visible: boolean;
   verse: Verse | null;
-  tafsirEntries: any[];
+  tafsirEntries: TafsirEntry[];
   onClose: () => void;
 }
 
@@ -23,7 +23,13 @@ export const TafsirModal: React.FC<TafsirModalProps> = ({
   tafsirEntries,
   onClose,
 }) => {
+  const [expandedAnchors, setExpandedAnchors] = useState<{ [key: number]: boolean }>({});
+
   if (!verse) return null;
+
+  const toggleAnchor = (idx: number) => {
+    setExpandedAnchors(prev => ({ ...prev, [idx]: !prev[idx] }));
+  };
 
   return (
     <Modal visible={visible} animationType="slide" transparent={false} onRequestClose={onClose}>
@@ -33,7 +39,10 @@ export const TafsirModal: React.FC<TafsirModalProps> = ({
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
             <Text style={styles.closeButtonText}>إغلاق ✕</Text>
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>تفسير إحياء علوم الدين</Text>
+          <View style={styles.headerTitleContainer}>
+            <Text style={styles.headerTitle}>تفسير إحياء علوم الدين</Text>
+            <Text style={styles.headerSubtitle}>طبعة عين إنجن المعرفية المحققة</Text>
+          </View>
           <View style={{ width: 60 }} />
         </View>
 
@@ -54,6 +63,7 @@ export const TafsirModal: React.FC<TafsirModalProps> = ({
           {/* Commentary Heading */}
           <View style={styles.commentaryHeadingRow}>
             <Text style={styles.sectionTitle}>✦ درر وحِكَم الإمام أبي حامد الغزالي</Text>
+            <Text style={styles.editionTag}>v4 Master Edition</Text>
           </View>
 
           {/* Commentary Items */}
@@ -72,12 +82,24 @@ export const TafsirModal: React.FC<TafsirModalProps> = ({
                       كتاب {t.book_title || "إحياء علوم الدين"}
                     </Text>
                   </View>
+                  {t.section_index && (
+                    <View style={styles.sectionBadge}>
+                      <Text style={styles.sectionBadgeText}>
+                        باب #{t.section_index}
+                      </Text>
+                    </View>
+                  )}
                 </View>
+
+                {t.section_title_en ? (
+                  <Text style={styles.sectionNameText}>{t.section_title_en}</Text>
+                ) : null}
 
                 {t.topic && (
                   <Text style={styles.topicText}>{t.topic}</Text>
                 )}
 
+                {/* Arabic Commentary */}
                 {t.arabic && (
                   <>
                     <Text style={styles.tafsirArabic}>{t.arabic}</Text>
@@ -87,9 +109,32 @@ export const TafsirModal: React.FC<TafsirModalProps> = ({
                   </>
                 )}
 
+                {/* English Commentary */}
                 {t.english && (
                   <Text style={styles.tafsirEnglish}>{t.english}</Text>
                 )}
+
+                {/* Epistemic Anchors (Kitab al-Ayn & Lisan al-Arab) */}
+                {t.anchors ? (
+                  <View style={styles.anchorsContainer}>
+                    <TouchableOpacity
+                      onPress={() => toggleAnchor(idx)}
+                      style={styles.anchorsToggleBtn}
+                    >
+                      <Text style={styles.anchorsToggleTitle}>
+                        📖 معجم الجذور والدلائل اللغوية (العين ولسان العرب)
+                      </Text>
+                      <Text style={styles.anchorsToggleIcon}>
+                        {expandedAnchors[idx] ? '▲ طي' : '▼ تفصيل'}
+                      </Text>
+                    </TouchableOpacity>
+                    {expandedAnchors[idx] ? (
+                      <View style={styles.anchorsContent}>
+                        <Text style={styles.anchorsText}>{t.anchors}</Text>
+                      </View>
+                    ) : null}
+                  </View>
+                ) : null}
               </View>
             ))
           ) : (
@@ -121,6 +166,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(255, 255, 255, 0.1)',
   },
+  headerTitleContainer: {
+    alignItems: 'center',
+  },
   closeButton: {
     padding: 8,
     borderRadius: 8,
@@ -135,6 +183,13 @@ const styles = StyleSheet.create({
     color: '#f8fafc',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  headerSubtitle: {
+    color: '#00ffaa',
+    fontSize: 10,
+    fontWeight: '600',
+    marginTop: 2,
+    letterSpacing: 0.5,
   },
   contentScroll: {
     flex: 1,
@@ -178,6 +233,9 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   commentaryHeadingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginVertical: 10,
   },
   sectionTitle: {
@@ -185,6 +243,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     letterSpacing: 0.5,
+  },
+  editionTag: {
+    color: '#38bdf8',
+    fontSize: 11,
+    fontWeight: 'bold',
+    backgroundColor: 'rgba(56, 189, 248, 0.1)',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(56, 189, 248, 0.3)',
   },
   tafsirCard: {
     backgroundColor: 'rgba(15, 23, 42, 0.95)',
@@ -198,7 +267,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
-    marginBottom: 10,
+    marginBottom: 8,
   },
   topicBadge: {
     backgroundColor: 'rgba(147, 51, 234, 0.2)',
@@ -226,6 +295,25 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: 'bold',
   },
+  sectionBadge: {
+    backgroundColor: 'rgba(34, 197, 94, 0.15)',
+    borderColor: 'rgba(34, 197, 94, 0.4)',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  sectionBadgeText: {
+    color: '#4ade80',
+    fontSize: 11,
+    fontWeight: 'bold',
+  },
+  sectionNameText: {
+    color: '#38bdf8',
+    fontSize: 13,
+    fontWeight: '600',
+    marginBottom: 6,
+  },
   topicText: {
     color: '#94a3b8',
     fontSize: 12,
@@ -252,6 +340,42 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 26,
     textAlign: 'justify',
+  },
+  anchorsContainer: {
+    marginTop: 14,
+    backgroundColor: 'rgba(2, 44, 34, 0.4)',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 255, 170, 0.3)',
+    overflow: 'hidden',
+  },
+  anchorsToggleBtn: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    backgroundColor: 'rgba(0, 255, 170, 0.08)',
+  },
+  anchorsToggleTitle: {
+    color: '#00ffaa',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  anchorsToggleIcon: {
+    color: '#00ffaa',
+    fontSize: 11,
+    fontWeight: 'bold',
+  },
+  anchorsContent: {
+    padding: 12,
+    backgroundColor: 'rgba(3, 7, 18, 0.6)',
+  },
+  anchorsText: {
+    color: '#6ee7b7',
+    fontSize: 12,
+    lineHeight: 20,
+    fontFamily: 'monospace',
   },
   emptyContainer: {
     padding: 30,
