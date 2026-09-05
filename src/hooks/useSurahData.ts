@@ -19,7 +19,12 @@ export function useSurahData(surahNumber: number, reciter: string) {
         const data = await QuranDataProvider.loadSurah(surahNumber);
         if (!isMounted) return;
 
-        setVerses(data.verses || []);
+        const isWarsh = reciter.toLowerCase().includes('warsh');
+        if (isWarsh && data.warshVerses && data.warshVerses.length > 0) {
+          setVerses(data.warshVerses);
+        } else {
+          setVerses(data.verses || []);
+        }
 
         // Resolve active reciter timings
         const wt = (data.wordTiming && data.wordTiming[reciter]) || {};

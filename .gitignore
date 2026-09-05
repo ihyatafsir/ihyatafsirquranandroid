@@ -97,3 +97,4 @@ generate_*.py
 assets/audio_mah/*.py
 assets/*.py
 assets/*master*.json
+assets/warsh_verses.json

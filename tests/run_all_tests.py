@@ -5,6 +5,7 @@ Runs all test suites:
 1. test_timing_integrity
 2. test_grapheme_alignment
 3. test_playback_simulation
+4. test_warsh_integrity
 """
 
 import unittest
@@ -18,6 +19,7 @@ sys.path.insert(0, str(TESTS_DIR))
 import test_timing_integrity
 import test_grapheme_alignment
 import test_playback_simulation
+import test_warsh_integrity
 
 def run_suite():
     loader = unittest.TestLoader()
@@ -26,6 +28,7 @@ def run_suite():
     suite.addTests(loader.loadTestsFromModule(test_timing_integrity))
     suite.addTests(loader.loadTestsFromModule(test_grapheme_alignment))
     suite.addTests(loader.loadTestsFromModule(test_playback_simulation))
+    suite.addTests(loader.loadTestsFromModule(test_warsh_integrity))
 
     print("=" * 70)
     print("  QURAN HIGH-PRECISION LETTER HIGHLIGHTING - TEST SUITE")

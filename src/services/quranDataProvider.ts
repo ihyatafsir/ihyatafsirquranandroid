@@ -125,6 +125,7 @@ const SURAH_ASSETS: { [key: number]: any } = {
 interface SurahDataPayload {
   surah: number;
   verses: Verse[];
+  warshVerses?: Verse[];
   tafsir: { [ayah: string]: any[] };
   wordTiming: { [reciter: string]: any };
   letterTiming: { [reciter: string]: any };
@@ -189,8 +190,11 @@ export class QuranDataProvider {
     return data;
   }
 
-  public static async getVerses(surahNumber: number): Promise<Verse[]> {
+  public static async getVerses(surahNumber: number, narration?: 'hafs' | 'warsh'): Promise<Verse[]> {
     const data = await this.loadSurah(surahNumber);
+    if (narration === 'warsh' && data.warshVerses && data.warshVerses.length > 0) {
+      return data.warshVerses;
+    }
     return data.verses;
   }
 

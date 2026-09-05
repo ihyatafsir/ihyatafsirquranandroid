@@ -4,11 +4,12 @@ import { mediaNotificationService } from '../services/mediaNotificationService';
 import { ReciterConfig, SurahMetadata } from '../types/quran';
 
 export const RECITERS: ReciterConfig[] = [
-  { id: 'abdulbasit', name: 'Abdul Basit (Murattal)', url: 'https://everyayah.com/data/Abdul_Basit_Murattal_192kbps/', letterSync: true },
-  { id: 'husary', name: 'Mahmoud Khalil Al-Husary', url: 'https://everyayah.com/data/Husary_128kbps/', letterSync: true },
-  { id: 'minshawi', name: 'Mohamed Siddiq Al-Minshawi', url: 'https://everyayah.com/data/Minshawy_Murattal_128kbps/', letterSync: true },
-  { id: 'alafasy', name: 'Mishary Rashid Alafasy', url: 'https://everyayah.com/data/Alafasy_128kbps/', letterSync: false },
-  { id: 'mah', name: 'Muhammad Ayub Asif (MAH)', url: '', letterSync: true },
+  { id: 'abdulbasit', name: 'Abdul Basit (Murattal)', url: 'https://everyayah.com/data/Abdul_Basit_Murattal_192kbps/', narration: 'hafs', letterSync: true },
+  { id: 'abdulbasit_warsh', name: 'Abdul Basit (Warsh - ورش)', url: 'https://everyayah.com/data/warsh/warsh_Abdul_Basit_128kbps/', narration: 'warsh', letterSync: true },
+  { id: 'husary', name: 'Mahmoud Khalil Al-Husary', url: 'https://everyayah.com/data/Husary_128kbps/', narration: 'hafs', letterSync: true },
+  { id: 'minshawi', name: 'Mohamed Siddiq Al-Minshawi', url: 'https://everyayah.com/data/Minshawy_Murattal_128kbps/', narration: 'hafs', letterSync: true },
+  { id: 'alafasy', name: 'Mishary Rashid Alafasy', url: 'https://everyayah.com/data/Alafasy_128kbps/', narration: 'hafs', letterSync: false },
+  { id: 'mah', name: 'Muhammad Ayub Asif (MAH)', url: '', narration: 'hafs', letterSync: true },
 ];
 
 function padZero(num: number, size: number = 3): string {

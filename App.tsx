@@ -38,6 +38,8 @@ export default function App() {
     showTransliteration: true,
     showTranslation: true,
     autoScroll: true,
+    repeatMode: 'none',
+    highlightMode: 'word',
   });
 
   // Modal Dialogues State
@@ -191,7 +193,7 @@ export default function App() {
       {/* ═══════════════════════════════════════════════════════════════════ */}
       <View style={styles.mushafContainer}>
         <NativeMushafWebView
-          key={`mushaf-view-${selectedSurah}`}
+          key={`mushaf-view-${selectedSurah}-${settings.reciter}`}
           verses={verses}
           wordTimingMap={wordTimingMap}
           letterTimingMap={letterTimingMap}
@@ -199,6 +201,7 @@ export default function App() {
           currentTimeMs={audio.currentTimeMs}
           isPlaying={audio.isPlaying}
           surahNumber={selectedSurah}
+          highlightMode={settings.highlightMode || 'word'}
           onSeekAyah={handleSeekAyah}
           onWordClick={handleWordClick}
         />

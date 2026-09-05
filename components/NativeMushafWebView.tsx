@@ -10,6 +10,7 @@ interface NativeMushafWebViewProps {
   currentTimeMs: number;
   isPlaying: boolean;
   surahNumber: number;
+  highlightMode?: 'letter' | 'word' | 'ayah' | 'off';
   onSeekAyah?: (ayah: number) => void;
   onWordClick?: (surah: number, ayah: number, wordIdx: number, wordText: string, start?: number, end?: number) => void;
 }
@@ -24,6 +25,7 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
   currentTimeMs,
   isPlaying,
   surahNumber,
+  highlightMode = 'word',
   onSeekAyah,
   onWordClick,
 }) => {
@@ -70,7 +72,11 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
       const words = v.words && v.words.length > 0 ? v.words : (v.text || "").trim().split(/\s+/).map((w: any) => ({ arabic: typeof w === "string" ? w : (w.arabic || "") }));
       const wordsMarkup = words.map((w: any, wIdx: number) => {
         const text = typeof w === "string" ? w : (w.arabic || "");
-        return `<span class="word" id="w-${aNum}-${wIdx}" data-ayah="${aNum}" data-word-idx="${wIdx}" data-word-text="${encodeURIComponent(text)}">${text}</span>`;
+        const chars = text.split("");
+        const charsMarkup = chars.map((ch: string, cIdx: number) =>
+          `<span class="char" id="c-${aNum}-${wIdx}-${cIdx}" data-ayah="${aNum}" data-word-idx="${wIdx}" data-char-idx="${cIdx}">${ch}</span>`
+        ).join("");
+        return `<span class="word" id="w-${aNum}-${wIdx}" data-ayah="${aNum}" data-word-idx="${wIdx}" data-word-text="${encodeURIComponent(text)}">${charsMarkup}</span>`;
       }).join(" ");
       return `<span class="ayah-block" id="ayah-${aNum}" data-ayah="${aNum}">${wordsMarkup} <span class="ayah-medallion" data-ayah="${aNum}"> ۝${toAr(aNum)} </span></span>`;
     }).join("\n");
@@ -146,10 +152,22 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
       will-change: color, text-shadow, background;
       transition: color 0.1s ease, text-shadow 0.1s ease, background 0.1s ease;
     }
+    .word.word-active {
+      background: rgba(0, 255, 170, 0.15);
+    }
     .word.reciting {
       color: #00ffaa !important;
       text-shadow: 0 0 16px rgba(0, 255, 170, 0.95), 0 0 30px rgba(0, 255, 170, 0.4);
       background: rgba(0, 255, 170, 0.25);
+    }
+    .char {
+      display: inline;
+      transition: color 0.05s ease, text-shadow 0.05s ease;
+    }
+    .char.active-char {
+      color: #00ffaa !important;
+      text-shadow: 0 0 14px rgba(0, 255, 170, 0.95), 0 0 28px rgba(0, 255, 170, 0.6);
+      font-weight: bold;
     }
     .ayah-medallion {
       display: inline-block;
@@ -183,8 +201,20 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
     const wordTimingMap = ${wordTimingJson};
 
     // Pre-cache DOM elements for O(1) instantaneous lookup (Zero getElementById per frame)
+    let activeHighlightMode = "${highlightMode || 'word'}";
     const wordCache = {};
+    const charCache = {};
     const ayahCache = {};
+    let currentActiveCharEl = null;
+
+    document.querySelectorAll(".char").forEach(function(el) {
+      const a = el.getAttribute("data-ayah");
+      const w = el.getAttribute("data-word-idx");
+      const c = el.getAttribute("data-char-idx");
+      if (!charCache[a]) charCache[a] = {};
+      if (!charCache[a][w]) charCache[a][w] = {};
+      charCache[a][w][c] = el;
+    });
 
     document.querySelectorAll(".word").forEach(function(el) {
       const a = el.getAttribute("data-ayah");
@@ -211,16 +241,21 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
     let lastScrolledAyah = -1;
 
     // Direct playback sync entrypoint
-    window.updatePlayback = function(timeMs, vKey, playing) {
+    window.updatePlayback = function(timeMs, vKey, playing, mode) {
       currentVerseKey = vKey || "";
       isPlaying = !!playing;
       anchorAudioTimeMs = timeMs || 0;
       anchorPerfTime = performance.now();
+      if (mode) activeHighlightMode = mode;
 
-      if (!isPlaying || !currentVerseKey) {
+      if (!isPlaying || !currentVerseKey || activeHighlightMode === 'off') {
         if (currentRecitingWordEl) {
-          currentRecitingWordEl.classList.remove("reciting");
+          currentRecitingWordEl.classList.remove("reciting", "word-active");
           currentRecitingWordEl = null;
+        }
+        if (currentActiveCharEl) {
+          currentActiveCharEl.classList.remove("active-char");
+          currentActiveCharEl = null;
         }
         lastActiveWordIdx = -1;
       }
@@ -230,7 +265,7 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
       try {
         const msg = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
         if (msg.type === "UPDATE_PLAYBACK") {
-          window.updatePlayback(msg.currentTimeMs, msg.currentVerseKey, msg.isPlaying);
+          window.updatePlayback(msg.currentTimeMs, msg.currentVerseKey, msg.isPlaying, msg.highlightMode);
         }
       } catch (err) {}
     }
@@ -239,6 +274,73 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
 
     if (isPlaying && currentVerseKey) {
       window.updatePlayback(${currentTimeMs || 0}, currentVerseKey, true);
+    }
+
+    function syncWordHighlight(aNum, timeMs) {
+      const timingList = wordTimingMap[currentVerseKey] || letterTimingMap[currentVerseKey] || [];
+      if (!timingList || timingList.length === 0) return;
+
+      let activeIdx = -1;
+      for (let i = 0; i < timingList.length; i++) {
+        const entry = timingList[i];
+        let st = 0, en = 0, wIdx = -1;
+        if (Array.isArray(entry)) {
+          wIdx = (typeof entry[0] === "number" && entry[0] >= 1) ? entry[0] - 1 : i;
+          st = entry[1] || 0;
+          en = entry[2] || 0;
+        } else if (entry && typeof entry === "object") {
+          wIdx = entry.wordIdx !== undefined ? entry.wordIdx :
+                 (entry.w !== undefined ? entry.w :
+                 (entry.word !== undefined && typeof entry.word === "number" ? entry.word - 1 : i));
+          st = entry.start !== undefined ? entry.start : (entry.s !== undefined ? entry.s : 0);
+          en = entry.end !== undefined ? entry.end : (entry.e !== undefined ? entry.e : 0);
+        }
+        if (st > 0 && st < 100 && en > 0 && en < 300) { st *= 1000; en *= 1000; }
+        let effectiveEnd = en;
+        const nextEntry = timingList[i + 1];
+        if (nextEntry) {
+          let nextSt = en;
+          if (Array.isArray(nextEntry)) nextSt = nextEntry[1] || en;
+          else if (nextEntry && typeof nextEntry === "object") {
+            nextSt = nextEntry.start !== undefined ? nextEntry.start : (nextEntry.s !== undefined ? nextEntry.s : en);
+            if (nextSt > 0 && nextSt < 100) nextSt *= 1000;
+          }
+          if (nextSt >= en && (nextSt - en) < 800) effectiveEnd = nextSt;
+        }
+        if (timeMs >= st && timeMs < effectiveEnd) {
+          activeIdx = wIdx;
+          break;
+        }
+      }
+
+      if (activeIdx < 0 && timingList.length > 0) {
+        const lastEntry = timingList[timingList.length - 1];
+        let lastSt = 0, lastWIdx = -1;
+        if (Array.isArray(lastEntry)) {
+          lastWIdx = (typeof lastEntry[0] === "number" && lastEntry[0] >= 1) ? lastEntry[0] - 1 : timingList.length - 1;
+          lastSt = lastEntry[1] || 0;
+        } else if (lastEntry && typeof lastEntry === "object") {
+          lastWIdx = lastEntry.wordIdx !== undefined ? lastEntry.wordIdx : (lastEntry.w !== undefined ? lastEntry.w : timingList.length - 1);
+          lastSt = lastEntry.start !== undefined ? lastEntry.start : (lastEntry.s !== undefined ? lastEntry.s : 0);
+        }
+        if (lastSt > 0 && lastSt < 100) lastSt *= 1000;
+        if (timeMs >= lastSt) activeIdx = lastWIdx;
+      }
+
+      if (activeIdx !== lastActiveWordIdx) {
+        if (activeIdx >= 0) {
+          const wEl = wordCache[aNum] ? wordCache[aNum][activeIdx] : null;
+          if (wEl && wEl !== currentRecitingWordEl) {
+            if (currentRecitingWordEl) currentRecitingWordEl.classList.remove("reciting", "word-active");
+            wEl.classList.add("reciting");
+            currentRecitingWordEl = wEl;
+          }
+        } else if (currentRecitingWordEl) {
+          currentRecitingWordEl.classList.remove("reciting", "word-active");
+          currentRecitingWordEl = null;
+        }
+        lastActiveWordIdx = activeIdx;
+      }
     }
 
     // Hardware-locked 120 FPS requestAnimationFrame render loop with monotonic time extrapolation
@@ -266,86 +368,60 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
           lastActiveAyahNum = aNum;
         }
 
-        // 2. Continuous Word Highlighting
-        const timingList = wordTimingMap[currentVerseKey] || letterTimingMap[currentVerseKey] || [];
-        if (timingList && timingList.length > 0) {
-          let activeIdx = -1;
-          for (let i = 0; i < timingList.length; i++) {
-            const entry = timingList[i];
-            let st = 0;
-            let en = 0;
-            let wIdx = -1;
-
-            if (Array.isArray(entry)) {
-              wIdx = (typeof entry[0] === "number" && entry[0] >= 1) ? entry[0] - 1 : i;
-              st = entry[1] || 0;
-              en = entry[2] || 0;
-            } else if (entry && typeof entry === "object") {
-              wIdx = entry.wordIdx !== undefined ? entry.wordIdx :
-                     (entry.w !== undefined ? entry.w :
-                     (entry.word !== undefined && typeof entry.word === "number" ? entry.word - 1 : i));
-              st = entry.start !== undefined ? entry.start : (entry.s !== undefined ? entry.s : 0);
-              en = entry.end !== undefined ? entry.end : (entry.e !== undefined ? entry.e : 0);
-            }
-
-            if (st > 0 && st < 100 && en > 0 && en < 300) {
-              st = st * 1000;
-              en = en * 1000;
-            }
-
-            let effectiveEnd = en;
-            const nextEntry = timingList[i + 1];
-            if (nextEntry) {
-              let nextSt = en;
-              if (Array.isArray(nextEntry)) {
-                nextSt = nextEntry[1] || en;
-              } else if (nextEntry && typeof nextEntry === "object") {
-                nextSt = nextEntry.start !== undefined ? nextEntry.start : (nextEntry.s !== undefined ? nextEntry.s : en);
-                if (nextSt > 0 && nextSt < 100) nextSt = nextSt * 1000;
-              }
-              if (nextSt >= en && (nextSt - en) < 800) {
-                effectiveEnd = nextSt;
+        // 2. Highlighting Modes Dispatcher (letter | word | ayah | off)
+        if (activeHighlightMode === "off" || activeHighlightMode === "ayah") {
+          if (currentRecitingWordEl) {
+            currentRecitingWordEl.classList.remove("reciting", "word-active");
+            currentRecitingWordEl = null;
+          }
+          if (currentActiveCharEl) {
+            currentActiveCharEl.classList.remove("active-char");
+            currentActiveCharEl = null;
+          }
+          lastActiveWordIdx = -1;
+        } else if (activeHighlightMode === "letter") {
+          // Letter-Level Continuous Flow & Glow
+          const letters = letterTimingMap[currentVerseKey] || [];
+          let activeLetter = null;
+          if (letters && letters.length > 0) {
+            for (let i = 0; i < letters.length; i++) {
+              const lt = letters[i];
+              if (timeMs >= lt.start && timeMs < lt.end) {
+                activeLetter = lt;
+                break;
               }
             }
-
-            if (timeMs >= st && timeMs < effectiveEnd) {
-              activeIdx = wIdx;
-              break;
-            }
           }
+          if (activeLetter) {
+            const wIdx = activeLetter.wordIdx;
+            const cIdx = activeLetter.charIdx;
 
-          // Keep final word active until verse completes
-          if (activeIdx < 0 && timingList.length > 0) {
-            const lastEntry = timingList[timingList.length - 1];
-            let lastSt = 0;
-            let lastWIdx = -1;
-            if (Array.isArray(lastEntry)) {
-              lastWIdx = (typeof lastEntry[0] === "number" && lastEntry[0] >= 1) ? lastEntry[0] - 1 : timingList.length - 1;
-              lastSt = lastEntry[1] || 0;
-            } else if (lastEntry && typeof lastEntry === "object") {
-              lastWIdx = lastEntry.wordIdx !== undefined ? lastEntry.wordIdx : (lastEntry.w !== undefined ? lastEntry.w : timingList.length - 1);
-              lastSt = lastEntry.start !== undefined ? lastEntry.start : (lastEntry.s !== undefined ? lastEntry.s : 0);
+            // Activate word background glow
+            const wEl = wordCache[aNum] ? wordCache[aNum][wIdx] : null;
+            if (wEl && wEl !== currentRecitingWordEl) {
+              if (currentRecitingWordEl) currentRecitingWordEl.classList.remove("reciting", "word-active");
+              wEl.classList.add("word-active");
+              currentRecitingWordEl = wEl;
             }
-            if (lastSt > 0 && lastSt < 100) lastSt = lastSt * 1000;
-            if (timeMs >= lastSt) {
-              activeIdx = lastWIdx;
-            }
-          }
 
-          if (activeIdx !== lastActiveWordIdx) {
-            if (activeIdx >= 0) {
-              const wEl = wordCache[aNum] ? wordCache[aNum][activeIdx] : null;
-              if (wEl && wEl !== currentRecitingWordEl) {
-                if (currentRecitingWordEl) currentRecitingWordEl.classList.remove("reciting");
-                wEl.classList.add("reciting");
-                currentRecitingWordEl = wEl;
-              }
-            } else if (currentRecitingWordEl) {
-              currentRecitingWordEl.classList.remove("reciting");
-              currentRecitingWordEl = null;
+            // Activate character glow
+            const cEl = charCache[aNum] && charCache[aNum][wIdx] ? charCache[aNum][wIdx][cIdx] : null;
+            if (cEl && cEl !== currentActiveCharEl) {
+              if (currentActiveCharEl) currentActiveCharEl.classList.remove("active-char");
+              cEl.classList.add("active-char");
+              currentActiveCharEl = cEl;
             }
-            lastActiveWordIdx = activeIdx;
+          } else {
+            // Fall back to word mode if no letter entry for this frame
+            syncWordHighlight(aNum, timeMs);
           }
+        } else {
+          // Word-Level Highlighting (Default)
+          if (currentActiveCharEl) {
+            currentActiveCharEl.classList.remove("active-char");
+            currentActiveCharEl = null;
+          }
+          syncWordHighlight(aNum, timeMs);
         }
       }
       requestAnimationFrame(renderFrame);
@@ -439,11 +515,12 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
       currentTimeMs: currentTimeMs || 0,
       currentVerseKey: currentVerseKey || "",
       isPlaying,
+      highlightMode,
     });
     try {
       webViewRef.current.postMessage(msg);
     } catch (e) {}
-  }, [currentTimeMs, currentVerseKey, isPlaying]);
+  }, [currentTimeMs, currentVerseKey, isPlaying, highlightMode]);
 
   const handleMessage = (event: any) => {
     try {

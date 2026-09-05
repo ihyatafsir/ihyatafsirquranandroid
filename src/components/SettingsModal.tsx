@@ -9,7 +9,7 @@ import {
   StyleSheet,
   SafeAreaView,
 } from 'react-native';
-import { AppSettings, ReciterConfig } from '../types/quran';
+import { AppSettings, HighlightingMode, ReciterConfig } from '../types/quran';
 import { RECITERS } from '../hooks/useQuranAudio';
 
 interface SettingsModalProps {
@@ -25,6 +25,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   onUpdateSettings,
   onClose,
 }) => {
+  const currentMode = settings.highlightMode || 'word';
+
+  const modes: { id: HighlightingMode; label: string; desc: string }[] = [
+    { id: 'letter', label: '🔤 حرفي (Letter)', desc: 'تزامن الحروف وتدفق القراءة 120 FPS' },
+    { id: 'word', label: '📖 كلمة (Word)', desc: 'تظليل الكلمة المتلوة بدقة عالية (موصى به)' },
+    { id: 'ayah', label: '📜 آية (Ayah)', desc: 'إضاءة الآية كاملة بهدوء' },
+    { id: 'off', label: '⏸️ معطل (Off)', desc: 'قراءة مصحف صافية بدون تظليل' },
+  ];
+
   return (
     <Modal visible={visible} animationType="slide" transparent={false} onRequestClose={onClose}>
       <SafeAreaView style={styles.safeArea}>
@@ -40,10 +49,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         <ScrollView style={styles.contentScroll}>
           {/* Reciter Picker */}
           <View style={styles.sectionCard}>
-            <Text style={styles.sectionHeader}>✦ القارئ المعتمد (Reciter):</Text>
+            <Text style={styles.sectionHeader}>✦ القارئ والرواية (Reciter & Riwayah):</Text>
             <View style={styles.reciterList}>
               {RECITERS.map(r => {
                 const isSelected = settings.reciter === r.id;
+                const isWarsh = r.narration === 'warsh';
                 return (
                   <TouchableOpacity
                     key={r.id}
@@ -53,14 +63,62 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       isSelected && styles.reciterOptionSelected
                     ]}
                   >
-                    <Text style={[styles.reciterName, isSelected && styles.reciterNameSelected]}>
-                      {r.name}
-                    </Text>
-                    {r.letterSync && (
-                      <View style={styles.syncBadge}>
-                        <Text style={styles.syncBadgeText}>تزامن الحروف</Text>
-                      </View>
-                    )}
+                    <View style={styles.reciterInfoCol}>
+                      <Text style={[styles.reciterName, isSelected && styles.reciterNameSelected]}>
+                        {r.name}
+                      </Text>
+                      <Text style={styles.reciterRiwayahText}>
+                        {isWarsh ? 'مصحف ورش عن نافع (Warsh)' : 'مصحف حفص عن عاصم (Hafs)'}
+                      </Text>
+                    </View>
+                    <View style={styles.badgesCol}>
+                      {isWarsh ? (
+                        <View style={styles.warshBadge}>
+                          <Text style={styles.warshBadgeText}>ورش</Text>
+                        </View>
+                      ) : (
+                        <View style={styles.hafsBadge}>
+                          <Text style={styles.hafsBadgeText}>حفص</Text>
+                        </View>
+                      )}
+                      {r.letterSync && (
+                        <View style={styles.syncBadge}>
+                          <Text style={styles.syncBadgeText}>تزامن الحروف</Text>
+                        </View>
+                      )}
+                    </View>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+
+          {/* Highlighting Precision Mode Selector */}
+          <View style={styles.sectionCard}>
+            <Text style={styles.sectionHeader}>✦ نمط تظليل التلاوة (Highlighting Precision):</Text>
+            <View style={styles.modeList}>
+              {modes.map(m => {
+                const isModeSelected = currentMode === m.id;
+                return (
+                  <TouchableOpacity
+                    key={m.id}
+                    onPress={() => onUpdateSettings({ ...settings, highlightMode: m.id })}
+                    style={[
+                      styles.modeOption,
+                      isModeSelected && styles.modeOptionSelected
+                    ]}
+                  >
+                    <View style={styles.modeRow}>
+                      <Text style={[styles.modeLabel, isModeSelected && styles.modeLabelSelected]}>
+                        {m.label}
+                      </Text>
+                      {isModeSelected && (
+                        <View style={styles.activeCheckCircle}>
+                          <Text style={styles.activeCheckText}>✓</Text>
+                        </View>
+                      )}
+                    </View>
+                    <Text style={styles.modeDesc}>{m.desc}</Text>
                   </TouchableOpacity>
                 );
               })}
@@ -194,12 +252,51 @@ const styles = StyleSheet.create({
     borderColor: '#00ffaa',
     backgroundColor: 'rgba(0, 255, 170, 0.1)',
   },
+  reciterInfoCol: {
+    flex: 1,
+    marginRight: 8,
+  },
   reciterName: {
     color: '#cbd5e1',
     fontSize: 14,
   },
   reciterNameSelected: {
     color: '#00ffaa',
+    fontWeight: 'bold',
+  },
+  reciterRiwayahText: {
+    color: '#64748b',
+    fontSize: 11,
+    marginTop: 2,
+  },
+  badgesCol: {
+    alignItems: 'flex-end',
+    gap: 4,
+  },
+  warshBadge: {
+    backgroundColor: 'rgba(251, 191, 36, 0.2)',
+    borderColor: '#fbbf24',
+    borderWidth: 1,
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+    borderRadius: 4,
+  },
+  warshBadgeText: {
+    color: '#fbbf24',
+    fontSize: 10,
+    fontWeight: 'bold',
+  },
+  hafsBadge: {
+    backgroundColor: 'rgba(56, 189, 248, 0.15)',
+    borderColor: 'rgba(56, 189, 248, 0.4)',
+    borderWidth: 1,
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+    borderRadius: 4,
+  },
+  hafsBadgeText: {
+    color: '#38bdf8',
+    fontSize: 10,
     fontWeight: 'bold',
   },
   syncBadge: {
@@ -212,6 +309,53 @@ const styles = StyleSheet.create({
     color: '#00ffaa',
     fontSize: 10,
     fontWeight: 'bold',
+  },
+  modeList: {
+    gap: 8,
+  },
+  modeOption: {
+    padding: 12,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+  },
+  modeOptionSelected: {
+    borderColor: '#00ffaa',
+    backgroundColor: 'rgba(0, 255, 170, 0.08)',
+  },
+  modeRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  modeLabel: {
+    color: '#e2e8f0',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  modeLabelSelected: {
+    color: '#00ffaa',
+    fontWeight: 'bold',
+  },
+  activeCheckCircle: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#00ffaa',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  activeCheckText: {
+    color: '#030712',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  modeDesc: {
+    color: '#94a3b8',
+    fontSize: 11,
+    lineHeight: 16,
   },
   settingRow: {
     flexDirection: 'row',

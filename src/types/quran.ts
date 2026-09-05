@@ -1,3 +1,5 @@
+export type HighlightingMode = 'letter' | 'word' | 'ayah' | 'off';
+
 export interface SurahMetadata {
   number: number;
   name: string;
@@ -11,6 +13,7 @@ export interface SurahMetadata {
 }
 
 export interface Word {
+  id?: number;
   arabic: string;
   transliteration?: string;
   translation?: string;
@@ -28,6 +31,7 @@ export interface Verse {
   haleemTranslation?: string;
   albanianTranslation?: string;
   ridaGermanTranslation?: string;
+  narration?: 'hafs' | 'warsh';
 }
 
 export interface LetterTimingEntry {
@@ -62,6 +66,7 @@ export interface ReciterConfig {
   name: string;
   url: string;
   letterSync?: boolean;
+  narration?: 'hafs' | 'warsh';
 }
 
 export interface AppSettings {
@@ -74,4 +79,5 @@ export interface AppSettings {
   showTranslation: boolean;
   autoScroll: boolean;
   repeatMode?: 'none' | 'ayah' | 'surah';
+  highlightMode?: HighlightingMode;
 }
