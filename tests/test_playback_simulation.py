@@ -8,7 +8,7 @@ import unittest
 import json
 from pathlib import Path
 
-BASE_DIR = Path("/home/grem3/ihyatafsirquranandroid")
+BASE_DIR = Path(__file__).resolve().parent.parent
 ASSETS_DIR = BASE_DIR / "assets"
 AUDIO_MAH_DIR = ASSETS_DIR / "audio_mah"
 

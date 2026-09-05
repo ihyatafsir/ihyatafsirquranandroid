@@ -84,3 +84,15 @@ assets/audio_mah/audio_mah
 *.backup.json
 minshawi_waveform_windows.json
 __pycache__/
+
+# Local databases and backups
+*.db
+*.bak*
+
+# Scratch scripts
+batch_generate_mah.py
+extract_*.py
+format_chunk.py
+generate_*.py
+assets/audio_mah/*.py
+assets/*.py

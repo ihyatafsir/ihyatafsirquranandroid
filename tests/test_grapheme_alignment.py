@@ -9,7 +9,7 @@ import json
 import re
 from pathlib import Path
 
-BASE_DIR = Path("/home/grem3/ihyatafsirquranandroid")
+BASE_DIR = Path(__file__).resolve().parent.parent
 ASSETS_DIR = BASE_DIR / "assets"
 
 DIACRITICS_REGEX = re.compile(r'[\u064B-\u065F\u0670\u06D6-\u06ED\u0652\u0651]')
