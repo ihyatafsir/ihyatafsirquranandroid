@@ -75,7 +75,7 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
     const versesData = verses || [];
     const timingJson = JSON.stringify(surahTiming);
     const wordTimingJson = JSON.stringify(surahWordTiming);
-    const hasBismillah = surahNumber !== 9;
+    const hasBismillah = surahNumber !== 9 && (surahNumber !== 1 || (versesData[0] && versesData[0].text && !versesData[0].text.startsWith("بِسْمِ")));
 
     const digits = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
     const toAr = (num: number) => num.toString().split("").map(d => digits[parseInt(d, 10)] || d).join("");

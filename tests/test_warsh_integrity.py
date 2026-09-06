@@ -27,11 +27,13 @@ class TestWarshIntegrity(unittest.TestCase):
         total_verses = sum(len(verses) for verses in data.values())
         self.assertEqual(total_verses, 6236, f"Expected 6,236 verses, found {total_verses}")
         
-        # Verify specific Warsh orthographic differences (e.g. Surah 1:4 'ملك' without alif)
+        # Verify authentic Madani Warsh numbering (Ayah 1:1 is Al-Hamd, Ayah 1:3 is Maliki)
         surah1 = data.get("1", [])
         self.assertEqual(len(surah1), 7, "Surah Al-Fatiha must have 7 verses")
-        ayah4 = surah1[3]["text"]
-        self.assertTrue("مَلِكِ" in ayah4 or "ملك" in ayah4, f"Ayah 1:4 must read 'مَلِكِ' in Warsh: {ayah4}")
+        ayah1 = surah1[0]["text"]
+        self.assertTrue("الْحَمْدُ" in ayah1 or "اِ۬لْحَمْدُ" in ayah1, f"Ayah 1:1 must read 'الْحَمْدُ' in Warsh: {ayah1}")
+        ayah3 = surah1[2]["text"]
+        self.assertTrue("مَلِكِ" in ayah3 or "ملك" in ayah3, f"Ayah 1:3 must read 'مَلِكِ' in Warsh: {ayah3}")
         
         print(f"[PASSED] Warsh Corpus: 114 Surahs, {total_verses} verses verified.")
 
