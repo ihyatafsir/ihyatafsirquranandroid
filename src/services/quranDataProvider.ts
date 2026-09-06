@@ -207,7 +207,7 @@ export class QuranDataProvider {
       }
     }
 
-    const data: SurahDataPayload = JSON.parse(jsonStr);
+    const surahPayload: SurahDataPayload = JSON.parse(jsonStr);
 
     if (surahCache.size >= MAX_CACHE_SIZE) {
       const oldestKey = surahCache.keys().next().value;
@@ -216,31 +216,31 @@ export class QuranDataProvider {
       }
     }
 
-    surahCache.set(surahNumber, data);
-    return data;
+    surahCache.set(surahNumber, surahPayload);
+    return surahPayload;
   }
 
   public static async getVerses(surahNumber: number, narration?: 'hafs' | 'warsh'): Promise<Verse[]> {
-    const data = await this.loadSurah(surahNumber);
-    if (narration === 'warsh' && data.warshVerses && data.warshVerses.length > 0) {
-      return data.warshVerses;
+    const surahPayload = await this.loadSurah(surahNumber);
+    if (narration === 'warsh' && surahPayload.warshVerses && surahPayload.warshVerses.length > 0) {
+      return surahPayload.warshVerses;
     }
-    return data.verses;
+    return surahPayload.verses;
   }
 
   public static async getWordTiming(reciter: string, surahNumber: number): Promise<{ [key: string]: any[] }> {
-    const data = await this.loadSurah(surahNumber);
-    return (data.wordTiming && data.wordTiming[reciter]) || {};
+    const surahPayload = await this.loadSurah(surahNumber);
+    return (surahPayload.wordTiming && surahPayload.wordTiming[reciter]) || {};
   }
 
   public static async getLetterTiming(reciter: string, surahNumber: number): Promise<{ [key: string]: LetterTimingEntry[] }> {
-    const data = await this.loadSurah(surahNumber);
-    return (data.letterTiming && data.letterTiming[reciter]) || {};
+    const surahPayload = await this.loadSurah(surahNumber);
+    return (surahPayload.letterTiming && surahPayload.letterTiming[reciter]) || {};
   }
 
   public static async getTafsir(surahNumber: number, ayahNumber: number): Promise<any[] | null> {
-    const data = await this.loadSurah(surahNumber);
-    return (data.tafsir && data.tafsir[String(ayahNumber)]) || null;
+    const surahPayload = await this.loadSurah(surahNumber);
+    return (surahPayload.tafsir && surahPayload.tafsir[String(ayahNumber)]) || null;
   }
 
   public static preloadSurah(surahNumber: number): void {

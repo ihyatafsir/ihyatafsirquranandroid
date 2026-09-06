@@ -66,14 +66,14 @@ export const SurahPickerModal: React.FC<SurahPickerModalProps> = ({
         {/* Surah List */}
         <FlatList
           data={filteredSurahs}
-          keyExtractor={item => String(item.number)}
+          keyExtractor={surahEntry => String(surahEntry.number)}
           contentContainerStyle={styles.listContent}
-          renderItem={({ item }) => {
-            const isSelected = item.number === selectedSurah;
+          renderItem={({ item: surahEntry }) => {
+            const isSelected = surahEntry.number === selectedSurah;
             return (
               <TouchableOpacity
                 onPress={() => {
-                  onSelectSurah(item.number);
+                  onSelectSurah(surahEntry.number);
                   onClose();
                 }}
                 style={[
@@ -82,15 +82,15 @@ export const SurahPickerModal: React.FC<SurahPickerModalProps> = ({
                 ]}
               >
                 <View style={styles.numberBadge}>
-                  <Text style={styles.numberText}>{item.number}</Text>
+                  <Text style={styles.numberText}>{surahEntry.number}</Text>
                 </View>
                 <View style={styles.infoCol}>
-                  <Text style={styles.englishTitle}>{item.englishName}</Text>
+                  <Text style={styles.englishTitle}>{surahEntry.englishName}</Text>
                   <Text style={styles.subInfo}>
-                    {item.revelationType === 'Meccan' ? 'مكية' : 'مدنية'} • {item.numberOfAyahs} آية
+                    {surahEntry.revelationType === 'Meccan' ? 'مكية' : 'مدنية'} • {surahEntry.numberOfAyahs} آية
                   </Text>
                 </View>
-                <Text style={styles.arabicName}>{item.name}</Text>
+                <Text style={styles.arabicName}>{surahEntry.name}</Text>
               </TouchableOpacity>
             );
           }}

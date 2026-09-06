@@ -16,22 +16,22 @@ export function useSurahData(surahNumber: number, reciter: string) {
 
     async function fetchData() {
       try {
-        const data = await QuranDataProvider.loadSurah(surahNumber);
+        const surahPayload = await QuranDataProvider.loadSurah(surahNumber);
         if (!isMounted) return;
 
         const isWarsh = reciter.toLowerCase().includes('warsh');
-        if (isWarsh && data.warshVerses && data.warshVerses.length > 0) {
-          setVerses(data.warshVerses);
+        if (isWarsh && surahPayload.warshVerses && surahPayload.warshVerses.length > 0) {
+          setVerses(surahPayload.warshVerses);
         } else {
-          setVerses(data.verses || []);
+          setVerses(surahPayload.verses || []);
         }
 
         // Resolve active reciter timings (fallback to abdulbasit if reciter lacks timing for this surah)
-        const wt = (data.wordTiming && (data.wordTiming[reciter] || data.wordTiming['abdulbasit'])) || {};
-        const lt = (data.letterTiming && (data.letterTiming[reciter] || data.letterTiming['abdulbasit'])) || {};
+        const activeWordTimings = (surahPayload.wordTiming && (surahPayload.wordTiming[reciter] || surahPayload.wordTiming['abdulbasit'])) || {};
+        const activeLetterTimings = (surahPayload.letterTiming && (surahPayload.letterTiming[reciter] || surahPayload.letterTiming['abdulbasit'])) || {};
 
-        setWordTimingMap(wt);
-        setLetterTimingMap(lt);
+        setWordTimingMap(activeWordTimings);
+        setLetterTimingMap(activeLetterTimings);
         setLoading(false);
 
         // Preload adjacent Surah (next Surah) in the background for instant navigation

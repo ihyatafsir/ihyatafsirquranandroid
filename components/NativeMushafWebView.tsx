@@ -281,7 +281,9 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
         if (msg.type === "UPDATE_PLAYBACK") {
           window.updatePlayback(msg.currentTimeMs, msg.currentVerseKey, msg.isPlaying, msg.highlightMode);
         }
-      } catch (err) {}
+      } catch (err) {
+        console.warn("WebView incoming playback message error:", err);
+      }
     }
     window.addEventListener("message", handleIncomingPlaybackMsg);
     document.addEventListener("message", handleIncomingPlaybackMsg);
@@ -565,28 +567,32 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
     });
     try {
       webViewRef.current.postMessage(msg);
-    } catch (e) {}
+    } catch (postErr) {
+      console.warn("WebView postMessage transmission failed:", postErr);
+    }
   }, [currentTimeMs, currentVerseKey, isPlaying, highlightMode]);
 
   const handleMessage = (event: any) => {
     try {
-      const data = JSON.parse(event.nativeEvent.data);
-      if (data.type === "SEEK_AYAH" && onSeekAyah) {
-        onSeekAyah(data.ayah);
-      } else if (data.type === "WORD_SINGLE_CLICK") {
+      const bridgePayload = JSON.parse(event.nativeEvent.data);
+      if (bridgePayload.type === "SEEK_AYAH" && onSeekAyah) {
+        onSeekAyah(bridgePayload.ayah);
+      } else if (bridgePayload.type === "WORD_SINGLE_CLICK") {
         if (onWordSingleClick) {
-          onWordSingleClick(data.surah, data.ayah, data.wordIdx, data.wordText);
+          onWordSingleClick(bridgePayload.surah, bridgePayload.ayah, bridgePayload.wordIdx, bridgePayload.wordText);
         } else if (onWordClick) {
-          onWordClick(data.surah, data.ayah, data.wordIdx, data.wordText);
+          onWordClick(bridgePayload.surah, bridgePayload.ayah, bridgePayload.wordIdx, bridgePayload.wordText);
         }
-      } else if (data.type === "WORD_DOUBLE_CLICK") {
+      } else if (bridgePayload.type === "WORD_DOUBLE_CLICK") {
         if (onWordDoubleClick) {
-          onWordDoubleClick(data.surah, data.ayah, data.wordIdx, data.wordText);
+          onWordDoubleClick(bridgePayload.surah, bridgePayload.ayah, bridgePayload.wordIdx, bridgePayload.wordText);
         } else if (onWordClick) {
-          onWordClick(data.surah, data.ayah, data.wordIdx, data.wordText);
+          onWordClick(bridgePayload.surah, bridgePayload.ayah, bridgePayload.wordIdx, bridgePayload.wordText);
         }
       }
-    } catch (e) {}
+    } catch (parseErr) {
+      console.warn("Failed to parse WebView bridge payload:", parseErr);
+    }
   };
 
   return (

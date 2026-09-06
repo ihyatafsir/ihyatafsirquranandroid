@@ -12,7 +12,9 @@ export async function playLetterPhoneticAudio(
       try {
         await wordSoundInstance.stopAsync();
         await wordSoundInstance.unloadAsync();
-      } catch (e) {}
+      } catch (unloadErr) {
+        console.warn("Error unloading wordSoundInstance:", unloadErr);
+      }
       wordSoundInstance = null;
     }
 
@@ -68,8 +70,8 @@ export async function playLetterPhoneticAudio(
       { shouldPlay: true, progressUpdateIntervalMillis: 50 }
     );
     wordSoundInstance = sound;
-  } catch (err) {
-    // Gracefully handle network / audio exceptions
+  } catch (netAudioErr) {
+    console.warn("Network audio playback error for isolated word:", netAudioErr);
   }
 }
 
@@ -81,7 +83,9 @@ export async function stopIsolatedWordAudio(): Promise<void> {
     try {
       await isolatedWordSound.stopAsync();
       await isolatedWordSound.unloadAsync();
-    } catch (e) {}
+    } catch (unloadIsolatedErr) {
+      console.warn("Error unloading isolatedWordSound:", unloadIsolatedErr);
+    }
     isolatedWordSound = null;
   }
 }

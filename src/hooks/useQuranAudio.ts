@@ -274,7 +274,9 @@ export function useQuranAudio(selectedReciterId: string) {
     if (soundRef.current) {
       try {
         await soundRef.current.setPositionAsync(Math.max(0, targetMs));
-      } catch (e) {}
+      } catch (seekErr) {
+        console.warn("Audio setPositionAsync error:", seekErr);
+      }
     }
   };
 
@@ -290,7 +292,9 @@ export function useQuranAudio(selectedReciterId: string) {
     if (soundRef.current) {
       try {
         await soundRef.current.setRateAsync(next, true);
-      } catch (e) {}
+      } catch (rateErr) {
+        console.warn("Audio setRateAsync error:", rateErr);
+      }
     }
   };
 
