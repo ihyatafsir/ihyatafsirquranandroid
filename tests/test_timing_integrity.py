@@ -15,7 +15,7 @@ AUDIO_MAH_DIR = ASSETS_DIR / "audio_mah"
 class TestTimingIntegrity(unittest.TestCase):
 
     def test_all_reciters_letter_timing(self):
-        for reciter in ["abdulbasit", "minshawi"]:
+        for reciter in ["abdulbasit", "minshawi", "abdulbasit_mujawwad", "abdulbasit_warsh", "mah"]:
             fpath = ASSETS_DIR / f"letter_timing_{reciter}.json"
             self.assertTrue(fpath.exists(), f"Letter timing file missing for {reciter}")
             

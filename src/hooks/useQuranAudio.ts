@@ -93,29 +93,36 @@ export function useQuranAudio(selectedReciterId: string) {
     }
 
     const pos = status.positionMillis || 0;
-    setCurrentTimeMs(pos);
     setDurationMs(status.durationMillis || 0);
     setIsPlaying(status.isPlaying);
 
+    let versePos = pos;
     // Continuous MAH verse tracking across the whole-surah audio file
     if (selectedReciterId === 'mah') {
       const mahTimings = mahTimingsMap[String(activeSurahRef.current)];
       if (mahTimings && mahTimings.length > 0) {
-        const curAyah = mahTimings.find(t => pos >= t[1] && pos < t[2]);
-        if (curAyah && curAyah[0] !== activeAyahRef.current) {
-          activeAyahRef.current = curAyah[0];
-          setCurrentVerseKey(`${activeSurahRef.current}:${curAyah[0]}`);
-          const reciter = RECITERS.find(r => r.id === selectedReciterId) || RECITERS[0];
-          mediaNotificationService.updateMetadata({
-            surahNumber: activeSurahRef.current,
-            surahName: `سورة ${activeSurahRef.current}`,
-            ayahNumber: curAyah[0],
-            reciterName: reciter.name,
-            isPlaying: status.isPlaying,
-          });
+        const curAyah = mahTimings.find(t => pos >= t[1] && pos < t[2])
+                     || mahTimings.filter(t => pos >= t[1]).pop()
+                     || mahTimings[0];
+        if (curAyah) {
+          versePos = Math.max(0, pos - curAyah[1]);
+          if (curAyah[0] !== activeAyahRef.current) {
+            activeAyahRef.current = curAyah[0];
+            setCurrentVerseKey(`${activeSurahRef.current}:${curAyah[0]}`);
+            const reciter = RECITERS.find(r => r.id === selectedReciterId) || RECITERS[0];
+            mediaNotificationService.updateMetadata({
+              surahNumber: activeSurahRef.current,
+              surahName: `سورة ${activeSurahRef.current}`,
+              ayahNumber: curAyah[0],
+              reciterName: reciter.name,
+              isPlaying: status.isPlaying,
+            });
+          }
         }
       }
     }
+
+    setCurrentTimeMs(versePos);
 
     if (status.didJustFinish) {
       handleVerseFinished();

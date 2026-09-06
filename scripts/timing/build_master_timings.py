@@ -198,6 +198,84 @@ def build_calibrated_warsh_timing(
     return warsh_timing_map
 
 
+def build_calibrated_mah_timing(
+    hafs_verses: AllSurahVerses,
+    fallback_timing: VerseTimingMap
+) -> VerseTimingMap:
+    """Build calibrated verse-relative word timings for Mohammad Ahmed Hussein (MAH)."""
+    mah_timing_map: VerseTimingMap = {}
+    mah_dir = ASSETS_DIR / "audio_mah"
+    mah_surahs = [1, 18, 36, 47, 53, 55, 56, 67, 71, 75, 80, 82, 85, 87, 89, 90, 91, 92, 93, 109, 112, 113, 114]
+    
+    # Process dedicated Surah 1 with verified Basmala boundaries
+    timing_1_file = mah_dir / "timing_1.json"
+    if timing_1_file.exists():
+        with open(timing_1_file, "r", encoding="utf-8") as f:
+            wt1 = json.load(f)
+        v_slices_1 = [
+            (1, 5, 8),
+            (2, 9, 12),
+            (3, 13, 14),
+            (4, 15, 17),
+            (5, 18, 21),
+            (6, 22, 24),
+            (7, 25, 33),
+        ]
+        for a, s, e in v_slices_1:
+            v_key = f"1:{a}"
+            ayah_start_ms = int(round(wt1[s]["start"] * 1000))
+            ayah_entries: List[WordTimingEntry] = []
+            prev_end = 0
+            for w_i, idx in enumerate(range(s, e + 1)):
+                w = wt1[idx]
+                st = max(prev_end, int(round(w["start"] * 1000)) - ayah_start_ms)
+                en = max(st + 10, int(round(w["end"] * 1000)) - ayah_start_ms)
+                ayah_entries.append([w_i + 1, st, en])
+                prev_end = en
+            mah_timing_map[v_key] = ayah_entries
+            
+    # Process other 22 recorded MAH Surahs
+    for s in mah_surahs[1:]:
+        vf = mah_dir / f"verse_timing_{s}.json"
+        tf = mah_dir / f"timing_{s}.json"
+        if not (vf.exists() and tf.exists()):
+            continue
+        with open(vf, "r", encoding="utf-8") as f:
+            vt = json.load(f)
+        with open(tf, "r", encoding="utf-8") as f:
+            wt = json.load(f)
+        v_list = hafs_verses.get(str(s), [])
+        
+        for v_entry in vt:
+            ayah_num = v_entry["ayah"]
+            v_key = f"{s}:{ayah_num}"
+            w_start = v_entry.get("startWordIdx", 0)
+            q_verse = next((v for v in v_list if v["ayah"] == ayah_num), None)
+            if not q_verse:
+                continue
+            q_words = q_verse["text"].split()
+            w_end = min(len(wt), w_start + len(q_words))
+            ayah_start_ms = int(round(wt[w_start]["start"] * 1000)) if w_start < len(wt) else v_entry.get("start_ms", 0)
+            
+            ayah_entries: List[WordTimingEntry] = []
+            prev_end = 0
+            for w_i in range(w_start, w_end):
+                w = wt[w_i]
+                st = max(prev_end, int(round(w["start"] * 1000)) - ayah_start_ms)
+                en = max(st + 10, int(round(w["end"] * 1000)) - ayah_start_ms)
+                ayah_entries.append([len(ayah_entries) + 1, st, en])
+                prev_end = en
+                
+            mah_timing_map[v_key] = ayah_entries
+            
+    # Populate all remaining Quran verses from fallback EveryAyah timing
+    for v_key, fb_timing in fallback_timing.items():
+        if v_key not in mah_timing_map:
+            mah_timing_map[v_key] = fb_timing
+            
+    return mah_timing_map
+
+
 def update_chunk_file(
     surah_num: int,
     word_maps: MasterWordTiming,
@@ -262,12 +340,14 @@ def main() -> None:
         
     warsh_durations = fetch_warsh_durations()
     timing_warsh = build_calibrated_warsh_timing(warsh_verses, warsh_durations)
+    timing_mah = build_calibrated_mah_timing(hafs_verses, timing_abdulbasit)
     
     word_maps: MasterWordTiming = {
         "minshawi": timing_minshawi,
         "abdulbasit": timing_abdulbasit,
         "abdulbasit_mujawwad": timing_abdulbasit_mujawwad,
         "abdulbasit_warsh": timing_warsh,
+        "mah": timing_mah,
     }
     
     print("[*] Generating letter-level timings for all reciters...")
@@ -276,6 +356,7 @@ def main() -> None:
         "abdulbasit": {},
         "abdulbasit_mujawwad": {},
         "abdulbasit_warsh": {},
+        "mah": {},
     }
     
     hafs_text_map: Dict[str, str] = {}
@@ -288,7 +369,7 @@ def main() -> None:
         for v in v_list:
             warsh_text_map[f"{s_str}:{v['ayah']}"] = v.get("text", "")
             
-    for rec_id in ["minshawi", "abdulbasit", "abdulbasit_mujawwad"]:
+    for rec_id in ["minshawi", "abdulbasit", "abdulbasit_mujawwad", "mah"]:
         w_map = word_maps[rec_id]
         for v_key, w_timing in w_map.items():
             txt = hafs_text_map.get(v_key, "")
@@ -308,6 +389,10 @@ def main() -> None:
         json.dump(letter_maps["abdulbasit_mujawwad"], f, ensure_ascii=False)
     with open(ASSETS_DIR / "letter_timing_abdulbasit_warsh.json", "w", encoding="utf-8") as f:
         json.dump(letter_maps["abdulbasit_warsh"], f, ensure_ascii=False)
+    with open(ASSETS_DIR / "letter_timing_mah.json", "w", encoding="utf-8") as f:
+        json.dump(letter_maps["mah"], f, ensure_ascii=False)
+    with open(ASSETS_DIR / "timing_mah.json", "w", encoding="utf-8") as f:
+        json.dump(word_maps["mah"], f, ensure_ascii=False)
     print("    -> Saved standalone letter timing files.")
     
     print("[*] Injecting verified word & letter timings into 114 surah chunk files...")
