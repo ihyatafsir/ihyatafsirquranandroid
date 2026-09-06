@@ -39,6 +39,7 @@ export function useSurahData(surahNumber: number, reciter: string) {
           QuranDataProvider.preloadSurah(surahNumber + 1);
         }
       } catch (err: any) {
+        console.error(`[useSurahData] Error loading Surah ${surahNumber}:`, err);
         if (isMounted) {
           setError(err);
           setLoading(false);

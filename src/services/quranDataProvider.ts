@@ -1,4 +1,4 @@
-import { Platform } from 'react-native';
+import { Platform, NativeModules } from 'react-native';
 import { Asset } from 'expo-asset';
 import * as FileSystem from 'expo-file-system';
 import { SurahMetadata, Verse, LetterTimingEntry } from '../types/quran';
@@ -135,13 +135,25 @@ interface SurahDataPayload {
 const surahCache = new Map<number, SurahDataPayload>();
 const MAX_CACHE_SIZE = 3;
 
+const normalizedSurahs: SurahMetadata[] = (surahsMetadata as any[]).map(s => ({
+  number: s.number,
+  name: s.arabic || s.name,
+  englishName: s.name || s.englishName,
+  arabic: s.arabic || s.name,
+  type: s.type || s.revelationType || 'Meccan',
+  revelationType: s.type || s.revelationType || 'Meccan',
+  verses: s.verses || s.numberOfAyahs || 7,
+  numberOfAyahs: s.verses || s.numberOfAyahs || 7,
+  englishNameTranslation: s.englishNameTranslation || s.name || '',
+}));
+
 export class QuranDataProvider {
   public static getAllSurahs(): SurahMetadata[] {
-    return surahsMetadata as SurahMetadata[];
+    return normalizedSurahs;
   }
 
   public static getSurahMetadata(surahNumber: number): SurahMetadata | undefined {
-    return (surahsMetadata as SurahMetadata[]).find(s => s.number === surahNumber);
+    return normalizedSurahs.find(s => s.number === surahNumber);
   }
 
   public static async loadSurah(surahNumber: number): Promise<SurahDataPayload> {
@@ -152,29 +164,47 @@ export class QuranDataProvider {
       return cached;
     }
 
-    const assetModule = SURAH_ASSETS[surahNumber];
-    if (!assetModule) {
-      throw new Error();
+    let jsonStr = '';
+
+    // 1. Native Android Asset Reader (Instantaneous, 100% offline from APK assets/ directory)
+    if (Platform.OS === 'android' && NativeModules.AssetReader) {
+      try {
+        jsonStr = await NativeModules.AssetReader.readAsset(`surahs/surah_${surahNumber}.dat`);
+      } catch (nativeErr) {
+        console.warn(`[QuranDataProvider] Native AssetReader failed:`, nativeErr);
+      }
     }
 
-    let jsonStr = '';
-    try {
-      if (Platform.OS === 'web') {
+    // 2. Fallbacks for Web / Development
+    if (!jsonStr) {
+      const assetModule = SURAH_ASSETS[surahNumber];
+      if (!assetModule) {
+        throw new Error();
+      }
+
+      try {
+        if (Platform.OS === 'web') {
+          const asset = Asset.fromModule(assetModule);
+          await asset.downloadAsync();
+          const res = await fetch(asset.uri);
+          jsonStr = await res.text();
+        } else {
+          const [asset] = await Asset.loadAsync(assetModule);
+          const uri = asset.localUri || asset.uri;
+          if (uri && uri.startsWith('file://')) {
+            jsonStr = await FileSystem.readAsStringAsync(uri, { encoding: 'utf8' });
+          } else {
+            const res = await fetch(uri);
+            jsonStr = await res.text();
+          }
+        }
+      } catch (e) {
+        // Fallback: direct fetch
         const asset = Asset.fromModule(assetModule);
         await asset.downloadAsync();
         const res = await fetch(asset.uri);
         jsonStr = await res.text();
-      } else {
-        const [asset] = await Asset.loadAsync(assetModule);
-        const uri = asset.localUri || asset.uri;
-        jsonStr = await FileSystem.readAsStringAsync(uri, { encoding: "utf8" });
       }
-    } catch (e) {
-      // Fallback: If FileSystem fails, try direct fetch
-      const asset = Asset.fromModule(assetModule);
-      await asset.downloadAsync();
-      const res = await fetch(asset.uri);
-      jsonStr = await res.text();
     }
 
     const data: SurahDataPayload = JSON.parse(jsonStr);
