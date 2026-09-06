@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Test Suite 1: Timing Integrity & Monotonicity Test
-Validates all letter and word timing files across all reciters (MAH, AbdulBasit, Alafasy, Husary, Minshawi).
+Validates all letter and word timing files across all reciters (MAH, AbdulBasit, AbdulBasit Warsh, Minshawi).
 """
 
 import unittest
@@ -15,7 +15,7 @@ AUDIO_MAH_DIR = ASSETS_DIR / "audio_mah"
 class TestTimingIntegrity(unittest.TestCase):
 
     def test_all_reciters_letter_timing(self):
-        for reciter in ["abdulbasit", "husary", "minshawi"]:
+        for reciter in ["abdulbasit", "minshawi"]:
             fpath = ASSETS_DIR / f"letter_timing_{reciter}.json"
             self.assertTrue(fpath.exists(), f"Letter timing file missing for {reciter}")
             
@@ -80,7 +80,7 @@ class TestTimingIntegrity(unittest.TestCase):
         print(f"[PASSED] MAH Letter Timing: {files_checked} files, {total_letters} letters verified.")
 
     def test_standard_reciter_word_timings(self):
-        for reciter in ["abdulbasit", "husary", "minshawi"]:
+        for reciter in ["abdulbasit", "minshawi"]:
             fpath = ASSETS_DIR / f"timing_{reciter}.json"
             if not fpath.exists():
                 continue

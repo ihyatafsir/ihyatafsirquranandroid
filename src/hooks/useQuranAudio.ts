@@ -7,9 +7,7 @@ import mahVerseTimingsData from '../../assets/mah_verse_timings.json';
 export const RECITERS: ReciterConfig[] = [
   { id: 'abdulbasit', name: 'Abdul Basit (Murattal)', url: 'https://everyayah.com/data/Abdul_Basit_Murattal_192kbps/', narration: 'hafs', letterSync: true },
   { id: 'abdulbasit_warsh', name: 'Abdul Basit (Warsh - ورش)', url: 'https://everyayah.com/data/warsh/warsh_Abdul_Basit_128kbps/', narration: 'warsh', letterSync: true },
-  { id: 'husary', name: 'Mahmoud Khalil Al-Husary', url: 'https://everyayah.com/data/Husary_128kbps/', narration: 'hafs', letterSync: true },
   { id: 'minshawi', name: 'Mohamed Siddiq Al-Minshawi', url: 'https://everyayah.com/data/Minshawy_Murattal_128kbps/', narration: 'hafs', letterSync: true },
-  { id: 'alafasy', name: 'Mishary Rashid Alafasy', url: 'https://everyayah.com/data/Alafasy_128kbps/', narration: 'hafs', letterSync: false },
   { id: 'mah', name: 'Mohammad Ahmed Hussein (محمد أحمد حسين - MAH)', url: 'https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/', narration: 'hafs', letterSync: true },
 ];
 
@@ -141,7 +139,7 @@ export function useQuranAudio(selectedReciterId: string) {
     }
   };
 
-  const playVerse = useCallback(async (surah: number, ayah: number, surahMeta?: SurahMetadata) => {
+  const playVerse = useCallback(async (surah: number, ayah: number, surahMeta?: SurahMetadata, startOffsetMs?: number) => {
     try {
       activeSurahRef.current = surah;
       activeAyahRef.current = ayah;
@@ -156,7 +154,8 @@ export function useQuranAudio(selectedReciterId: string) {
 
       if (isMah && mahFile && mahTimings) {
         const targetAyahTiming = mahTimings.find(t => t[0] === ayah);
-        const startMs = targetAyahTiming ? targetAyahTiming[1] : 0;
+        const ayahStartMs = targetAyahTiming ? targetAyahTiming[1] : 0;
+        const startMs = ayahStartMs + (startOffsetMs || 0);
 
         // If this Surah file is ALREADY loaded in player, just seek directly without reloading!
         if (soundRef.current && loadedSurahFileRef.current === mahFile) {
@@ -206,10 +205,11 @@ export function useQuranAudio(selectedReciterId: string) {
 
       const reciter = RECITERS.find(r => r.id === selectedReciterId) || RECITERS[0];
       const audioUri = `${reciter.url}${padZero(surah)}${padZero(ayah)}.mp3`;
+      const startMs = startOffsetMs || 0;
 
       const { sound } = await Audio.Sound.createAsync(
         { uri: audioUri },
-        { shouldPlay: true, rate: playbackSpeed, progressUpdateIntervalMillis: 30 },
+        { shouldPlay: true, positionMillis: startMs, rate: playbackSpeed, progressUpdateIntervalMillis: 30 },
         onPlaybackStatusUpdate
       );
 

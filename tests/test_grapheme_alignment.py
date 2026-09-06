@@ -78,10 +78,10 @@ class TestGraphemeAlignment(unittest.TestCase):
 
     def test_reciter_word_count_consistency(self):
         """
-        Verify that word timings across standard reciters (Alafasy, AbdulBasit, Husary, Minshawi)
+        Verify that word timings across standard reciters (AbdulBasit, Minshawi)
         match the word count of verses in verses_v4.json.
         """
-        for reciter in ["abdulbasit", "husary", "minshawi"]:
+        for reciter in ["abdulbasit", "minshawi"]:
             fpath = ASSETS_DIR / f"timing_{reciter}.json"
             with open(fpath, "r", encoding="utf-8") as f:
                 timing_dict = json.load(f)

@@ -112,19 +112,20 @@ export default function App() {
     wordIdx: number,
     wordText: string
   ) => {
-    if (audio.isPlaying && audio.currentVerseKey === `${surah}:${ayah}`) {
-      const timingList = wordTimingMap[String(ayah)] || wordTimingMap[`${surah}:${ayah}`];
-      if (timingList && timingList[wordIdx]) {
-        const entry = timingList[wordIdx];
-        let st = Array.isArray(entry) ? entry[1] : (entry.start_ms ?? (entry.start ? entry.start * 1000 : 0));
-        if (st > 0 && st < 100) st *= 1000;
-        if (st > 0) {
-          await audio.seekToMs(st);
-          return;
-        }
-      }
+    const timingList = wordTimingMap[String(ayah)] || wordTimingMap[`${surah}:${ayah}`];
+    let st: number | undefined = undefined;
+    if (timingList && timingList[wordIdx]) {
+      const entry = timingList[wordIdx];
+      let rawSt = Array.isArray(entry) ? entry[1] : (entry.start_ms ?? (entry.start ? entry.start * 1000 : 0));
+      if (rawSt > 0 && rawSt < 100) rawSt *= 1000;
+      if (rawSt > 0) st = rawSt;
     }
-    audio.playVerse(surah, ayah, surahMeta);
+
+    if (audio.isPlaying && audio.currentVerseKey === `${surah}:${ayah}` && st !== undefined) {
+      await audio.seekToMs(st);
+      return;
+    }
+    audio.playVerse(surah, ayah, surahMeta, st);
   };
 
   // Word Study Mode Single Tap: Play isolated word audio from QuranCDN WBW
@@ -169,9 +170,25 @@ export default function App() {
       let s = Array.isArray(entry) ? entry[1] : (entry.start_ms ?? (entry.start ? entry.start * 1000 : 0));
       let e = Array.isArray(entry) ? entry[2] : (entry.end_ms ?? (entry.end ? entry.end * 1000 : 0));
       if (s > 0 && s < 100 && e > 0 && e < 300) { s *= 1000; e *= 1000; }
-      if (t >= s && t <= e) {
-        return i;
+      let effectiveEnd = e;
+      const nextEntry = timingList[i + 1];
+      if (nextEntry) {
+        let nextS = Array.isArray(nextEntry) ? nextEntry[1] : (nextEntry.start_ms ?? (nextEntry.start ? nextEntry.start * 1000 : e));
+        if (nextS > 0 && nextS < 100) nextS *= 1000;
+        if (nextS >= e && (nextS - e) < 800) effectiveEnd = nextS;
       }
+      if (t >= s && t < effectiveEnd) {
+        const wIdx = (Array.isArray(entry) && typeof entry[0] === 'number' && entry[0] >= 1) ? entry[0] - 1 : i;
+        return wIdx;
+      }
+    }
+    // Sustain last word if audio is still within ayah
+    const lastEntry = timingList[timingList.length - 1];
+    let lastS = Array.isArray(lastEntry) ? lastEntry[1] : (lastEntry.start_ms ?? (lastEntry.start ? lastEntry.start * 1000 : 0));
+    if (lastS > 0 && lastS < 100) lastS *= 1000;
+    if (t >= lastS) {
+      const lastWIdx = (Array.isArray(lastEntry) && typeof lastEntry[0] === 'number' && lastEntry[0] >= 1) ? lastEntry[0] - 1 : timingList.length - 1;
+      return lastWIdx;
     }
     return -1;
   }, [audio.isPlaying, audio.currentVerseKey, audio.currentTimeMs, wordTimingMap]);

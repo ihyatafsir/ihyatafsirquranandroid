@@ -123,7 +123,7 @@ class TestPlaybackSimulation(unittest.TestCase):
 
     def test_all_standard_reciters_simulation(self):
         """Simulate standard reciters playback for Surah 1."""
-        for reciter in ["abdulbasit", "husary", "minshawi"]:
+        for reciter in ["abdulbasit", "minshawi"]:
             fpath = ASSETS_DIR / f"timing_{reciter}.json"
             with open(fpath, "r", encoding="utf-8") as f:
                 reciter_timing = json.load(f)
