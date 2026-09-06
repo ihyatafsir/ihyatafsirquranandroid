@@ -6,6 +6,7 @@ import mahVerseTimingsData from '../../assets/mah_verse_timings.json';
 
 export const RECITERS: ReciterConfig[] = [
   { id: 'abdulbasit', name: 'Abdul Basit (Murattal)', url: 'https://everyayah.com/data/Abdul_Basit_Murattal_192kbps/', narration: 'hafs', letterSync: true },
+  { id: 'abdulbasit_mujawwad', name: 'Abdul Basit (Mujawwad - تجويد)', url: 'https://everyayah.com/data/Abdul_Basit_Mujawwad_128kbps/', narration: 'hafs', letterSync: true },
   { id: 'abdulbasit_warsh', name: 'Abdul Basit (Warsh - ورش)', url: 'https://everyayah.com/data/warsh/warsh_Abdul_Basit_128kbps/', narration: 'warsh', letterSync: true },
   { id: 'minshawi', name: 'Mohamed Siddiq Al-Minshawi', url: 'https://everyayah.com/data/Minshawy_Murattal_128kbps/', narration: 'hafs', letterSync: true },
   { id: 'mah', name: 'Mohammad Ahmed Hussein (محمد أحمد حسين - MAH)', url: 'https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/', narration: 'hafs', letterSync: true },
