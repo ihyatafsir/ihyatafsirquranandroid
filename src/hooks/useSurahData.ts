@@ -26,9 +26,9 @@ export function useSurahData(surahNumber: number, reciter: string) {
           setVerses(data.verses || []);
         }
 
-        // Resolve active reciter timings
-        const wt = (data.wordTiming && data.wordTiming[reciter]) || {};
-        const lt = (data.letterTiming && data.letterTiming[reciter]) || {};
+        // Resolve active reciter timings (fallback to abdulbasit if reciter lacks timing for this surah)
+        const wt = (data.wordTiming && (data.wordTiming[reciter] || data.wordTiming['abdulbasit'])) || {};
+        const lt = (data.letterTiming && (data.letterTiming[reciter] || data.letterTiming['abdulbasit'])) || {};
 
         setWordTimingMap(wt);
         setLetterTimingMap(lt);

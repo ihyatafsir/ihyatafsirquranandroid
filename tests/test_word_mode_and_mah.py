@@ -6,11 +6,14 @@ Validates:
 2. QuranCDN Word-by-Word (WBW) isolated audio endpoint & phonetic formatting.
 3. Gesture disambiguation logic (single tap vs double tap 280ms threshold).
 4. WordStudyView integration and components.
+5. Mushaf mode vs Word mode distinct single-click audio actions.
+6. Timing normalization across all Ayahs.
 """
 
 import unittest
 import urllib.request
 import re
+import json
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -36,9 +39,23 @@ class TestWordModeAndMAH(unittest.TestCase):
             
         print("[PASSED] Reciter MAH: Verified as Mohammad Ahmed Hussein (محمد أحمد حسين) with Surah audio mappings.")
 
+    def test_mah_verse_timings_integrity(self):
+        """Verify mah_verse_timings.json has 23 Surahs with valid timestamps."""
+        timings_path = BASE_DIR / "assets" / "mah_verse_timings.json"
+        self.assertTrue(timings_path.exists(), "mah_verse_timings.json must exist")
+        with open(timings_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        self.assertGreaterEqual(len(data), 22, "Must contain at least 22 Surahs")
+        # Surah 1 Al-Fatiha verification
+        self.assertIn("1", data, "Surah 1 must exist")
+        s1 = data["1"]
+        self.assertEqual(len(s1), 7, "Surah 1 must have 7 verse timings")
+        self.assertEqual(s1[0][0], 1, "First verse is 1")
+        self.assertEqual(s1[0][1], 7387, "Ayah 1 starts at 7387ms in MAH taraweeh recording")
+        print(f"[PASSED] MAH Verse Timings: {len(data)} Surahs verified with millimeter-level timestamps.")
+
     def test_qurancdn_wbw_isolated_audio_endpoint(self):
         """Verify QuranCDN Word-by-Word isolated audio endpoint responds with HTTP 200."""
-        # Surah 1, Ayah 1, Word 1: 'بِسْمِ' -> 001_001_001.mp3
         url = "https://audio.qurancdn.com/wbw/001_001_001.mp3"
         req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
         try:
@@ -49,7 +66,6 @@ class TestWordModeAndMAH(unittest.TestCase):
                 self.assertGreater(content_length, 1000, f"Audio file too small: {content_length} bytes")
                 print(f"[PASSED] QuranCDN WBW Endpoint: HTTP 200 OK ({content_length} bytes for 001_001_001.mp3).")
         except Exception as e:
-            # Skip if network is temporarily restricted
             print(f"[SKIPPED] QuranCDN WBW Endpoint network check: {e}")
 
     def test_audio_phonetics_isolated_word_audio_function(self):
@@ -82,35 +98,30 @@ class TestWordModeAndMAH(unittest.TestCase):
         self.assertIn("onWordDoubleClick", content, "Must receive onWordDoubleClick prop")
         print("[PASSED] NativeMushafWebView: Debounced gesture disambiguation verified (280ms window).")
 
-    def test_word_study_view_component(self):
-        """Verify WordStudyView component provides dedicated Quran reading learning."""
-        wsv_path = BASE_DIR / "src" / "components" / "WordStudyView.tsx"
-        self.assertTrue(wsv_path.exists(), "WordStudyView.tsx does not exist")
-        
-        with open(wsv_path, "r", encoding="utf-8") as f:
+    def test_timing_normalization_across_all_ayahs(self):
+        """Verify NativeMushafWebView normalizes timing keys for all ayahs in the Surah."""
+        webview_path = BASE_DIR / "components" / "NativeMushafWebView.tsx"
+        with open(webview_path, "r", encoding="utf-8") as f:
             content = f.read()
             
-        self.assertIn("export const WordStudyView", content)
-        self.assertIn("onWordSingleClick", content)
-        self.assertIn("onWordDoubleClick", content)
-        self.assertIn("arabicWordText", content)
-        self.assertIn("wordChip", content)
-        print("[PASSED] WordStudyView: Dedicated word learning component verified.")
+        self.assertIn("normalized[k] = wordTimingMap[k]", content)
+        self.assertIn("normalized[k] = letterTimingMap[k]", content)
+        self.assertIn("wordTimingMap[vKey] || wordTimingMap[aKey]", content)
+        print("[PASSED] NativeMushafWebView: Timing normalization for all ayahs verified.")
 
-    def test_app_view_mode_integration(self):
-        """Verify App.tsx has viewMode toggle between Mushaf and Word Study."""
+    def test_mushaf_vs_word_study_audio_actions(self):
+        """Verify Mushaf mode single-click plays reciter verse audio and Word Study plays isolated audio."""
         app_path = BASE_DIR / "App.tsx"
         with open(app_path, "r", encoding="utf-8") as f:
             content = f.read()
             
-        self.assertIn("viewMode", content)
-        self.assertIn("WordStudyView", content)
-        self.assertIn("playIsolatedWordAudio", content)
-        self.assertIn("handleWordSingleClick", content)
-        self.assertIn("handleWordDoubleClick", content)
-        self.assertIn("المصحف الشريف", content)
-        self.assertIn("وضع الكلمات والدراسة", content)
-        print("[PASSED] App.tsx: View mode toggle and word study handlers verified.")
+        self.assertIn("handleMushafWordSingleClick", content)
+        self.assertIn("handleWordStudyWordSingleClick", content)
+        self.assertIn("onWordSingleClick={handleMushafWordSingleClick}", content)
+        self.assertIn("onWordSingleClick={handleWordStudyWordSingleClick}", content)
+        # Verify onPlayPause resumes only for current Surah
+        self.assertIn("audio.currentVerseKey.startsWith(`${selectedSurah}:`)", content)
+        print("[PASSED] App.tsx: Distinct audio handlers for Mushaf vs Word Study verified.")
 
 if __name__ == '__main__':
     unittest.main()

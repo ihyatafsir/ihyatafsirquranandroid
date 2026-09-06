@@ -83,9 +83,9 @@ export default function App() {
   };
 
   const handleNextAyah = () => {
-    const currentAyah = audio.currentVerseKey
+    const currentAyah = (audio.currentVerseKey && audio.currentVerseKey.startsWith(`${selectedSurah}:`))
       ? parseInt(audio.currentVerseKey.split(':')[1], 10)
-      : 1;
+      : 0;
     const maxAyahs = surahMeta?.numberOfAyahs || 1;
     if (currentAyah < maxAyahs) {
       audio.playVerse(selectedSurah, currentAyah + 1, surahMeta);
@@ -93,9 +93,9 @@ export default function App() {
   };
 
   const handlePrevAyah = () => {
-    const currentAyah = audio.currentVerseKey
+    const currentAyah = (audio.currentVerseKey && audio.currentVerseKey.startsWith(`${selectedSurah}:`))
       ? parseInt(audio.currentVerseKey.split(':')[1], 10)
-      : 1;
+      : 2;
     if (currentAyah > 1) {
       audio.playVerse(selectedSurah, currentAyah - 1, surahMeta);
     }
@@ -105,23 +105,45 @@ export default function App() {
     audio.playVerse(selectedSurah, ayah, surahMeta);
   };
 
-  const handleWordSingleClick = async (
+  // Mushaf Mode Single Tap: Play full verse of active reciter (or seek reciter to that word if already playing)
+  const handleMushafWordSingleClick = async (
     surah: number,
     ayah: number,
     wordIdx: number,
     wordText: string
   ) => {
-    // 1-Tap: Play isolated word audio from QuranCDN WBW / TTS fallback
+    if (audio.isPlaying && audio.currentVerseKey === `${surah}:${ayah}`) {
+      const timingList = wordTimingMap[String(ayah)] || wordTimingMap[`${surah}:${ayah}`];
+      if (timingList && timingList[wordIdx]) {
+        const entry = timingList[wordIdx];
+        let st = Array.isArray(entry) ? entry[1] : (entry.start_ms ?? (entry.start ? entry.start * 1000 : 0));
+        if (st > 0 && st < 100) st *= 1000;
+        if (st > 0) {
+          await audio.seekToMs(st);
+          return;
+        }
+      }
+    }
+    audio.playVerse(surah, ayah, surahMeta);
+  };
+
+  // Word Study Mode Single Tap: Play isolated word audio from QuranCDN WBW
+  const handleWordStudyWordSingleClick = async (
+    surah: number,
+    ayah: number,
+    wordIdx: number,
+    wordText: string
+  ) => {
     await playIsolatedWordAudio(surah, ayah, wordIdx, wordText);
   };
 
+  // Double Tap (Both Modes): Open Letter Decomposition HUD (without audio collision)
   const handleWordDoubleClick = (
     surah: number,
     ayah: number,
     wordIdx: number,
     wordText: string
   ) => {
-    // 2-Taps: Open Letter Decomposition HUD (WITHOUT verse playback in background)
     const verseObj = verses.find(v => v.ayah === ayah);
     const wordObj = verseObj?.words && verseObj.words[wordIdx];
 
@@ -138,13 +160,15 @@ export default function App() {
 
   const activeWordIdx = useMemo(() => {
     if (!audio.isPlaying || !audio.currentVerseKey || !wordTimingMap) return -1;
-    const timingList = wordTimingMap[audio.currentVerseKey];
+    const ayahStr = audio.currentVerseKey.split(':')[1];
+    const timingList = wordTimingMap[audio.currentVerseKey] || wordTimingMap[ayahStr];
     if (!timingList || timingList.length === 0) return -1;
     const t = audio.currentTimeMs;
     for (let i = 0; i < timingList.length; i++) {
       const entry = timingList[i];
-      const s = entry.start ?? entry[0] ?? 0;
-      const e = entry.end ?? entry[1] ?? 0;
+      let s = Array.isArray(entry) ? entry[1] : (entry.start_ms ?? (entry.start ? entry.start * 1000 : 0));
+      let e = Array.isArray(entry) ? entry[2] : (entry.end_ms ?? (entry.end ? entry.end * 1000 : 0));
+      if (s > 0 && s < 100 && e > 0 && e < 300) { s *= 1000; e *= 1000; }
       if (t >= s && t <= e) {
         return i;
       }
@@ -256,7 +280,7 @@ export default function App() {
             surahNumber={selectedSurah}
             highlightMode={settings.highlightMode || 'word'}
             onSeekAyah={handleSeekAyah}
-            onWordSingleClick={handleWordSingleClick}
+            onWordSingleClick={handleMushafWordSingleClick}
             onWordDoubleClick={handleWordDoubleClick}
             onWordClick={handleWordDoubleClick}
           />
@@ -272,7 +296,7 @@ export default function App() {
             showTransliteration={settings.showTransliteration}
             showTranslation={settings.showTranslation}
             onSeekAyah={handleSeekAyah}
-            onWordSingleClick={handleWordSingleClick}
+            onWordSingleClick={handleWordStudyWordSingleClick}
             onWordDoubleClick={(surah, ayah, wordIdx, wordText, wordObj) => {
               setActiveWordHUD({
                 surah,
@@ -298,7 +322,15 @@ export default function App() {
         durationMs={audio.durationMs}
         isAyahLooping={audio.isAyahLooping}
         playbackSpeed={audio.playbackSpeed}
-        onPlayPause={() => audio.isPlaying ? audio.pauseAudio() : (audio.currentVerseKey ? audio.resumeAudio() : audio.playVerse(selectedSurah, 1, surahMeta))}
+        onPlayPause={() => {
+          if (audio.isPlaying) {
+            audio.pauseAudio();
+          } else if (audio.currentVerseKey && audio.currentVerseKey.startsWith(`${selectedSurah}:`)) {
+            audio.resumeAudio();
+          } else {
+            audio.playVerse(selectedSurah, 1, surahMeta);
+          }
+        }}
         onSeekRelative={(delta) => audio.seekRelative(delta)}
         onNextAyah={handleNextAyah}
         onPrevAyah={handlePrevAyah}

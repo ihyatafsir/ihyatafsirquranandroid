@@ -35,29 +35,39 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
 }) => {
   const webViewRef = useRef<WebView>(null);
 
-  // Filter timing maps exclusively for the active Surah
+  // Normalize timing maps for active Surah so keys are accessible in both "surah:ayah" and "ayah" formats
   const surahTiming = useMemo(() => {
     if (!letterTimingMap) return {};
-    const filtered: { [key: string]: any[] } = {};
-    const prefix = `${surahNumber}:`;
+    const normalized: { [key: string]: any[] } = {};
     for (const k in letterTimingMap) {
-      if (k.startsWith(prefix) || k === String(surahNumber)) {
-        filtered[k] = letterTimingMap[k];
+      normalized[k] = letterTimingMap[k];
+      if (k.includes(':')) {
+        const parts = k.split(':');
+        if (parts[0] === String(surahNumber)) {
+          normalized[parts[1]] = letterTimingMap[k];
+        }
+      } else {
+        normalized[`${surahNumber}:${k}`] = letterTimingMap[k];
       }
     }
-    return filtered;
+    return normalized;
   }, [letterTimingMap, surahNumber]);
 
   const surahWordTiming = useMemo(() => {
     if (!wordTimingMap) return {};
-    const filtered: { [key: string]: any[] } = {};
-    const prefix = `${surahNumber}:`;
+    const normalized: { [key: string]: any[] } = {};
     for (const k in wordTimingMap) {
-      if (k.startsWith(prefix) || k === String(surahNumber)) {
-        filtered[k] = wordTimingMap[k];
+      normalized[k] = wordTimingMap[k];
+      if (k.includes(':')) {
+        const parts = k.split(':');
+        if (parts[0] === String(surahNumber)) {
+          normalized[parts[1]] = wordTimingMap[k];
+        }
+      } else {
+        normalized[`${surahNumber}:${k}`] = wordTimingMap[k];
       }
     }
-    return filtered;
+    return normalized;
   }, [wordTimingMap, surahNumber]);
 
   // Serialize lightweight per-surah data into crash-proof, 120 FPS Madani Mushaf HTML DOM
@@ -281,7 +291,9 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
     }
 
     function syncWordHighlight(aNum, timeMs) {
-      const timingList = wordTimingMap[currentVerseKey] || letterTimingMap[currentVerseKey] || [];
+      const vKey = currentVerseKey || (surahNumber + ":" + aNum);
+      const aKey = String(aNum);
+      const timingList = wordTimingMap[vKey] || wordTimingMap[aKey] || letterTimingMap[vKey] || letterTimingMap[aKey] || [];
       if (!timingList || timingList.length === 0) return;
 
       let activeIdx = -1;
@@ -385,7 +397,8 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
           lastActiveWordIdx = -1;
         } else if (activeHighlightMode === "letter") {
           // Letter-Level Continuous Flow & Glow
-          const letters = letterTimingMap[currentVerseKey] || [];
+          const vKey = currentVerseKey || (surahNumber + ":" + aNum);
+          const letters = letterTimingMap[vKey] || letterTimingMap[String(aNum)] || [];
           let activeLetter = null;
           if (letters && letters.length > 0) {
             for (let i = 0; i < letters.length; i++) {

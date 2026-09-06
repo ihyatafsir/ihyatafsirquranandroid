@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { Audio, AVPlaybackStatus } from 'expo-av';
 import { mediaNotificationService } from '../services/mediaNotificationService';
 import { ReciterConfig, SurahMetadata } from '../types/quran';
+import mahVerseTimingsData from '../../assets/mah_verse_timings.json';
 
 export const RECITERS: ReciterConfig[] = [
   { id: 'abdulbasit', name: 'Abdul Basit (Murattal)', url: 'https://everyayah.com/data/Abdul_Basit_Murattal_192kbps/', narration: 'hafs', letterSync: true },
@@ -11,7 +12,6 @@ export const RECITERS: ReciterConfig[] = [
   { id: 'alafasy', name: 'Mishary Rashid Alafasy', url: 'https://everyayah.com/data/Alafasy_128kbps/', narration: 'hafs', letterSync: false },
   { id: 'mah', name: 'Mohammad Ahmed Hussein (محمد أحمد حسين - MAH)', url: 'https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/', narration: 'hafs', letterSync: true },
 ];
-
 
 const MAH_SURAH_AUDIO: { [surah: number]: string } = {
   1: 'al-fatiha_1.mp3',
@@ -39,6 +39,8 @@ const MAH_SURAH_AUDIO: { [surah: number]: string } = {
   114: 'an-nas_114.mp3',
 };
 
+const mahTimingsMap = (mahVerseTimingsData as unknown) as { [surah: string]: [number, number, number][] };
+
 function padZero(num: number, size: number = 3): string {
   let s = String(num);
   while (s.length < size) s = '0' + s;
@@ -47,6 +49,7 @@ function padZero(num: number, size: number = 3): string {
 
 export function useQuranAudio(selectedReciterId: string) {
   const soundRef = useRef<Audio.Sound | null>(null);
+  const loadedSurahFileRef = useRef<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTimeMs, setCurrentTimeMs] = useState(0);
   const [durationMs, setDurationMs] = useState(0);
@@ -77,55 +80,10 @@ export function useQuranAudio(selectedReciterId: string) {
     };
   }, []);
 
-  const getAudioUrl = (surah: number, ayah: number, reciterId: string): string => {
-    if (reciterId === 'mah') {
-      const mahFile = MAH_SURAH_AUDIO[surah];
-      if (mahFile) {
-        return `https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/${mahFile}`;
-      }
-      return `https://everyayah.com/data/Abdul_Basit_Murattal_192kbps/${padZero(surah)}${padZero(ayah)}.mp3`;
-    }
-    const reciter = RECITERS.find(r => r.id === reciterId) || RECITERS[0];
-    return `${reciter.url}${padZero(surah)}${padZero(ayah)}.mp3`;
-  };
-
-  const playVerse = useCallback(async (surah: number, ayah: number, surahMeta?: SurahMetadata) => {
-    try {
-      activeSurahRef.current = surah;
-      activeAyahRef.current = ayah;
-      if (surahMeta) {
-        totalAyahsRef.current = surahMeta.numberOfAyahs;
-      }
-
-      if (soundRef.current) {
-        await soundRef.current.unloadAsync();
-        soundRef.current = null;
-      }
-
-      const audioUri = getAudioUrl(surah, ayah, selectedReciterId);
-      const { sound } = await Audio.Sound.createAsync(
-        { uri: audioUri },
-        { shouldPlay: true, rate: playbackSpeed, progressUpdateIntervalMillis: 30 },
-        onPlaybackStatusUpdate
-      );
-
-      soundRef.current = sound;
-      setIsPlaying(true);
-      setCurrentVerseKey(`${surah}:${ayah}`);
-
-      // Publish media notification
-      const reciter = RECITERS.find(r => r.id === selectedReciterId) || RECITERS[0];
-      mediaNotificationService.updateMetadata({
-        surahNumber: surah,
-        surahName: surahMeta ? surahMeta.name : `سورة ${surah}`,
-        ayahNumber: ayah,
-        reciterName: reciter.name,
-        isPlaying: true,
-      });
-    } catch (err) {
-      setIsPlaying(false);
-    }
-  }, [selectedReciterId, playbackSpeed]);
+  // Stop audio and clear state on reciter switch
+  useEffect(() => {
+    stopAudio();
+  }, [selectedReciterId]);
 
   const onPlaybackStatusUpdate = (status: AVPlaybackStatus) => {
     if (!status.isLoaded) {
@@ -135,9 +93,30 @@ export function useQuranAudio(selectedReciterId: string) {
       return;
     }
 
-    setCurrentTimeMs(status.positionMillis || 0);
+    const pos = status.positionMillis || 0;
+    setCurrentTimeMs(pos);
     setDurationMs(status.durationMillis || 0);
     setIsPlaying(status.isPlaying);
+
+    // Continuous MAH verse tracking across the whole-surah audio file
+    if (selectedReciterId === 'mah') {
+      const mahTimings = mahTimingsMap[String(activeSurahRef.current)];
+      if (mahTimings && mahTimings.length > 0) {
+        const curAyah = mahTimings.find(t => pos >= t[1] && pos < t[2]);
+        if (curAyah && curAyah[0] !== activeAyahRef.current) {
+          activeAyahRef.current = curAyah[0];
+          setCurrentVerseKey(`${activeSurahRef.current}:${curAyah[0]}`);
+          const reciter = RECITERS.find(r => r.id === selectedReciterId) || RECITERS[0];
+          mediaNotificationService.updateMetadata({
+            surahNumber: activeSurahRef.current,
+            surahName: `سورة ${activeSurahRef.current}`,
+            ayahNumber: curAyah[0],
+            reciterName: reciter.name,
+            isPlaying: status.isPlaying,
+          });
+        }
+      }
+    }
 
     if (status.didJustFinish) {
       handleVerseFinished();
@@ -156,10 +135,99 @@ export function useQuranAudio(selectedReciterId: string) {
         // Surah completed
         setIsPlaying(false);
         setCurrentTimeMs(0);
+        setCurrentVerseKey(null);
         mediaNotificationService.setPlaybackState(false);
       }
     }
   };
+
+  const playVerse = useCallback(async (surah: number, ayah: number, surahMeta?: SurahMetadata) => {
+    try {
+      activeSurahRef.current = surah;
+      activeAyahRef.current = ayah;
+      if (surahMeta) {
+        totalAyahsRef.current = surahMeta.numberOfAyahs;
+      }
+
+      // Check if MAH has dedicated Surah audio
+      const isMah = selectedReciterId === 'mah';
+      const mahFile = isMah ? MAH_SURAH_AUDIO[surah] : undefined;
+      const mahTimings = isMah ? mahTimingsMap[String(surah)] : undefined;
+
+      if (isMah && mahFile && mahTimings) {
+        const targetAyahTiming = mahTimings.find(t => t[0] === ayah);
+        const startMs = targetAyahTiming ? targetAyahTiming[1] : 0;
+
+        // If this Surah file is ALREADY loaded in player, just seek directly without reloading!
+        if (soundRef.current && loadedSurahFileRef.current === mahFile) {
+          await soundRef.current.setPositionAsync(startMs);
+          await soundRef.current.playAsync();
+          setIsPlaying(true);
+          setCurrentVerseKey(`${surah}:${ayah}`);
+          return;
+        }
+
+        // Otherwise, load new Surah file
+        if (soundRef.current) {
+          await soundRef.current.unloadAsync().catch(() => {});
+          soundRef.current = null;
+        }
+
+        const audioUri = `https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/${mahFile}`;
+        loadedSurahFileRef.current = mahFile;
+
+        const { sound } = await Audio.Sound.createAsync(
+          { uri: audioUri },
+          { shouldPlay: true, positionMillis: startMs, rate: playbackSpeed, progressUpdateIntervalMillis: 30 },
+          onPlaybackStatusUpdate
+        );
+
+        soundRef.current = sound;
+        setIsPlaying(true);
+        setCurrentVerseKey(`${surah}:${ayah}`);
+
+        const reciter = RECITERS.find(r => r.id === selectedReciterId) || RECITERS[0];
+        mediaNotificationService.updateMetadata({
+          surahNumber: surah,
+          surahName: surahMeta ? surahMeta.name : `سورة ${surah}`,
+          ayahNumber: ayah,
+          reciterName: reciter.name,
+          isPlaying: true,
+        });
+        return;
+      }
+
+      // Standard EveryAyah reciters (or MAH fallback for non-recorded Surahs)
+      if (soundRef.current) {
+        await soundRef.current.unloadAsync().catch(() => {});
+        soundRef.current = null;
+      }
+      loadedSurahFileRef.current = null;
+
+      const reciter = RECITERS.find(r => r.id === selectedReciterId) || RECITERS[0];
+      const audioUri = `${reciter.url}${padZero(surah)}${padZero(ayah)}.mp3`;
+
+      const { sound } = await Audio.Sound.createAsync(
+        { uri: audioUri },
+        { shouldPlay: true, rate: playbackSpeed, progressUpdateIntervalMillis: 30 },
+        onPlaybackStatusUpdate
+      );
+
+      soundRef.current = sound;
+      setIsPlaying(true);
+      setCurrentVerseKey(`${surah}:${ayah}`);
+
+      mediaNotificationService.updateMetadata({
+        surahNumber: surah,
+        surahName: surahMeta ? surahMeta.name : `سورة ${surah}`,
+        ayahNumber: ayah,
+        reciterName: reciter.name,
+        isPlaying: true,
+      });
+    } catch (err) {
+      setIsPlaying(false);
+    }
+  }, [selectedReciterId, playbackSpeed]);
 
   const pauseAudio = async () => {
     if (soundRef.current) {
@@ -181,12 +249,14 @@ export function useQuranAudio(selectedReciterId: string) {
 
   const stopAudio = async () => {
     if (soundRef.current) {
-      await soundRef.current.stopAsync();
-      await soundRef.current.unloadAsync();
+      await soundRef.current.stopAsync().catch(() => {});
+      await soundRef.current.unloadAsync().catch(() => {});
       soundRef.current = null;
     }
+    loadedSurahFileRef.current = null;
     setIsPlaying(false);
     setCurrentTimeMs(0);
+    setCurrentVerseKey(null);
     mediaNotificationService.setPlaybackState(false);
   };
 
@@ -197,6 +267,14 @@ export function useQuranAudio(selectedReciterId: string) {
         const nextPos = Math.max(0, Math.min(st.durationMillis || 0, (st.positionMillis || 0) + deltaMs));
         await soundRef.current.setPositionAsync(nextPos);
       }
+    }
+  };
+
+  const seekToMs = async (targetMs: number) => {
+    if (soundRef.current) {
+      try {
+        await soundRef.current.setPositionAsync(Math.max(0, targetMs));
+      } catch (e) {}
     }
   };
 
@@ -228,6 +306,7 @@ export function useQuranAudio(selectedReciterId: string) {
     resumeAudio,
     stopAudio,
     seekRelative,
+    seekToMs,
     toggleAyahLoop,
     cyclePlaybackSpeed,
   };
