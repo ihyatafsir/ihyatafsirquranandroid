@@ -9,8 +9,35 @@ export const RECITERS: ReciterConfig[] = [
   { id: 'husary', name: 'Mahmoud Khalil Al-Husary', url: 'https://everyayah.com/data/Husary_128kbps/', narration: 'hafs', letterSync: true },
   { id: 'minshawi', name: 'Mohamed Siddiq Al-Minshawi', url: 'https://everyayah.com/data/Minshawy_Murattal_128kbps/', narration: 'hafs', letterSync: true },
   { id: 'alafasy', name: 'Mishary Rashid Alafasy', url: 'https://everyayah.com/data/Alafasy_128kbps/', narration: 'hafs', letterSync: false },
-  { id: 'mah', name: 'Muhammad Ayub Asif (MAH)', url: '', narration: 'hafs', letterSync: true },
+  { id: 'mah', name: 'Mohammad Ahmed Hussein (محمد أحمد حسين - MAH)', url: 'https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/', narration: 'hafs', letterSync: true },
 ];
+
+
+const MAH_SURAH_AUDIO: { [surah: number]: string } = {
+  1: 'al-fatiha_1.mp3',
+  18: 'surah_018_al-kahf.mp3',
+  36: 'yasin_36.mp3',
+  47: 'muhammad_47.mp3',
+  53: 'surah_053_an-najm.mp3',
+  55: 'surah_055_ar-rahman.mp3',
+  56: 'surah_056_al-waqiah.mp3',
+  67: 'surah_067_al-mulk.mp3',
+  71: 'surah_071_nuh.mp3',
+  75: 'qiyamah_75.mp3',
+  80: 'surah_080_abasa.mp3',
+  82: 'surah_082_al-infitar.mp3',
+  85: 'surah_085_al-buruj.mp3',
+  87: 'al-ala_87.mp3',
+  89: 'al-fajr_89.mp3',
+  90: 'al-balad_90.mp3',
+  91: 'ash-shams_91.mp3',
+  92: 'al-layl_92.mp3',
+  93: 'ad-duha_93.mp3',
+  109: 'al-kafirun_109.mp3',
+  112: 'al-ikhlas_112.mp3',
+  113: 'al-falaq_113.mp3',
+  114: 'an-nas_114.mp3',
+};
 
 function padZero(num: number, size: number = 3): string {
   let s = String(num);
@@ -51,6 +78,13 @@ export function useQuranAudio(selectedReciterId: string) {
   }, []);
 
   const getAudioUrl = (surah: number, ayah: number, reciterId: string): string => {
+    if (reciterId === 'mah') {
+      const mahFile = MAH_SURAH_AUDIO[surah];
+      if (mahFile) {
+        return `https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/${mahFile}`;
+      }
+      return `https://everyayah.com/data/Abdul_Basit_Murattal_192kbps/${padZero(surah)}${padZero(ayah)}.mp3`;
+    }
     const reciter = RECITERS.find(r => r.id === reciterId) || RECITERS[0];
     return `${reciter.url}${padZero(surah)}${padZero(ayah)}.mp3`;
   };

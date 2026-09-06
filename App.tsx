@@ -19,7 +19,8 @@ import { SurahPickerModal } from './src/components/SurahPickerModal';
 import { SettingsModal } from './src/components/SettingsModal';
 import { TafsirModal } from './src/components/TafsirModal';
 import { WordLearnHUD } from './src/components/WordLearnHUD';
-import { playLetterPhoneticAudio } from './src/utils/audioPhonetics';
+import { WordStudyView } from './src/components/WordStudyView';
+import { playLetterPhoneticAudio, playIsolatedWordAudio } from './src/utils/audioPhonetics';
 import { AppSettings, Verse } from './src/types/quran';
 
 // Inject Quranic web fonts for Web / Canvas fallbacks
@@ -29,6 +30,7 @@ const ANDROID_STATUS_BAR_HEIGHT = Platform.OS === 'android' ? (StatusBar.current
 
 export default function App() {
   const [selectedSurah, setSelectedSurah] = useState<number>(1);
+  const [viewMode, setViewMode] = useState<'mushaf' | 'word'>('mushaf');
   const [settings, setSettings] = useState<AppSettings>({
     theme: 'dark',
     reciter: 'abdulbasit',
@@ -103,13 +105,23 @@ export default function App() {
     audio.playVerse(selectedSurah, ayah, surahMeta);
   };
 
-  const handleWordClick = async (
+  const handleWordSingleClick = async (
     surah: number,
     ayah: number,
     wordIdx: number,
     wordText: string
   ) => {
-    // Open Word Learn HUD for detailed phonetics & Tajweed
+    // 1-Tap: Play isolated word audio from QuranCDN WBW / TTS fallback
+    await playIsolatedWordAudio(surah, ayah, wordIdx, wordText);
+  };
+
+  const handleWordDoubleClick = (
+    surah: number,
+    ayah: number,
+    wordIdx: number,
+    wordText: string
+  ) => {
+    // 2-Taps: Open Letter Decomposition HUD (WITHOUT verse playback in background)
     const verseObj = verses.find(v => v.ayah === ayah);
     const wordObj = verseObj?.words && verseObj.words[wordIdx];
 
@@ -123,6 +135,22 @@ export default function App() {
       translation: wordObj?.translation,
     });
   };
+
+  const activeWordIdx = useMemo(() => {
+    if (!audio.isPlaying || !audio.currentVerseKey || !wordTimingMap) return -1;
+    const timingList = wordTimingMap[audio.currentVerseKey];
+    if (!timingList || timingList.length === 0) return -1;
+    const t = audio.currentTimeMs;
+    for (let i = 0; i < timingList.length; i++) {
+      const entry = timingList[i];
+      const s = entry.start ?? entry[0] ?? 0;
+      const e = entry.end ?? entry[1] ?? 0;
+      if (t >= s && t <= e) {
+        return i;
+      }
+    }
+    return -1;
+  }, [audio.isPlaying, audio.currentVerseKey, audio.currentTimeMs, wordTimingMap]);
 
   const handleOpenTafsir = async (ayahNumber?: number) => {
     const targetAyah = ayahNumber || (audio.currentVerseKey ? parseInt(audio.currentVerseKey.split(':')[1], 10) : 1);
@@ -189,22 +217,75 @@ export default function App() {
       </SafeAreaView>
 
       {/* ═══════════════════════════════════════════════════════════════════ */}
-      {/* MAIN CANVAS: 120 FPS HARDWARE-ACCELERATED MADANI MUSHAF WEBVIEW    */}
+      {/* VIEW MODE TOGGLE (Quran Reading & Learning First)                  */}
+      {/* ═══════════════════════════════════════════════════════════════════ */}
+      <View style={styles.viewModeSegment}>
+        <TouchableOpacity
+          style={[styles.segmentBtn, viewMode === 'mushaf' && styles.segmentBtnActive]}
+          onPress={() => setViewMode('mushaf')}
+          activeOpacity={0.8}
+        >
+          <Text style={[styles.segmentText, viewMode === 'mushaf' && styles.segmentTextActive]}>
+            📖 المصحف الشريف
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.segmentBtn, viewMode === 'word' && styles.segmentBtnActive]}
+          onPress={() => setViewMode('word')}
+          activeOpacity={0.8}
+        >
+          <Text style={[styles.segmentText, viewMode === 'word' && styles.segmentTextActive]}>
+            🔤 وضع الكلمات والدراسة
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* ═══════════════════════════════════════════════════════════════════ */}
+      {/* MAIN CANVAS: MADANI MUSHAF OR WORD-BY-WORD STUDY & LEARNING        */}
       {/* ═══════════════════════════════════════════════════════════════════ */}
       <View style={styles.mushafContainer}>
-        <NativeMushafWebView
-          key={`mushaf-view-${selectedSurah}-${settings.reciter}`}
-          verses={verses}
-          wordTimingMap={wordTimingMap}
-          letterTimingMap={letterTimingMap}
-          currentVerseKey={audio.currentVerseKey}
-          currentTimeMs={audio.currentTimeMs}
-          isPlaying={audio.isPlaying}
-          surahNumber={selectedSurah}
-          highlightMode={settings.highlightMode || 'word'}
-          onSeekAyah={handleSeekAyah}
-          onWordClick={handleWordClick}
-        />
+        {viewMode === 'mushaf' ? (
+          <NativeMushafWebView
+            key={`mushaf-view-${selectedSurah}-${settings.reciter}`}
+            verses={verses}
+            wordTimingMap={wordTimingMap}
+            letterTimingMap={letterTimingMap}
+            currentVerseKey={audio.currentVerseKey}
+            currentTimeMs={audio.currentTimeMs}
+            isPlaying={audio.isPlaying}
+            surahNumber={selectedSurah}
+            highlightMode={settings.highlightMode || 'word'}
+            onSeekAyah={handleSeekAyah}
+            onWordSingleClick={handleWordSingleClick}
+            onWordDoubleClick={handleWordDoubleClick}
+            onWordClick={handleWordDoubleClick}
+          />
+        ) : (
+          <WordStudyView
+            verses={verses}
+            surahNumber={selectedSurah}
+            currentVerseKey={audio.currentVerseKey}
+            currentTimeMs={audio.currentTimeMs}
+            isPlaying={audio.isPlaying}
+            activeWordIdx={activeWordIdx}
+            fontSize={settings.fontSize}
+            showTransliteration={settings.showTransliteration}
+            showTranslation={settings.showTranslation}
+            onSeekAyah={handleSeekAyah}
+            onWordSingleClick={handleWordSingleClick}
+            onWordDoubleClick={(surah, ayah, wordIdx, wordText, wordObj) => {
+              setActiveWordHUD({
+                surah,
+                ayah,
+                wordIdx,
+                wordText,
+                translit: wordObj?.transliteration,
+                root: wordObj?.root,
+                translation: wordObj?.translation,
+              });
+            }}
+          />
+        )}
       </View>
 
       {/* ═══════════════════════════════════════════════════════════════════ */}
@@ -254,6 +335,16 @@ export default function App() {
         hudData={activeWordHUD}
         onClose={() => setActiveWordHUD(null)}
         onPlayLetterAudio={(char) => playLetterPhoneticAudio(char)}
+        onPlayWordAudio={() => {
+          if (activeWordHUD) {
+            playIsolatedWordAudio(
+              activeWordHUD.surah,
+              activeWordHUD.ayah,
+              activeWordHUD.wordIdx,
+              activeWordHUD.wordText
+            );
+          }
+        }}
       />
     </View>
   );
@@ -342,6 +433,40 @@ const styles = StyleSheet.create({
   reciterBadgeText: {
     color: '#00ffaa',
     fontSize: 11,
+    fontWeight: 'bold',
+  },
+  viewModeSegment: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(15, 23, 42, 0.95)',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.08)',
+    gap: 10,
+    justifyContent: 'center',
+  },
+  segmentBtn: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.06)',
+  },
+  segmentBtnActive: {
+    backgroundColor: 'rgba(0, 255, 170, 0.15)',
+    borderColor: '#00ffaa',
+  },
+  segmentText: {
+    color: '#94a3b8',
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  segmentTextActive: {
+    color: '#00ffaa',
     fontWeight: 'bold',
   },
   mushafContainer: {

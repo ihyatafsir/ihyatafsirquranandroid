@@ -12,6 +12,8 @@ interface NativeMushafWebViewProps {
   surahNumber: number;
   highlightMode?: 'letter' | 'word' | 'ayah' | 'off';
   onSeekAyah?: (ayah: number) => void;
+  onWordSingleClick?: (surah: number, ayah: number, wordIdx: number, wordText: string) => void;
+  onWordDoubleClick?: (surah: number, ayah: number, wordIdx: number, wordText: string) => void;
   onWordClick?: (surah: number, ayah: number, wordIdx: number, wordText: string, start?: number, end?: number) => void;
 }
 
@@ -27,6 +29,8 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
   surahNumber,
   highlightMode = 'word',
   onSeekAyah,
+  onWordSingleClick,
+  onWordDoubleClick,
   onWordClick,
 }) => {
   const webViewRef = useRef<WebView>(null);
@@ -428,40 +432,23 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
     }
     requestAnimationFrame(renderFrame);
 
-    // Interactive Tap Handling
+    // Interactive Tap Handling with Gesture Disambiguation
+    let pendingTapTimer = null;
     let lastTapTime = 0;
     let lastTapTarget = null;
 
     document.addEventListener("click", function(e) {
       const wordEl = e.target.closest(".word");
-      const ayahEl = e.target.closest(".ayah-block");
+      const ayahMedallionEl = e.target.closest(".ayah-medallion");
       const now = Date.now();
 
-      if (wordEl) {
-        const ayah = parseInt(wordEl.getAttribute("data-ayah"), 10);
-        const wordIdx = parseInt(wordEl.getAttribute("data-word-idx"), 10);
-        const wordText = decodeURIComponent(wordEl.getAttribute("data-word-text") || "");
-
-        // Double Tap -> Open Word Learn HUD
-        if (lastTapTarget === wordEl && (now - lastTapTime) < 350) {
-          if (window.ReactNativeWebView) {
-            window.ReactNativeWebView.postMessage(JSON.stringify({
-              type: "WORD_DOUBLE_CLICK",
-              surah: surahNumber,
-              ayah: ayah,
-              wordIdx: wordIdx,
-              wordText: wordText
-            }));
-          }
-          lastTapTime = 0;
-          lastTapTarget = null;
-          return;
+      // 1. Explicit Ayah Medallion Tap -> Immediate Full Verse Playback
+      if (ayahMedallionEl) {
+        if (pendingTapTimer) {
+          clearTimeout(pendingTapTimer);
+          pendingTapTimer = null;
         }
-
-        lastTapTime = now;
-        lastTapTarget = wordEl;
-
-        // Single Tap -> Seek and continuous playback of full Ayah
+        const ayah = parseInt(ayahMedallionEl.getAttribute("data-ayah"), 10);
         if (window.ReactNativeWebView) {
           window.ReactNativeWebView.postMessage(JSON.stringify({
             type: "SEEK_AYAH",
@@ -471,14 +458,60 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
         return;
       }
 
-      if (ayahEl) {
-        const ayah = parseInt(ayahEl.getAttribute("data-ayah"), 10);
-        if (window.ReactNativeWebView) {
-          window.ReactNativeWebView.postMessage(JSON.stringify({
-            type: "SEEK_AYAH",
-            ayah: ayah
-          }));
+      // 2. Word Tap Disambiguation (1-Tap: Isolated Word Audio, 2-Taps: Letters HUD)
+      if (wordEl) {
+        const ayah = parseInt(wordEl.getAttribute("data-ayah"), 10);
+        const wordIdx = parseInt(wordEl.getAttribute("data-word-idx"), 10);
+        const wordText = decodeURIComponent(wordEl.getAttribute("data-word-text") || "");
+
+        // If a second tap occurs on the same word within 280ms:
+        if (lastTapTarget === wordEl && (now - lastTapTime) < 280) {
+          // CANCEL the pending single tap action!
+          if (pendingTapTimer) {
+            clearTimeout(pendingTapTimer);
+            pendingTapTimer = null;
+          }
+          lastTapTime = 0;
+          lastTapTarget = null;
+
+          // Emit DOUBLE CLICK (Letters Breakdown & Phonetics HUD)
+          if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(JSON.stringify({
+              type: "WORD_DOUBLE_CLICK",
+              surah: surahNumber,
+              ayah: ayah,
+              wordIdx: wordIdx,
+              wordText: wordText
+            }));
+          }
+          return;
         }
+
+        // First tap: record state and start debounce timer
+        lastTapTime = now;
+        lastTapTarget = wordEl;
+
+        if (pendingTapTimer) {
+          clearTimeout(pendingTapTimer);
+        }
+
+        pendingTapTimer = setTimeout(function() {
+          pendingTapTimer = null;
+          lastTapTarget = null;
+
+          // Single Tap Action: Play isolated word audio
+          if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(JSON.stringify({
+              type: "WORD_SINGLE_CLICK",
+              surah: surahNumber,
+              ayah: ayah,
+              wordIdx: wordIdx,
+              wordText: wordText
+            }));
+          }
+        }, 280);
+
+        return;
       }
     });
   </script>
@@ -527,8 +560,18 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
       const data = JSON.parse(event.nativeEvent.data);
       if (data.type === "SEEK_AYAH" && onSeekAyah) {
         onSeekAyah(data.ayah);
-      } else if ((data.type === "WORD_DOUBLE_CLICK" || data.type === "WORD_CLICK") && onWordClick) {
-        onWordClick(data.surah, data.ayah, data.wordIdx, data.wordText, data.start, data.end);
+      } else if (data.type === "WORD_SINGLE_CLICK") {
+        if (onWordSingleClick) {
+          onWordSingleClick(data.surah, data.ayah, data.wordIdx, data.wordText);
+        } else if (onWordClick) {
+          onWordClick(data.surah, data.ayah, data.wordIdx, data.wordText);
+        }
+      } else if (data.type === "WORD_DOUBLE_CLICK") {
+        if (onWordDoubleClick) {
+          onWordDoubleClick(data.surah, data.ayah, data.wordIdx, data.wordText);
+        } else if (onWordClick) {
+          onWordClick(data.surah, data.ayah, data.wordIdx, data.wordText);
+        }
       }
     } catch (e) {}
   };

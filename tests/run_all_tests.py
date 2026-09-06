@@ -20,6 +20,7 @@ import test_timing_integrity
 import test_grapheme_alignment
 import test_playback_simulation
 import test_warsh_integrity
+import test_word_mode_and_mah
 
 def run_suite():
     loader = unittest.TestLoader()
@@ -29,6 +30,7 @@ def run_suite():
     suite.addTests(loader.loadTestsFromModule(test_grapheme_alignment))
     suite.addTests(loader.loadTestsFromModule(test_playback_simulation))
     suite.addTests(loader.loadTestsFromModule(test_warsh_integrity))
+    suite.addTests(loader.loadTestsFromModule(test_word_mode_and_mah))
 
     print("=" * 70)
     print("  QURAN HIGH-PRECISION LETTER HIGHLIGHTING - TEST SUITE")

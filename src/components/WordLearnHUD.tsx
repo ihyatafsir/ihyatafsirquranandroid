@@ -16,6 +16,7 @@ interface WordLearnHUDProps {
   onClose: () => void;
   onShowLisan?: (wordText: string, root: string) => void;
   onPlayLetterAudio?: (letterText: string) => void;
+  onPlayWordAudio?: (surah: number, ayah: number, wordIdx: number, wordText: string) => void;
 }
 
 export const WordLearnHUD: React.FC<WordLearnHUDProps> = ({
@@ -23,6 +24,7 @@ export const WordLearnHUD: React.FC<WordLearnHUDProps> = ({
   onClose,
   onShowLisan,
   onPlayLetterAudio,
+  onPlayWordAudio,
 }) => {
   if (!hudData) return null;
 
@@ -63,6 +65,15 @@ export const WordLearnHUD: React.FC<WordLearnHUDProps> = ({
           {hudData.translation ? (
             <Text style={styles.translationText}>{hudData.translation}</Text>
           ) : null}
+
+          {onPlayWordAudio && (
+            <TouchableOpacity
+              onPress={() => onPlayWordAudio(hudData.surah, hudData.ayah, hudData.wordIdx, hudData.wordText)}
+              style={styles.listenWordBtn}
+            >
+              <Text style={styles.listenWordBtnText}>🔊 استمع للكلمة كاملة</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         {/* Letter Chain Breakdown */}
@@ -258,5 +269,22 @@ const styles = StyleSheet.create({
     color: '#cbd5e1',
     fontSize: 11,
     lineHeight: 16,
+  },
+  listenWordBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 255, 170, 0.15)',
+    borderWidth: 1,
+    borderColor: '#00ffaa',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginTop: 10,
+  },
+  listenWordBtnText: {
+    color: '#00ffaa',
+    fontSize: 13,
+    fontWeight: 'bold',
   },
 });
