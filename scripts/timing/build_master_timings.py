@@ -18,6 +18,11 @@ import os
 import re
 import urllib.request
 from pathlib import Path
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from ayn_acoustic_makhraj_engine import AynAcousticMakhrajEngine
+
+acoustic_engine = AynAcousticMakhrajEngine()
 
 # Clean AynEngine Type Aliases (Zero comma-bloat in function signatures)
 TimeInterval = Tuple[int, int]
@@ -34,6 +39,7 @@ MasterLetterTiming = Dict[str, VerseLetterMap]
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 ASSETS_DIR = BASE_DIR / "assets"
 CHUNKS_DIR = ASSETS_DIR / "surahs_chunks"
+ANDROID_ASSETS_DIR = BASE_DIR / "android/app/src/main/assets/surahs" 
 VERSES_FILE = ASSETS_DIR / "verses_v4.json"
 WARSH_FILE = ASSETS_DIR / "warsh_verses.json"
 
@@ -106,19 +112,9 @@ def generate_verse_letter_timings(
     verse_text: str,
     verse_word_timing: List[WordTimingEntry]
 ) -> List[LetterTimingEntry]:
-    """Generate ordered letter timing list for a single verse."""
-    words = verse_text.strip().split()
-    all_letters: List[LetterTimingEntry] = []
-    
-    for entry in verse_word_timing:
-        w_idx = entry[0] - 1 if entry[0] >= 1 else 0
-        w_span: TimeInterval = (entry[1], entry[2])
-        w_arabic = words[w_idx] if w_idx < len(words) else ""
-        if w_arabic:
-            letters = decompose_word_to_letters(w_arabic, w_span, w_idx)
-            all_letters.extend(letters)
-            
-    return all_letters
+    """Generate ordered letter timing list for a single verse via AynAcousticMakhrajEngine."""
+    word_spans = [(entry[0], entry[1], entry[2]) for entry in verse_word_timing if len(entry) >= 3]
+    return acoustic_engine.process_verse(verse_text, word_spans)
 
 
 def fetch_warsh_durations() -> WarshDurationMap:
@@ -207,8 +203,11 @@ def update_chunk_file(
     word_maps: MasterWordTiming,
     letter_maps: MasterLetterTiming
 ) -> None:
-    """Inject timing maps into a single Surah JSON chunk."""
-    chunk_path = CHUNKS_DIR / f"surah_{surah_num}.dat"
+    """Inject timing maps into both asset chunk targets (assets/surahs_chunks and android native assets)."""
+    chunk_filename = f"surah_{surah_num}.dat"
+    chunk_path = CHUNKS_DIR / chunk_filename
+    android_chunk_path = ANDROID_ASSETS_DIR / chunk_filename
+    
     if not chunk_path.exists():
         return
         
@@ -238,6 +237,10 @@ def update_chunk_file(
         
     with open(chunk_path, "w", encoding="utf-8") as f:
         json.dump(chunk_data, f, ensure_ascii=False)
+        
+    if ANDROID_ASSETS_DIR.exists():
+        with open(android_chunk_path, "w", encoding="utf-8") as f:
+            json.dump(chunk_data, f, ensure_ascii=False)
 
 
 def main() -> None:
