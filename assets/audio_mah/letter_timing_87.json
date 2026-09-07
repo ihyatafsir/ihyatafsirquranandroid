@@ -1,2370 +1,3554 @@
 [
   {
+    "ayah": 1,
     "wordIdx": 0,
     "charIdx": 0,
     "char": "سَ",
-    "start": 4155,
-    "end": 4234,
-    "duration": 79
+    "start": 4205,
+    "end": 4480,
+    "duration": 275,
+    "peakTime": 4205,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 1,
     "wordIdx": 0,
     "charIdx": 1,
     "char": "بِّ",
-    "start": 4234,
-    "end": 4324,
-    "duration": 90
+    "start": 4480,
+    "end": 4860,
+    "duration": 380,
+    "peakTime": 4540,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 1,
     "wordIdx": 0,
     "charIdx": 2,
     "char": "حِ",
-    "start": 4324,
-    "end": 4388,
-    "duration": 64
+    "start": 4860,
+    "end": 5046,
+    "duration": 186,
+    "peakTime": 5030,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 1,
     "wordIdx": 1,
     "charIdx": 0,
     "char": "ٱ",
-    "start": 4388,
-    "end": 4465,
-    "duration": 77
+    "start": 5066,
+    "end": 5110,
+    "duration": 44,
+    "peakTime": 5080,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 1,
     "wordIdx": 1,
     "charIdx": 1,
     "char": "سْ",
-    "start": 4465,
-    "end": 4546,
-    "duration": 81
+    "start": 5110,
+    "end": 5160,
+    "duration": 50,
+    "peakTime": 5140,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 1,
     "wordIdx": 1,
     "charIdx": 2,
     "char": "مَ",
-    "start": 4546,
-    "end": 4620,
-    "duration": 74
+    "start": 5160,
+    "end": 5206,
+    "duration": 46,
+    "peakTime": 5160,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 1,
     "wordIdx": 2,
     "charIdx": 0,
     "char": "رَ",
-    "start": 4620,
-    "end": 4758,
-    "duration": 138
+    "start": 5306,
+    "end": 5520,
+    "duration": 214,
+    "peakTime": 5320,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 1,
     "wordIdx": 2,
     "charIdx": 1,
     "char": "بِّ",
-    "start": 4758,
-    "end": 4866,
-    "duration": 108
+    "start": 5520,
+    "end": 5900,
+    "duration": 380,
+    "peakTime": 5670,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 1,
     "wordIdx": 2,
     "charIdx": 2,
     "char": "كَ",
-    "start": 4866,
-    "end": 4931,
-    "duration": 65
+    "start": 5900,
+    "end": 6027,
+    "duration": 127,
+    "peakTime": 5900,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 1,
     "wordIdx": 3,
     "charIdx": 0,
     "char": "ٱ",
-    "start": 4931,
-    "end": 5006,
-    "duration": 75
+    "start": 6087,
+    "end": 6300,
+    "duration": 213,
+    "peakTime": 6100,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 1,
     "wordIdx": 3,
     "charIdx": 1,
     "char": "لْ",
-    "start": 5006,
-    "end": 5088,
-    "duration": 82
+    "start": 6300,
+    "end": 6610,
+    "duration": 310,
+    "peakTime": 6370,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 1,
     "wordIdx": 3,
     "charIdx": 2,
     "char": "أَ",
-    "start": 5088,
-    "end": 5163,
-    "duration": 75
+    "start": 6610,
+    "end": 6890,
+    "duration": 280,
+    "peakTime": 6840,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 1,
     "wordIdx": 3,
     "charIdx": 3,
     "char": "عْ",
-    "start": 5163,
-    "end": 5286,
-    "duration": 123
+    "start": 6890,
+    "end": 7190,
+    "duration": 300,
+    "peakTime": 7000,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 1,
     "wordIdx": 3,
     "charIdx": 4,
     "char": "لَ",
-    "start": 5286,
-    "end": 5411,
-    "duration": 125
+    "start": 7190,
+    "end": 7500,
+    "duration": 310,
+    "peakTime": 7210,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 1,
     "wordIdx": 3,
     "charIdx": 5,
     "char": "ى",
-    "start": 5411,
-    "end": 5529,
-    "duration": 118
+    "start": 7500,
+    "end": 7870,
+    "duration": 370,
+    "peakTime": 7570,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 2,
     "wordIdx": 4,
     "charIdx": 0,
     "char": "ٱ",
-    "start": 5529,
-    "end": 5607,
-    "duration": 78
+    "start": 8090,
+    "end": 8270,
+    "duration": 180,
+    "peakTime": 8260,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 2,
     "wordIdx": 4,
     "charIdx": 1,
     "char": "لَّ",
-    "start": 5607,
-    "end": 5701,
-    "duration": 94
+    "start": 8270,
+    "end": 8430,
+    "duration": 160,
+    "peakTime": 8300,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 2,
     "wordIdx": 4,
     "charIdx": 2,
     "char": "ذِ",
-    "start": 5701,
-    "end": 5782,
-    "duration": 81
+    "start": 8430,
+    "end": 8580,
+    "duration": 150,
+    "peakTime": 8570,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 2,
     "wordIdx": 4,
     "charIdx": 3,
     "char": "ى",
-    "start": 5782,
-    "end": 6041,
-    "duration": 259
+    "start": 8580,
+    "end": 8751,
+    "duration": 171,
+    "peakTime": 8640,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 2,
     "wordIdx": 5,
     "charIdx": 0,
     "char": "خَ",
-    "start": 6041,
-    "end": 6124,
-    "duration": 83
+    "start": 8931,
+    "end": 9080,
+    "duration": 149,
+    "peakTime": 8960,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 2,
     "wordIdx": 5,
     "charIdx": 1,
     "char": "لَ",
-    "start": 6124,
-    "end": 6208,
-    "duration": 84
+    "start": 9080,
+    "end": 9290,
+    "duration": 210,
+    "peakTime": 9170,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 2,
     "wordIdx": 5,
     "charIdx": 2,
     "char": "قَ",
-    "start": 6208,
-    "end": 6257,
-    "duration": 49
+    "start": 9290,
+    "end": 9512,
+    "duration": 222,
+    "peakTime": 9390,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 2,
     "wordIdx": 6,
     "charIdx": 0,
     "char": "فَ",
-    "start": 6257,
-    "end": 6335,
-    "duration": 78
+    "start": 9632,
+    "end": 9970,
+    "duration": 338,
+    "peakTime": 9940,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 2,
     "wordIdx": 6,
     "charIdx": 1,
     "char": "سَ",
-    "start": 6335,
-    "end": 6412,
-    "duration": 77
+    "start": 9970,
+    "end": 10360,
+    "duration": 390,
+    "peakTime": 9970,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 2,
     "wordIdx": 6,
     "charIdx": 2,
     "char": "وَّ",
-    "start": 6412,
-    "end": 6504,
-    "duration": 92
+    "start": 10360,
+    "end": 11130,
+    "duration": 770,
+    "peakTime": 10460,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 2,
     "wordIdx": 6,
     "charIdx": 3,
     "char": "ىٰ",
-    "start": 6504,
-    "end": 6566,
-    "duration": 62
+    "start": 11130,
+    "end": 11574,
+    "duration": 444,
+    "peakTime": 11160,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 3,
     "wordIdx": 7,
     "charIdx": 0,
     "char": "وَ",
-    "start": 6566,
-    "end": 6905,
-    "duration": 339
+    "start": 11655,
+    "end": 11840,
+    "duration": 185,
+    "peakTime": 11830,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 3,
     "wordIdx": 7,
     "charIdx": 1,
     "char": "ٱ",
-    "start": 6905,
-    "end": 7187,
-    "duration": 282
+    "start": 11840,
+    "end": 11970,
+    "duration": 130,
+    "peakTime": 11960,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 3,
     "wordIdx": 7,
     "charIdx": 2,
     "char": "لَّ",
-    "start": 7187,
-    "end": 7525,
-    "duration": 338
+    "start": 11970,
+    "end": 12140,
+    "duration": 170,
+    "peakTime": 12010,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 3,
     "wordIdx": 7,
     "charIdx": 3,
     "char": "ذِ",
-    "start": 7525,
-    "end": 7855,
-    "duration": 330
+    "start": 12140,
+    "end": 12270,
+    "duration": 130,
+    "peakTime": 12230,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 3,
     "wordIdx": 7,
     "charIdx": 4,
     "char": "ى",
-    "start": 7855,
-    "end": 8187,
-    "duration": 332
+    "start": 12270,
+    "end": 12436,
+    "duration": 166,
+    "peakTime": 12270,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 3,
     "wordIdx": 8,
     "charIdx": 0,
     "char": "قَ",
-    "start": 8187,
-    "end": 8258,
-    "duration": 71
+    "start": 12616,
+    "end": 12880,
+    "duration": 264,
+    "peakTime": 12616,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 3,
     "wordIdx": 8,
     "charIdx": 1,
     "char": "دَّ",
-    "start": 8258,
-    "end": 8348,
-    "duration": 90
+    "start": 12880,
+    "end": 13180,
+    "duration": 300,
+    "peakTime": 13010,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 3,
     "wordIdx": 8,
     "charIdx": 2,
     "char": "رَ",
-    "start": 8348,
-    "end": 8443,
-    "duration": 95
+    "start": 13180,
+    "end": 13357,
+    "duration": 177,
+    "peakTime": 13290,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 3,
     "wordIdx": 9,
     "charIdx": 0,
     "char": "فَ",
-    "start": 8443,
-    "end": 8602,
-    "duration": 159
+    "start": 13497,
+    "end": 13750,
+    "duration": 253,
+    "peakTime": 13590,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 3,
     "wordIdx": 9,
     "charIdx": 1,
     "char": "هَ",
-    "start": 8602,
-    "end": 8761,
-    "duration": 159
+    "start": 13750,
+    "end": 13960,
+    "duration": 210,
+    "peakTime": 13760,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 3,
     "wordIdx": 9,
     "charIdx": 2,
     "char": "دَ",
-    "start": 8761,
-    "end": 8896,
-    "duration": 135
+    "start": 13960,
+    "end": 14160,
+    "duration": 200,
+    "peakTime": 14010,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 3,
     "wordIdx": 9,
     "charIdx": 3,
     "char": "ىٰ",
-    "start": 8896,
-    "end": 9028,
-    "duration": 132
+    "start": 14160,
+    "end": 14478,
+    "duration": 318,
+    "peakTime": 14210,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 4,
     "wordIdx": 10,
     "charIdx": 0,
     "char": "وَ",
-    "start": 9028,
-    "end": 9162,
-    "duration": 134
+    "start": 14558,
+    "end": 14660,
+    "duration": 102,
+    "peakTime": 14580,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 4,
     "wordIdx": 10,
     "charIdx": 1,
     "char": "ٱ",
-    "start": 9162,
-    "end": 9279,
-    "duration": 117
+    "start": 14660,
+    "end": 14870,
+    "duration": 210,
+    "peakTime": 14730,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 4,
     "wordIdx": 10,
     "charIdx": 2,
     "char": "لَّ",
-    "start": 9279,
-    "end": 9418,
-    "duration": 139
+    "start": 14870,
+    "end": 15130,
+    "duration": 260,
+    "peakTime": 15000,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 4,
     "wordIdx": 10,
     "charIdx": 3,
     "char": "ذِ",
-    "start": 9418,
-    "end": 9541,
-    "duration": 123
+    "start": 15130,
+    "end": 15220,
+    "duration": 90,
+    "peakTime": 15130,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 4,
     "wordIdx": 10,
     "charIdx": 4,
     "char": "ىٓ",
-    "start": 9541,
-    "end": 9709,
-    "duration": 168
+    "start": 15220,
+    "end": 15740,
+    "duration": 520,
+    "peakTime": 15670,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 4,
     "wordIdx": 11,
     "charIdx": 0,
     "char": "أَ",
-    "start": 9709,
-    "end": 9813,
-    "duration": 104
+    "start": 15840,
+    "end": 16050,
+    "duration": 210,
+    "peakTime": 15880,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 4,
     "wordIdx": 11,
     "charIdx": 1,
     "char": "خْ",
-    "start": 9813,
-    "end": 9924,
-    "duration": 111
+    "start": 16050,
+    "end": 16350,
+    "duration": 300,
+    "peakTime": 16230,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 4,
     "wordIdx": 11,
     "charIdx": 2,
     "char": "رَ",
-    "start": 9924,
-    "end": 10037,
-    "duration": 113
+    "start": 16350,
+    "end": 16490,
+    "duration": 140,
+    "peakTime": 16350,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 4,
     "wordIdx": 11,
     "charIdx": 3,
     "char": "جَ",
-    "start": 10037,
-    "end": 10149,
-    "duration": 112
+    "start": 16490,
+    "end": 16781,
+    "duration": 291,
+    "peakTime": 16490,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 4,
     "wordIdx": 12,
     "charIdx": 0,
     "char": "ٱ",
-    "start": 10149,
-    "end": 10433,
-    "duration": 284
+    "start": 16801,
+    "end": 16960,
+    "duration": 159,
+    "peakTime": 16830,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 4,
     "wordIdx": 12,
     "charIdx": 1,
     "char": "لْ",
-    "start": 10433,
-    "end": 10738,
-    "duration": 305
+    "start": 16960,
+    "end": 17130,
+    "duration": 170,
+    "peakTime": 16980,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 4,
     "wordIdx": 12,
     "charIdx": 2,
     "char": "مَ",
-    "start": 10738,
-    "end": 11029,
-    "duration": 291
+    "start": 17130,
+    "end": 17290,
+    "duration": 160,
+    "peakTime": 17220,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 4,
     "wordIdx": 12,
     "charIdx": 3,
     "char": "رْ",
-    "start": 11029,
-    "end": 11334,
-    "duration": 305
+    "start": 17290,
+    "end": 17420,
+    "duration": 130,
+    "peakTime": 17340,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 4,
     "wordIdx": 12,
     "charIdx": 4,
     "char": "عَ",
-    "start": 11334,
-    "end": 11555,
-    "duration": 221
+    "start": 17420,
+    "end": 17640,
+    "duration": 220,
+    "peakTime": 17630,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 4,
     "wordIdx": 12,
     "charIdx": 5,
     "char": "ىٰ",
-    "start": 11555,
-    "end": 11762,
-    "duration": 207
+    "start": 17640,
+    "end": 17863,
+    "duration": 223,
+    "peakTime": 17640,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 5,
     "wordIdx": 13,
     "charIdx": 0,
     "char": "فَ",
-    "start": 11777,
-    "end": 11846,
-    "duration": 69
+    "start": 18003,
+    "end": 18250,
+    "duration": 247,
+    "peakTime": 18030,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 5,
     "wordIdx": 13,
     "charIdx": 1,
     "char": "جَ",
-    "start": 11846,
-    "end": 11908,
-    "duration": 62
+    "start": 18250,
+    "end": 18510,
+    "duration": 260,
+    "peakTime": 18250,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 5,
     "wordIdx": 13,
     "charIdx": 2,
     "char": "عَ",
-    "start": 11908,
-    "end": 11978,
-    "duration": 70
+    "start": 18510,
+    "end": 18880,
+    "duration": 370,
+    "peakTime": 18630,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 5,
     "wordIdx": 13,
     "charIdx": 3,
     "char": "لَ",
-    "start": 11978,
-    "end": 12049,
-    "duration": 71
+    "start": 18880,
+    "end": 19100,
+    "duration": 220,
+    "peakTime": 19090,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 5,
     "wordIdx": 13,
     "charIdx": 4,
-    "char": "هُ",
-    "start": 12049,
-    "end": 12100,
-    "duration": 51
+    "char": "هُۥ",
+    "start": 19100,
+    "end": 19325,
+    "duration": 225,
+    "peakTime": 19230,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 5,
     "wordIdx": 14,
     "charIdx": 0,
     "char": "غُ",
-    "start": 12100,
-    "end": 12248,
-    "duration": 148
+    "start": 19525,
+    "end": 19960,
+    "duration": 435,
+    "peakTime": 19840,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 5,
     "wordIdx": 14,
     "charIdx": 1,
     "char": "ثَ",
-    "start": 12248,
-    "end": 12396,
-    "duration": 148
+    "start": 19960,
+    "end": 20330,
+    "duration": 370,
+    "peakTime": 20090,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 5,
     "wordIdx": 14,
     "charIdx": 2,
     "char": "آ",
-    "start": 12396,
-    "end": 12599,
-    "duration": 203
+    "start": 20330,
+    "end": 21780,
+    "duration": 1450,
+    "peakTime": 20620,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 5,
     "wordIdx": 14,
     "charIdx": 3,
     "char": "ءً",
-    "start": 12599,
-    "end": 12733,
-    "duration": 134
+    "start": 21780,
+    "end": 22148,
+    "duration": 368,
+    "peakTime": 21780,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 5,
     "wordIdx": 15,
     "charIdx": 0,
     "char": "أَ",
-    "start": 12733,
-    "end": 12821,
-    "duration": 88
+    "start": 22288,
+    "end": 22550,
+    "duration": 262,
+    "peakTime": 22330,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 5,
     "wordIdx": 15,
     "charIdx": 1,
     "char": "حْ",
-    "start": 12821,
-    "end": 12914,
-    "duration": 93
+    "start": 22550,
+    "end": 22820,
+    "duration": 270,
+    "peakTime": 22810,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 5,
     "wordIdx": 15,
     "charIdx": 2,
     "char": "وَ",
-    "start": 12914,
-    "end": 13023,
-    "duration": 109
+    "start": 22820,
+    "end": 23140,
+    "duration": 320,
+    "peakTime": 23120,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 5,
     "wordIdx": 15,
     "charIdx": 3,
     "char": "ىٰ",
-    "start": 13023,
-    "end": 13111,
-    "duration": 88
+    "start": 23140,
+    "end": 23490,
+    "duration": 350,
+    "peakTime": 23140,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 6,
     "wordIdx": 16,
     "charIdx": 0,
     "char": "سَ",
-    "start": 13133,
-    "end": 13265,
-    "duration": 132
+    "start": 24112,
+    "end": 24380,
+    "duration": 268,
+    "peakTime": 24190,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 6,
     "wordIdx": 16,
     "charIdx": 1,
     "char": "نُ",
-    "start": 13265,
-    "end": 13396,
-    "duration": 131
+    "start": 24380,
+    "end": 24630,
+    "duration": 250,
+    "peakTime": 24510,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 6,
     "wordIdx": 16,
     "charIdx": 2,
     "char": "قْ",
-    "start": 13396,
-    "end": 13516,
-    "duration": 120
+    "start": 24630,
+    "end": 24820,
+    "duration": 190,
+    "peakTime": 24630,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 6,
     "wordIdx": 16,
     "charIdx": 3,
     "char": "رِ",
-    "start": 13516,
-    "end": 13655,
-    "duration": 139
+    "start": 24820,
+    "end": 25160,
+    "duration": 340,
+    "peakTime": 24860,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 6,
     "wordIdx": 16,
     "charIdx": 4,
     "char": "ئُ",
-    "start": 13655,
-    "end": 13782,
-    "duration": 127
+    "start": 25160,
+    "end": 25300,
+    "duration": 140,
+    "peakTime": 25160,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 6,
     "wordIdx": 16,
     "charIdx": 5,
     "char": "كَ",
-    "start": 13782,
-    "end": 13920,
-    "duration": 138
+    "start": 25300,
+    "end": 25515,
+    "duration": 215,
+    "peakTime": 25300,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 6,
     "wordIdx": 17,
     "charIdx": 0,
     "char": "فَ",
-    "start": 13920,
-    "end": 14002,
-    "duration": 82
+    "start": 25535,
+    "end": 25700,
+    "duration": 165,
+    "peakTime": 25670,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 6,
     "wordIdx": 17,
     "charIdx": 1,
     "char": "لَ",
-    "start": 14002,
-    "end": 14085,
-    "duration": 83
+    "start": 25700,
+    "end": 25850,
+    "duration": 150,
+    "peakTime": 25840,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 6,
     "wordIdx": 17,
     "charIdx": 2,
     "char": "ا",
-    "start": 14085,
-    "end": 14538,
-    "duration": 453
+    "start": 25850,
+    "end": 26076,
+    "duration": 226,
+    "peakTime": 25900,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 6,
     "wordIdx": 18,
     "charIdx": 0,
     "char": "تَ",
-    "start": 14538,
-    "end": 14612,
-    "duration": 74
+    "start": 26317,
+    "end": 26600,
+    "duration": 283,
+    "peakTime": 26320,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 6,
     "wordIdx": 18,
     "charIdx": 1,
     "char": "ن",
-    "start": 14612,
-    "end": 14693,
-    "duration": 81
+    "start": 26600,
+    "end": 26980,
+    "duration": 380,
+    "peakTime": 26970,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 6,
     "wordIdx": 18,
     "charIdx": 2,
     "char": "سَ",
-    "start": 14693,
-    "end": 14777,
-    "duration": 84
+    "start": 26980,
+    "end": 27340,
+    "duration": 360,
+    "peakTime": 27050,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 6,
     "wordIdx": 18,
     "charIdx": 3,
     "char": "ىٰٓ",
-    "start": 14777,
-    "end": 14856,
-    "duration": 79
+    "start": 27340,
+    "end": 28521,
+    "duration": 1181,
+    "peakTime": 27750,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 19,
     "charIdx": 0,
     "char": "إِ",
-    "start": 14863,
-    "end": 14965,
-    "duration": 102
+    "start": 28641,
+    "end": 28900,
+    "duration": 259,
+    "peakTime": 28700,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 19,
     "charIdx": 1,
     "char": "لَّ",
-    "start": 14965,
-    "end": 15084,
-    "duration": 119
+    "start": 28900,
+    "end": 29270,
+    "duration": 370,
+    "peakTime": 29260,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
-    "wordIdx": 20,
-    "charIdx": 0,
-    "char": "مَ",
-    "start": 15083,
-    "end": 15171,
-    "duration": 88
-  },
-  {
+    "ayah": 7,
     "wordIdx": 19,
     "charIdx": 2,
     "char": "ا",
-    "start": 15084,
-    "end": 15089,
-    "duration": 5
+    "start": 29270,
+    "end": 29583,
+    "duration": 313,
+    "peakTime": 29270,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
+    "wordIdx": 20,
+    "charIdx": 0,
+    "char": "مَ",
+    "start": 29723,
+    "end": 29900,
+    "duration": 177,
+    "peakTime": 29723,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
+  },
+  {
+    "ayah": 7,
     "wordIdx": 20,
     "charIdx": 1,
     "char": "ا",
-    "start": 15171,
-    "end": 15255,
-    "duration": 84
+    "start": 29900,
+    "end": 30104,
+    "duration": 204,
+    "peakTime": 30080,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 21,
     "charIdx": 0,
     "char": "شَ",
-    "start": 15255,
-    "end": 15513,
-    "duration": 258
+    "start": 30285,
+    "end": 30730,
+    "duration": 445,
+    "peakTime": 30700,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 21,
     "charIdx": 1,
     "char": "آ",
-    "start": 15513,
-    "end": 15795,
-    "duration": 282
+    "start": 30730,
+    "end": 32150,
+    "duration": 1420,
+    "peakTime": 31120,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 21,
     "charIdx": 2,
     "char": "ءَ",
-    "start": 15795,
-    "end": 16012,
-    "duration": 217
+    "start": 32150,
+    "end": 32469,
+    "duration": 319,
+    "peakTime": 32260,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 22,
     "charIdx": 0,
     "char": "ٱ",
-    "start": 16012,
-    "end": 16081,
-    "duration": 69
+    "start": 32489,
+    "end": 32920,
+    "duration": 431,
+    "peakTime": 32910,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 22,
     "charIdx": 1,
     "char": "ل",
-    "start": 16081,
-    "end": 16155,
-    "duration": 74
+    "start": 32920,
+    "end": 33360,
+    "duration": 440,
+    "peakTime": 33330,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 22,
     "charIdx": 2,
     "char": "لَّ",
-    "start": 16155,
-    "end": 16238,
-    "duration": 83
+    "start": 33360,
+    "end": 34170,
+    "duration": 810,
+    "peakTime": 33500,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 22,
     "charIdx": 3,
     "char": "هُۚ",
-    "start": 16238,
-    "end": 16289,
-    "duration": 51
+    "start": 34170,
+    "end": 34593,
+    "duration": 423,
+    "peakTime": 34460,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 23,
     "charIdx": 0,
     "char": "إِ",
-    "start": 16289,
-    "end": 16424,
-    "duration": 135
+    "start": 34734,
+    "end": 35090,
+    "duration": 356,
+    "peakTime": 34740,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 23,
     "charIdx": 1,
     "char": "نَّ",
-    "start": 16424,
-    "end": 16587,
-    "duration": 163
+    "start": 35090,
+    "end": 35870,
+    "duration": 780,
+    "peakTime": 35780,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 23,
     "charIdx": 2,
-    "char": "هُ",
-    "start": 16587,
-    "end": 16728,
-    "duration": 141
+    "char": "هُۥ",
+    "start": 35870,
+    "end": 36197,
+    "duration": 327,
+    "peakTime": 36110,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 24,
     "charIdx": 0,
     "char": "يَ",
-    "start": 16728,
-    "end": 16840,
-    "duration": 112
+    "start": 36277,
+    "end": 36450,
+    "duration": 173,
+    "peakTime": 36340,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 24,
     "charIdx": 1,
     "char": "عْ",
-    "start": 16840,
-    "end": 16934,
-    "duration": 94
+    "start": 36450,
+    "end": 36680,
+    "duration": 230,
+    "peakTime": 36500,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 24,
     "charIdx": 2,
     "char": "لَ",
-    "start": 16934,
-    "end": 17031,
-    "duration": 97
+    "start": 36680,
+    "end": 36840,
+    "duration": 160,
+    "peakTime": 36700,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 24,
     "charIdx": 3,
     "char": "مُ",
-    "start": 17031,
-    "end": 17101,
-    "duration": 70
+    "start": 36840,
+    "end": 37038,
+    "duration": 198,
+    "peakTime": 36890,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 25,
     "charIdx": 0,
     "char": "ٱ",
-    "start": 17101,
-    "end": 17195,
-    "duration": 94
+    "start": 37099,
+    "end": 37320,
+    "duration": 221,
+    "peakTime": 37099,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 25,
     "charIdx": 1,
     "char": "لْ",
-    "start": 17195,
-    "end": 17297,
-    "duration": 102
+    "start": 37320,
+    "end": 37470,
+    "duration": 150,
+    "peakTime": 37450,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 25,
     "charIdx": 2,
     "char": "جَ",
-    "start": 17297,
-    "end": 17386,
-    "duration": 89
+    "start": 37470,
+    "end": 37750,
+    "duration": 280,
+    "peakTime": 37470,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 25,
     "charIdx": 3,
     "char": "هْ",
-    "start": 17386,
-    "end": 17485,
-    "duration": 99
+    "start": 37750,
+    "end": 37880,
+    "duration": 130,
+    "peakTime": 37850,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 25,
     "charIdx": 4,
     "char": "رَ",
-    "start": 17485,
-    "end": 17564,
-    "duration": 79
+    "start": 37880,
+    "end": 38161,
+    "duration": 281,
+    "peakTime": 37960,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 26,
     "charIdx": 0,
     "char": "وَ",
-    "start": 17564,
-    "end": 17750,
-    "duration": 186
+    "start": 38181,
+    "end": 38430,
+    "duration": 249,
+    "peakTime": 38181,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 26,
     "charIdx": 1,
     "char": "مَ",
-    "start": 17750,
-    "end": 17948,
-    "duration": 198
+    "start": 38430,
+    "end": 38610,
+    "duration": 180,
+    "peakTime": 38430,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 26,
     "charIdx": 2,
     "char": "ا",
-    "start": 17948,
-    "end": 18154,
-    "duration": 206
+    "start": 38610,
+    "end": 38862,
+    "duration": 252,
+    "peakTime": 38760,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 27,
     "charIdx": 0,
     "char": "يَ",
-    "start": 18154,
-    "end": 18309,
-    "duration": 155
+    "start": 38982,
+    "end": 39540,
+    "duration": 558,
+    "peakTime": 39530,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 27,
     "charIdx": 1,
     "char": "خْ",
-    "start": 18309,
-    "end": 18439,
-    "duration": 130
+    "start": 39540,
+    "end": 39950,
+    "duration": 410,
+    "peakTime": 39540,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 27,
     "charIdx": 2,
     "char": "فَ",
-    "start": 18439,
-    "end": 18570,
-    "duration": 131
+    "start": 39950,
+    "end": 40400,
+    "duration": 450,
+    "peakTime": 40000,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 7,
     "wordIdx": 27,
     "charIdx": 3,
     "char": "ىٰ",
-    "start": 18570,
-    "end": 18694,
-    "duration": 124
+    "start": 40400,
+    "end": 40966,
+    "duration": 566,
+    "peakTime": 40750,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 8,
     "wordIdx": 28,
     "charIdx": 0,
     "char": "وَ",
-    "start": 18710,
-    "end": 18880,
-    "duration": 170
+    "start": 41067,
+    "end": 41290,
+    "duration": 223,
+    "peakTime": 41280,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 8,
     "wordIdx": 28,
     "charIdx": 1,
     "char": "نُ",
-    "start": 18880,
-    "end": 19018,
-    "duration": 138
+    "start": 41290,
+    "end": 41520,
+    "duration": 230,
+    "peakTime": 41330,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 8,
     "wordIdx": 28,
     "charIdx": 2,
     "char": "يَ",
-    "start": 19018,
-    "end": 19188,
-    "duration": 170
+    "start": 41520,
+    "end": 41730,
+    "duration": 210,
+    "peakTime": 41520,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 8,
     "wordIdx": 28,
     "charIdx": 3,
     "char": "سِّ",
-    "start": 19188,
-    "end": 19351,
-    "duration": 163
+    "start": 41730,
+    "end": 42080,
+    "duration": 350,
+    "peakTime": 41790,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 8,
     "wordIdx": 28,
     "charIdx": 4,
     "char": "رُ",
-    "start": 19351,
-    "end": 19496,
-    "duration": 145
+    "start": 42080,
+    "end": 42310,
+    "duration": 230,
+    "peakTime": 42140,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 8,
     "wordIdx": 28,
     "charIdx": 5,
     "char": "كَ",
-    "start": 19496,
-    "end": 19768,
-    "duration": 272
+    "start": 42310,
+    "end": 42469,
+    "duration": 159,
+    "peakTime": 42310,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 8,
     "wordIdx": 29,
     "charIdx": 0,
     "char": "لِ",
-    "start": 19768,
-    "end": 20048,
-    "duration": 280
+    "start": 42570,
+    "end": 42810,
+    "duration": 240,
+    "peakTime": 42730,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 8,
     "wordIdx": 29,
     "charIdx": 1,
     "char": "لْ",
-    "start": 20048,
-    "end": 20330,
-    "duration": 282
+    "start": 42810,
+    "end": 43030,
+    "duration": 220,
+    "peakTime": 42960,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 8,
     "wordIdx": 29,
     "charIdx": 2,
     "char": "يُ",
-    "start": 20330,
-    "end": 20655,
-    "duration": 325
+    "start": 43030,
+    "end": 43320,
+    "duration": 290,
+    "peakTime": 43040,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 8,
     "wordIdx": 29,
     "charIdx": 3,
     "char": "سْ",
-    "start": 20655,
-    "end": 20929,
-    "duration": 274
+    "start": 43320,
+    "end": 43630,
+    "duration": 310,
+    "peakTime": 43320,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 8,
     "wordIdx": 29,
     "charIdx": 4,
     "char": "رَ",
-    "start": 20929,
-    "end": 21210,
-    "duration": 281
+    "start": 43630,
+    "end": 43870,
+    "duration": 240,
+    "peakTime": 43640,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 8,
     "wordIdx": 29,
     "charIdx": 5,
     "char": "ىٰ",
-    "start": 21210,
-    "end": 21462,
-    "duration": 252
+    "start": 43870,
+    "end": 44213,
+    "duration": 343,
+    "peakTime": 44140,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 9,
     "wordIdx": 30,
     "charIdx": 0,
     "char": "فَ",
-    "start": 21462,
-    "end": 21933,
-    "duration": 471
+    "start": 44750,
+    "end": 45320,
+    "duration": 570,
+    "peakTime": 45050,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 9,
     "wordIdx": 30,
     "charIdx": 1,
     "char": "ذَ",
-    "start": 21933,
-    "end": 22126,
-    "duration": 193
+    "start": 45320,
+    "end": 45820,
+    "duration": 500,
+    "peakTime": 45570,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 9,
     "wordIdx": 30,
     "charIdx": 2,
     "char": "كِّ",
-    "start": 22126,
-    "end": 22356,
-    "duration": 230
+    "start": 45820,
+    "end": 46800,
+    "duration": 980,
+    "peakTime": 45910,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 9,
     "wordIdx": 30,
     "charIdx": 3,
     "char": "رْ",
-    "start": 22356,
-    "end": 22550,
-    "duration": 194
+    "start": 46800,
+    "end": 47414,
+    "duration": 614,
+    "peakTime": 47080,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 9,
     "wordIdx": 31,
     "charIdx": 0,
     "char": "إِ",
-    "start": 22550,
-    "end": 22636,
-    "duration": 86
+    "start": 47434,
+    "end": 47600,
+    "duration": 166,
+    "peakTime": 47520,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 9,
     "wordIdx": 31,
     "charIdx": 1,
     "char": "ن",
-    "start": 22636,
-    "end": 22705,
-    "duration": 69
+    "start": 47600,
+    "end": 47694,
+    "duration": 94,
+    "peakTime": 47620,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 9,
     "wordIdx": 32,
     "charIdx": 0,
     "char": "نَّ",
-    "start": 22705,
-    "end": 23144,
-    "duration": 439
+    "start": 47714,
+    "end": 48010,
+    "duration": 296,
+    "peakTime": 47730,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 9,
     "wordIdx": 32,
     "charIdx": 1,
     "char": "فَ",
-    "start": 23144,
-    "end": 23526,
-    "duration": 382
+    "start": 48010,
+    "end": 48150,
+    "duration": 140,
+    "peakTime": 48010,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 9,
     "wordIdx": 32,
     "charIdx": 2,
     "char": "عَ",
-    "start": 23526,
-    "end": 23909,
-    "duration": 383
+    "start": 48150,
+    "end": 48300,
+    "duration": 150,
+    "peakTime": 48150,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 9,
     "wordIdx": 32,
     "charIdx": 3,
     "char": "تِ",
-    "start": 23909,
-    "end": 24285,
-    "duration": 376
+    "start": 48300,
+    "end": 48435,
+    "duration": 135,
+    "peakTime": 48300,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 9,
     "wordIdx": 33,
     "charIdx": 0,
     "char": "ٱ",
-    "start": 24285,
-    "end": 24368,
-    "duration": 83
+    "start": 48735,
+    "end": 48990,
+    "duration": 255,
+    "peakTime": 48840,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 9,
     "wordIdx": 33,
     "charIdx": 1,
     "char": "ل",
-    "start": 24368,
-    "end": 24458,
-    "duration": 90
+    "start": 48990,
+    "end": 49180,
+    "duration": 190,
+    "peakTime": 49070,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 9,
     "wordIdx": 33,
     "charIdx": 2,
     "char": "ذِّ",
-    "start": 24458,
-    "end": 24558,
-    "duration": 100
+    "start": 49180,
+    "end": 49650,
+    "duration": 470,
+    "peakTime": 49500,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 9,
     "wordIdx": 33,
     "charIdx": 3,
     "char": "كْ",
-    "start": 24558,
-    "end": 24637,
-    "duration": 79
+    "start": 49650,
+    "end": 49880,
+    "duration": 230,
+    "peakTime": 49650,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 9,
     "wordIdx": 33,
     "charIdx": 4,
     "char": "رَ",
-    "start": 24637,
-    "end": 24727,
-    "duration": 90
+    "start": 49880,
+    "end": 50190,
+    "duration": 310,
+    "peakTime": 49960,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 9,
     "wordIdx": 33,
     "charIdx": 5,
     "char": "ىٰ",
-    "start": 24727,
-    "end": 24801,
-    "duration": 74
+    "start": 50190,
+    "end": 50498,
+    "duration": 308,
+    "peakTime": 50250,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 10,
     "wordIdx": 34,
     "charIdx": 0,
     "char": "سَ",
-    "start": 24801,
-    "end": 24878,
-    "duration": 77
+    "start": 50618,
+    "end": 50920,
+    "duration": 302,
+    "peakTime": 50618,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 10,
     "wordIdx": 34,
     "charIdx": 1,
     "char": "يَ",
-    "start": 24878,
-    "end": 24978,
-    "duration": 100
+    "start": 50920,
+    "end": 51190,
+    "duration": 270,
+    "peakTime": 50930,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 10,
     "wordIdx": 34,
     "charIdx": 2,
     "char": "ذَّ",
-    "start": 24978,
-    "end": 25075,
-    "duration": 97
+    "start": 51190,
+    "end": 51600,
+    "duration": 410,
+    "peakTime": 51290,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 10,
     "wordIdx": 34,
     "charIdx": 3,
     "char": "كَّ",
-    "start": 25075,
-    "end": 25172,
-    "duration": 97
+    "start": 51600,
+    "end": 52010,
+    "duration": 410,
+    "peakTime": 51750,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 10,
     "wordIdx": 34,
     "charIdx": 4,
     "char": "رُ",
-    "start": 25172,
-    "end": 25479,
-    "duration": 307
+    "start": 52010,
+    "end": 52300,
+    "duration": 290,
+    "peakTime": 52130,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 10,
     "wordIdx": 35,
     "charIdx": 0,
     "char": "مَ",
-    "start": 25479,
-    "end": 25562,
-    "duration": 83
+    "start": 52320,
+    "end": 52990,
+    "duration": 670,
+    "peakTime": 52940,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 10,
     "wordIdx": 35,
     "charIdx": 1,
     "char": "ن",
-    "start": 25562,
-    "end": 25657,
-    "duration": 95
+    "start": 52990,
+    "end": 53722,
+    "duration": 732,
+    "peakTime": 53580,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 10,
     "wordIdx": 36,
     "charIdx": 0,
     "char": "يَ",
-    "start": 25657,
-    "end": 25848,
-    "duration": 191
+    "start": 53822,
+    "end": 54060,
+    "duration": 238,
+    "peakTime": 53850,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 10,
     "wordIdx": 36,
     "charIdx": 1,
     "char": "خْ",
-    "start": 25848,
-    "end": 26001,
-    "duration": 153
+    "start": 54060,
+    "end": 54340,
+    "duration": 280,
+    "peakTime": 54210,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 10,
     "wordIdx": 36,
     "charIdx": 2,
     "char": "شَ",
-    "start": 26001,
-    "end": 26154,
-    "duration": 153
+    "start": 54340,
+    "end": 54520,
+    "duration": 180,
+    "peakTime": 54510,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 10,
     "wordIdx": 36,
     "charIdx": 3,
     "char": "ىٰ",
-    "start": 26154,
-    "end": 26522,
-    "duration": 368
+    "start": 54520,
+    "end": 54804,
+    "duration": 284,
+    "peakTime": 54520,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 11,
     "wordIdx": 37,
     "charIdx": 0,
     "char": "وَ",
-    "start": 26522,
-    "end": 26847,
-    "duration": 325
+    "start": 54884,
+    "end": 55310,
+    "duration": 426,
+    "peakTime": 55140,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 11,
     "wordIdx": 37,
     "charIdx": 1,
     "char": "يَ",
-    "start": 26847,
-    "end": 27184,
-    "duration": 337
+    "start": 55310,
+    "end": 55700,
+    "duration": 390,
+    "peakTime": 55440,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 11,
     "wordIdx": 37,
     "charIdx": 2,
     "char": "تَ",
-    "start": 27184,
-    "end": 27449,
-    "duration": 265
+    "start": 55700,
+    "end": 56010,
+    "duration": 310,
+    "peakTime": 55700,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 11,
     "wordIdx": 37,
     "charIdx": 3,
     "char": "جَ",
-    "start": 27449,
-    "end": 27714,
-    "duration": 265
+    "start": 56010,
+    "end": 56390,
+    "duration": 380,
+    "peakTime": 56370,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 11,
     "wordIdx": 37,
     "charIdx": 4,
     "char": "نَّ",
-    "start": 27714,
-    "end": 28039,
-    "duration": 325
+    "start": 56390,
+    "end": 57140,
+    "duration": 750,
+    "peakTime": 57120,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 11,
     "wordIdx": 37,
     "charIdx": 5,
     "char": "بُ",
-    "start": 28039,
-    "end": 28304,
-    "duration": 265
+    "start": 57140,
+    "end": 57450,
+    "duration": 310,
+    "peakTime": 57290,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 11,
     "wordIdx": 37,
     "charIdx": 6,
     "char": "هَ",
-    "start": 28304,
-    "end": 28593,
-    "duration": 289
+    "start": 57450,
+    "end": 57770,
+    "duration": 320,
+    "peakTime": 57610,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 11,
     "wordIdx": 37,
     "charIdx": 7,
     "char": "ا",
-    "start": 28593,
-    "end": 28764,
-    "duration": 171
+    "start": 57770,
+    "end": 58228,
+    "duration": 458,
+    "peakTime": 57960,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 11,
     "wordIdx": 38,
     "charIdx": 0,
     "char": "ٱ",
-    "start": 28764,
-    "end": 28932,
-    "duration": 168
+    "start": 58248,
+    "end": 58580,
+    "duration": 332,
+    "peakTime": 58460,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 11,
     "wordIdx": 38,
     "charIdx": 1,
     "char": "لْ",
-    "start": 28932,
-    "end": 29115,
-    "duration": 183
+    "start": 58580,
+    "end": 58790,
+    "duration": 210,
+    "peakTime": 58640,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 11,
     "wordIdx": 38,
     "charIdx": 2,
     "char": "أَ",
-    "start": 29115,
-    "end": 29284,
-    "duration": 169
+    "start": 58790,
+    "end": 59090,
+    "duration": 300,
+    "peakTime": 59070,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 11,
     "wordIdx": 38,
     "charIdx": 3,
     "char": "شْ",
-    "start": 29284,
-    "end": 29461,
-    "duration": 177
+    "start": 59090,
+    "end": 59390,
+    "duration": 300,
+    "peakTime": 59370,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 11,
     "wordIdx": 38,
     "charIdx": 4,
     "char": "قَ",
-    "start": 29461,
-    "end": 29621,
-    "duration": 160
+    "start": 59390,
+    "end": 59780,
+    "duration": 390,
+    "peakTime": 59590,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 11,
     "wordIdx": 38,
     "charIdx": 5,
     "char": "ى",
-    "start": 29621,
-    "end": 29713,
-    "duration": 92
+    "start": 59780,
+    "end": 60171,
+    "duration": 391,
+    "peakTime": 59790,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 12,
     "wordIdx": 39,
     "charIdx": 0,
     "char": "ٱ",
-    "start": 29736,
-    "end": 29844,
-    "duration": 108
+    "start": 60551,
+    "end": 60670,
+    "duration": 119,
+    "peakTime": 60590,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 12,
     "wordIdx": 39,
     "charIdx": 1,
     "char": "لَّ",
-    "start": 29844,
-    "end": 30007,
-    "duration": 163
+    "start": 60670,
+    "end": 60830,
+    "duration": 160,
+    "peakTime": 60670,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 12,
     "wordIdx": 39,
     "charIdx": 2,
     "char": "ذِ",
-    "start": 30007,
-    "end": 30464,
-    "duration": 457
+    "start": 60830,
+    "end": 61000,
+    "duration": 170,
+    "peakTime": 60990,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 12,
     "wordIdx": 39,
     "charIdx": 3,
     "char": "ى",
-    "start": 30464,
-    "end": 30911,
-    "duration": 447
+    "start": 61000,
+    "end": 61152,
+    "duration": 152,
+    "peakTime": 61010,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 12,
     "wordIdx": 40,
     "charIdx": 0,
     "char": "يَ",
-    "start": 30911,
-    "end": 31288,
-    "duration": 377
+    "start": 61232,
+    "end": 61820,
+    "duration": 588,
+    "peakTime": 61260,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 12,
     "wordIdx": 40,
     "charIdx": 1,
     "char": "صْ",
-    "start": 31288,
-    "end": 31608,
-    "duration": 320
+    "start": 61820,
+    "end": 62390,
+    "duration": 570,
+    "peakTime": 61820,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 12,
     "wordIdx": 40,
     "charIdx": 2,
     "char": "لَ",
-    "start": 31608,
-    "end": 31935,
-    "duration": 327
+    "start": 62390,
+    "end": 62870,
+    "duration": 480,
+    "peakTime": 62490,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 12,
     "wordIdx": 40,
     "charIdx": 3,
     "char": "ى",
-    "start": 31935,
-    "end": 32323,
-    "duration": 388
+    "start": 62870,
+    "end": 63495,
+    "duration": 625,
+    "peakTime": 62980,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 12,
     "wordIdx": 41,
     "charIdx": 0,
     "char": "ٱ",
-    "start": 32323,
-    "end": 32463,
-    "duration": 140
+    "start": 63515,
+    "end": 63620,
+    "duration": 105,
+    "peakTime": 63610,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 12,
     "wordIdx": 41,
     "charIdx": 1,
     "char": "ل",
-    "start": 32463,
-    "end": 32614,
-    "duration": 151
+    "start": 63620,
+    "end": 63760,
+    "duration": 140,
+    "peakTime": 63690,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 12,
     "wordIdx": 41,
     "charIdx": 2,
     "char": "نَّ",
-    "start": 32614,
-    "end": 32780,
-    "duration": 166
+    "start": 63760,
+    "end": 63980,
+    "duration": 220,
+    "peakTime": 63800,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 12,
     "wordIdx": 41,
     "charIdx": 3,
     "char": "ا",
-    "start": 32780,
-    "end": 32952,
-    "duration": 172
+    "start": 63980,
+    "end": 64150,
+    "duration": 170,
+    "peakTime": 64010,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 12,
     "wordIdx": 41,
     "charIdx": 4,
     "char": "رَ",
-    "start": 32952,
-    "end": 33107,
-    "duration": 155
+    "start": 64150,
+    "end": 64256,
+    "duration": 106,
+    "peakTime": 64170,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 12,
     "wordIdx": 42,
     "charIdx": 0,
     "char": "ٱ",
-    "start": 33107,
-    "end": 33453,
-    "duration": 346
+    "start": 64316,
+    "end": 64660,
+    "duration": 344,
+    "peakTime": 64380,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 12,
     "wordIdx": 42,
     "charIdx": 1,
     "char": "لْ",
-    "start": 33453,
-    "end": 33829,
-    "duration": 376
+    "start": 64660,
+    "end": 64930,
+    "duration": 270,
+    "peakTime": 64800,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 12,
     "wordIdx": 42,
     "charIdx": 2,
     "char": "كُ",
-    "start": 33829,
-    "end": 34155,
-    "duration": 326
+    "start": 64930,
+    "end": 65260,
+    "duration": 330,
+    "peakTime": 64930,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 12,
     "wordIdx": 42,
     "charIdx": 3,
     "char": "بْ",
-    "start": 34155,
-    "end": 34476,
-    "duration": 321
+    "start": 65260,
+    "end": 65550,
+    "duration": 290,
+    "peakTime": 65260,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 12,
     "wordIdx": 42,
     "charIdx": 4,
     "char": "رَ",
-    "start": 34476,
-    "end": 34848,
-    "duration": 372
+    "start": 65550,
+    "end": 65890,
+    "duration": 340,
+    "peakTime": 65570,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 12,
     "wordIdx": 42,
     "charIdx": 5,
     "char": "ىٰ",
-    "start": 34848,
-    "end": 35190,
-    "duration": 342
+    "start": 65890,
+    "end": 66319,
+    "duration": 429,
+    "peakTime": 65980,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 13,
     "wordIdx": 43,
     "charIdx": 0,
     "char": "ثُ",
-    "start": 35206,
-    "end": 35340,
-    "duration": 134
+    "start": 66299,
+    "end": 66700,
+    "duration": 401,
+    "peakTime": 66610,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 13,
     "wordIdx": 43,
     "charIdx": 1,
     "char": "مَّ",
-    "start": 35340,
-    "end": 35470,
-    "duration": 130
+    "start": 66700,
+    "end": 67540,
+    "duration": 840,
+    "peakTime": 66780,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 13,
     "wordIdx": 44,
     "charIdx": 0,
     "char": "لَ",
-    "start": 35470,
-    "end": 35620,
-    "duration": 150
+    "start": 67801,
+    "end": 68000,
+    "duration": 199,
+    "peakTime": 67980,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 13,
     "wordIdx": 44,
     "charIdx": 1,
     "char": "ا",
-    "start": 35620,
-    "end": 35769,
-    "duration": 149
+    "start": 68000,
+    "end": 68261,
+    "duration": 261,
+    "peakTime": 68040,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 13,
     "wordIdx": 45,
     "charIdx": 0,
     "char": "يَ",
-    "start": 35769,
-    "end": 36032,
-    "duration": 263
+    "start": 68381,
+    "end": 68670,
+    "duration": 289,
+    "peakTime": 68570,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 13,
     "wordIdx": 45,
     "charIdx": 1,
     "char": "مُ",
-    "start": 36032,
-    "end": 36176,
-    "duration": 144
+    "start": 68670,
+    "end": 68870,
+    "duration": 200,
+    "peakTime": 68790,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 13,
     "wordIdx": 45,
     "charIdx": 2,
     "char": "و",
-    "start": 36176,
-    "end": 36354,
-    "duration": 178
+    "start": 68870,
+    "end": 69170,
+    "duration": 300,
+    "peakTime": 68970,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 13,
     "wordIdx": 45,
     "charIdx": 3,
     "char": "تُ",
-    "start": 36354,
-    "end": 36510,
-    "duration": 156
+    "start": 69170,
+    "end": 69323,
+    "duration": 153,
+    "peakTime": 69170,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 13,
     "wordIdx": 46,
     "charIdx": 0,
     "char": "فِ",
-    "start": 36510,
-    "end": 36582,
-    "duration": 72
+    "start": 69483,
+    "end": 69700,
+    "duration": 217,
+    "peakTime": 69690,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 13,
     "wordIdx": 46,
     "charIdx": 1,
     "char": "ي",
-    "start": 36582,
-    "end": 36664,
-    "duration": 82
+    "start": 69700,
+    "end": 69990,
+    "duration": 290,
+    "peakTime": 69720,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 13,
     "wordIdx": 46,
     "charIdx": 2,
     "char": "هَ",
-    "start": 36664,
-    "end": 36735,
-    "duration": 71
+    "start": 69990,
+    "end": 70180,
+    "duration": 190,
+    "peakTime": 70150,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 13,
     "wordIdx": 46,
     "charIdx": 3,
     "char": "ا",
-    "start": 36735,
-    "end": 36816,
-    "duration": 81
+    "start": 70180,
+    "end": 70484,
+    "duration": 304,
+    "peakTime": 70450,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 13,
     "wordIdx": 47,
     "charIdx": 0,
     "char": "وَ",
-    "start": 36816,
-    "end": 36994,
-    "duration": 178
+    "start": 70604,
+    "end": 70860,
+    "duration": 256,
+    "peakTime": 70604,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 13,
     "wordIdx": 47,
     "charIdx": 1,
     "char": "لَ",
-    "start": 36994,
-    "end": 37157,
-    "duration": 163
+    "start": 70860,
+    "end": 71040,
+    "duration": 180,
+    "peakTime": 70950,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 13,
     "wordIdx": 47,
     "charIdx": 2,
     "char": "ا",
-    "start": 37157,
-    "end": 37271,
-    "duration": 114
+    "start": 71040,
+    "end": 71305,
+    "duration": 265,
+    "peakTime": 71100,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 13,
     "wordIdx": 48,
     "charIdx": 0,
     "char": "يَ",
-    "start": 37271,
-    "end": 37371,
-    "duration": 100
+    "start": 71425,
+    "end": 71870,
+    "duration": 445,
+    "peakTime": 71425,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 13,
     "wordIdx": 48,
     "charIdx": 1,
     "char": "حْ",
-    "start": 37371,
-    "end": 37457,
-    "duration": 86
+    "start": 71870,
+    "end": 72250,
+    "duration": 380,
+    "peakTime": 72180,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 13,
     "wordIdx": 48,
     "charIdx": 2,
     "char": "يَ",
-    "start": 37457,
-    "end": 37558,
-    "duration": 101
+    "start": 72250,
+    "end": 72710,
+    "duration": 460,
+    "peakTime": 72540,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 13,
     "wordIdx": 48,
     "charIdx": 3,
     "char": "ىٰ",
-    "start": 37558,
-    "end": 37634,
-    "duration": 76
+    "start": 72710,
+    "end": 73187,
+    "duration": 477,
+    "peakTime": 73080,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 14,
     "wordIdx": 49,
     "charIdx": 0,
     "char": "قَ",
-    "start": 37634,
-    "end": 37720,
-    "duration": 86
+    "start": 73287,
+    "end": 73460,
+    "duration": 173,
+    "peakTime": 73287,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 14,
     "wordIdx": 49,
     "charIdx": 1,
     "char": "دْ",
-    "start": 37720,
-    "end": 37832,
-    "duration": 112
+    "start": 73460,
+    "end": 73568,
+    "duration": 108,
+    "peakTime": 73470,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 14,
     "wordIdx": 50,
     "charIdx": 0,
     "char": "أَ",
-    "start": 37832,
-    "end": 37964,
-    "duration": 132
+    "start": 73688,
+    "end": 73910,
+    "duration": 222,
+    "peakTime": 73720,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 14,
     "wordIdx": 50,
     "charIdx": 1,
     "char": "فْ",
-    "start": 37964,
-    "end": 38095,
-    "duration": 131
+    "start": 73910,
+    "end": 74060,
+    "duration": 150,
+    "peakTime": 74050,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 14,
     "wordIdx": 50,
     "charIdx": 2,
     "char": "لَ",
-    "start": 38095,
-    "end": 38229,
-    "duration": 134
+    "start": 74060,
+    "end": 74230,
+    "duration": 170,
+    "peakTime": 74110,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 14,
     "wordIdx": 50,
     "charIdx": 3,
     "char": "حَ",
-    "start": 38229,
-    "end": 38337,
-    "duration": 108
+    "start": 74230,
+    "end": 74449,
+    "duration": 219,
+    "peakTime": 74390,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 14,
     "wordIdx": 51,
     "charIdx": 0,
     "char": "مَ",
-    "start": 38337,
-    "end": 38428,
-    "duration": 91
+    "start": 74609,
+    "end": 75220,
+    "duration": 611,
+    "peakTime": 75110,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 14,
     "wordIdx": 51,
     "charIdx": 1,
     "char": "ن",
-    "start": 38428,
-    "end": 38938,
-    "duration": 510
+    "start": 75220,
+    "end": 75850,
+    "duration": 630,
+    "peakTime": 75760,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 14,
     "wordIdx": 52,
     "charIdx": 0,
     "char": "تَ",
-    "start": 38938,
-    "end": 39072,
-    "duration": 134
+    "start": 75870,
+    "end": 76220,
+    "duration": 350,
+    "peakTime": 75870,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 14,
     "wordIdx": 52,
     "charIdx": 1,
     "char": "زَ",
-    "start": 39072,
-    "end": 39219,
-    "duration": 147
+    "start": 76220,
+    "end": 76650,
+    "duration": 430,
+    "peakTime": 76630,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 14,
     "wordIdx": 52,
     "charIdx": 2,
     "char": "كَّ",
-    "start": 39219,
-    "end": 39390,
-    "duration": 171
+    "start": 76650,
+    "end": 77270,
+    "duration": 620,
+    "peakTime": 76660,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 14,
     "wordIdx": 52,
     "charIdx": 3,
     "char": "ىٰ",
-    "start": 39390,
-    "end": 39522,
-    "duration": 132
+    "start": 77270,
+    "end": 77773,
+    "duration": 503,
+    "peakTime": 77510,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 15,
     "wordIdx": 53,
     "charIdx": 0,
     "char": "وَ",
-    "start": 39522,
-    "end": 39688,
-    "duration": 166
+    "start": 77853,
+    "end": 78140,
+    "duration": 287,
+    "peakTime": 78110,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 15,
     "wordIdx": 53,
     "charIdx": 1,
     "char": "ذَ",
-    "start": 39688,
-    "end": 39835,
-    "duration": 147
+    "start": 78140,
+    "end": 78320,
+    "duration": 180,
+    "peakTime": 78140,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 15,
     "wordIdx": 53,
     "charIdx": 2,
     "char": "كَ",
-    "start": 39835,
-    "end": 39969,
-    "duration": 134
+    "start": 78320,
+    "end": 78530,
+    "duration": 210,
+    "peakTime": 78320,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 15,
     "wordIdx": 53,
     "charIdx": 3,
     "char": "رَ",
-    "start": 39969,
-    "end": 41037,
-    "duration": 1068
+    "start": 78530,
+    "end": 78774,
+    "duration": 244,
+    "peakTime": 78560,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 15,
     "wordIdx": 54,
     "charIdx": 0,
     "char": "ٱ",
-    "start": 41037,
-    "end": 41126,
-    "duration": 89
+    "start": 78794,
+    "end": 78890,
+    "duration": 96,
+    "peakTime": 78880,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 15,
     "wordIdx": 54,
     "charIdx": 1,
     "char": "سْ",
-    "start": 41126,
-    "end": 41220,
-    "duration": 94
+    "start": 78890,
+    "end": 78960,
+    "duration": 70,
+    "peakTime": 78930,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 15,
     "wordIdx": 54,
     "charIdx": 2,
     "char": "مَ",
-    "start": 41220,
-    "end": 41331,
-    "duration": 111
+    "start": 78960,
+    "end": 79134,
+    "duration": 174,
+    "peakTime": 78960,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 15,
     "wordIdx": 55,
     "charIdx": 0,
     "char": "رَ",
-    "start": 41331,
-    "end": 41418,
-    "duration": 87
+    "start": 79214,
+    "end": 79550,
+    "duration": 336,
+    "peakTime": 79230,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 15,
     "wordIdx": 55,
     "charIdx": 1,
     "char": "بِّ",
-    "start": 41418,
-    "end": 41516,
-    "duration": 98
+    "start": 79550,
+    "end": 80200,
+    "duration": 650,
+    "peakTime": 79670,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 15,
     "wordIdx": 55,
     "charIdx": 2,
-    "char": "هِ",
-    "start": 41516,
-    "end": 41576,
-    "duration": 60
+    "char": "هِۦ",
+    "start": 80200,
+    "end": 80496,
+    "duration": 296,
+    "peakTime": 80450,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 15,
     "wordIdx": 56,
     "charIdx": 0,
     "char": "فَ",
-    "start": 41576,
-    "end": 41677,
-    "duration": 101
+    "start": 80636,
+    "end": 81020,
+    "duration": 384,
+    "peakTime": 80990,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 15,
     "wordIdx": 56,
     "charIdx": 1,
     "char": "صَ",
-    "start": 41677,
-    "end": 41778,
-    "duration": 101
+    "start": 81020,
+    "end": 81490,
+    "duration": 470,
+    "peakTime": 81090,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 15,
     "wordIdx": 56,
     "charIdx": 2,
     "char": "لَّ",
-    "start": 41778,
-    "end": 41893,
-    "duration": 115
+    "start": 81490,
+    "end": 82150,
+    "duration": 660,
+    "peakTime": 81810,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 15,
     "wordIdx": 56,
     "charIdx": 3,
     "char": "ىٰ",
-    "start": 41893,
-    "end": 41988,
-    "duration": 95
+    "start": 82150,
+    "end": 82638,
+    "duration": 488,
+    "peakTime": 82250,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 16,
     "wordIdx": 57,
     "charIdx": 0,
     "char": "بَ",
-    "start": 41988,
-    "end": 42078,
-    "duration": 90
+    "start": 82738,
+    "end": 82840,
+    "duration": 102,
+    "peakTime": 82738,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 16,
     "wordIdx": 57,
     "charIdx": 1,
     "char": "لْ",
-    "start": 42078,
-    "end": 42163,
-    "duration": 85
+    "start": 82840,
+    "end": 83059,
+    "duration": 219,
+    "peakTime": 83030,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 16,
     "wordIdx": 58,
     "charIdx": 0,
     "char": "تُ",
-    "start": 42163,
-    "end": 42285,
-    "duration": 122
+    "start": 83139,
+    "end": 83260,
+    "duration": 121,
+    "peakTime": 83140,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 16,
     "wordIdx": 58,
     "charIdx": 1,
     "char": "ؤْ",
-    "start": 42285,
-    "end": 42433,
-    "duration": 148
+    "start": 83260,
+    "end": 83540,
+    "duration": 280,
+    "peakTime": 83360,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 16,
     "wordIdx": 58,
     "charIdx": 2,
     "char": "ثِ",
-    "start": 42433,
-    "end": 42588,
-    "duration": 155
+    "start": 83540,
+    "end": 83760,
+    "duration": 220,
+    "peakTime": 83720,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 16,
     "wordIdx": 58,
     "charIdx": 3,
     "char": "رُ",
-    "start": 42588,
-    "end": 42747,
-    "duration": 159
+    "start": 83760,
+    "end": 83960,
+    "duration": 200,
+    "peakTime": 83870,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 16,
     "wordIdx": 58,
     "charIdx": 4,
     "char": "و",
-    "start": 42747,
-    "end": 42932,
-    "duration": 185
+    "start": 83960,
+    "end": 84210,
+    "duration": 250,
+    "peakTime": 83960,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 16,
     "wordIdx": 58,
     "charIdx": 5,
     "char": "نَ",
-    "start": 42932,
-    "end": 43059,
-    "duration": 127
+    "start": 84210,
+    "end": 84500,
+    "duration": 290,
+    "peakTime": 84210,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 16,
     "wordIdx": 59,
     "charIdx": 0,
     "char": "ٱ",
-    "start": 43059,
-    "end": 43169,
-    "duration": 110
+    "start": 84561,
+    "end": 84730,
+    "duration": 169,
+    "peakTime": 84610,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 16,
     "wordIdx": 59,
     "charIdx": 1,
     "char": "لْ",
-    "start": 43169,
-    "end": 43287,
-    "duration": 118
+    "start": 84730,
+    "end": 84920,
+    "duration": 190,
+    "peakTime": 84900,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 16,
     "wordIdx": 59,
     "charIdx": 2,
     "char": "حَ",
-    "start": 43287,
-    "end": 43402,
-    "duration": 115
+    "start": 84920,
+    "end": 85160,
+    "duration": 240,
+    "peakTime": 85030,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 16,
     "wordIdx": 59,
     "charIdx": 3,
     "char": "يَ",
-    "start": 43402,
-    "end": 43538,
-    "duration": 136
+    "start": 85160,
+    "end": 85410,
+    "duration": 250,
+    "peakTime": 85200,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 16,
     "wordIdx": 59,
     "charIdx": 4,
     "char": "وٰ",
-    "start": 43538,
-    "end": 43673,
-    "duration": 135
+    "start": 85410,
+    "end": 85650,
+    "duration": 240,
+    "peakTime": 85410,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 16,
     "wordIdx": 59,
     "charIdx": 5,
     "char": "ةَ",
-    "start": 43673,
-    "end": 43785,
-    "duration": 112
+    "start": 85650,
+    "end": 85842,
+    "duration": 192,
+    "peakTime": 85700,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 16,
     "wordIdx": 60,
     "charIdx": 0,
     "char": "ٱ",
-    "start": 43785,
-    "end": 44028,
-    "duration": 243
+    "start": 85902,
+    "end": 86110,
+    "duration": 208,
+    "peakTime": 85902,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 16,
     "wordIdx": 60,
     "charIdx": 1,
     "char": "ل",
-    "start": 44028,
-    "end": 44258,
-    "duration": 230
+    "start": 86110,
+    "end": 86260,
+    "duration": 150,
+    "peakTime": 86250,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 16,
     "wordIdx": 60,
     "charIdx": 2,
     "char": "دُّ",
-    "start": 44258,
-    "end": 44512,
-    "duration": 254
+    "start": 86260,
+    "end": 86600,
+    "duration": 340,
+    "peakTime": 86470,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 16,
     "wordIdx": 60,
     "charIdx": 3,
     "char": "نْ",
-    "start": 44512,
-    "end": 44733,
-    "duration": 221
+    "start": 86600,
+    "end": 86850,
+    "duration": 250,
+    "peakTime": 86770,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 16,
     "wordIdx": 60,
     "charIdx": 4,
     "char": "يَ",
-    "start": 44733,
-    "end": 44996,
-    "duration": 263
+    "start": 86850,
+    "end": 87100,
+    "duration": 250,
+    "peakTime": 86850,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 16,
     "wordIdx": 60,
     "charIdx": 5,
     "char": "ا",
-    "start": 44996,
-    "end": 45250,
-    "duration": 254
+    "start": 87100,
+    "end": 87364,
+    "duration": 264,
+    "peakTime": 87160,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 17,
     "wordIdx": 61,
     "charIdx": 0,
     "char": "وَ",
-    "start": 45250,
-    "end": 45597,
-    "duration": 347
+    "start": 87484,
+    "end": 87780,
+    "duration": 296,
+    "peakTime": 87550,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 17,
     "wordIdx": 61,
     "charIdx": 1,
     "char": "ٱ",
-    "start": 45597,
-    "end": 45891,
-    "duration": 294
+    "start": 87780,
+    "end": 87890,
+    "duration": 110,
+    "peakTime": 87800,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 17,
     "wordIdx": 61,
     "charIdx": 2,
     "char": "لْ",
-    "start": 45891,
-    "end": 46205,
-    "duration": 314
+    "start": 87890,
+    "end": 88110,
+    "duration": 220,
+    "peakTime": 88050,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 17,
     "wordIdx": 61,
     "charIdx": 3,
     "char": "ءَ",
-    "start": 46205,
-    "end": 46486,
-    "duration": 281
+    "start": 88110,
+    "end": 88280,
+    "duration": 170,
+    "peakTime": 88200,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 17,
     "wordIdx": 61,
     "charIdx": 4,
     "char": "ا",
-    "start": 46486,
-    "end": 46768,
-    "duration": 282
+    "start": 88280,
+    "end": 88550,
+    "duration": 270,
+    "peakTime": 88300,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 17,
     "wordIdx": 61,
     "charIdx": 5,
     "char": "خِ",
-    "start": 46768,
-    "end": 46998,
-    "duration": 230
+    "start": 88550,
+    "end": 88750,
+    "duration": 200,
+    "peakTime": 88610,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 17,
     "wordIdx": 61,
     "charIdx": 6,
     "char": "رَ",
-    "start": 46998,
-    "end": 47235,
-    "duration": 237
+    "start": 88750,
+    "end": 89040,
+    "duration": 290,
+    "peakTime": 88800,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 17,
     "wordIdx": 61,
     "charIdx": 7,
     "char": "ةُ",
-    "start": 47235,
-    "end": 47488,
-    "duration": 253
+    "start": 89040,
+    "end": 89186,
+    "duration": 146,
+    "peakTime": 89080,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 17,
     "wordIdx": 62,
     "charIdx": 0,
     "char": "خَ",
-    "start": 47488,
-    "end": 47584,
-    "duration": 96
+    "start": 89346,
+    "end": 89780,
+    "duration": 434,
+    "peakTime": 89370,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 17,
     "wordIdx": 62,
     "charIdx": 1,
     "char": "يْ",
-    "start": 47584,
-    "end": 47696,
-    "duration": 112
+    "start": 89780,
+    "end": 90260,
+    "duration": 480,
+    "peakTime": 90070,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 17,
     "wordIdx": 62,
     "charIdx": 2,
     "char": "رٌ",
-    "start": 47696,
-    "end": 47770,
-    "duration": 74
+    "start": 90260,
+    "end": 90708,
+    "duration": 448,
+    "peakTime": 90350,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 17,
     "wordIdx": 63,
     "charIdx": 0,
     "char": "وَ",
-    "start": 47770,
-    "end": 47891,
-    "duration": 121
+    "start": 90788,
+    "end": 91120,
+    "duration": 332,
+    "peakTime": 90950,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 17,
     "wordIdx": 63,
     "charIdx": 1,
     "char": "أَ",
-    "start": 47891,
-    "end": 47986,
-    "duration": 95
+    "start": 91120,
+    "end": 91280,
+    "duration": 160,
+    "peakTime": 91150,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 17,
     "wordIdx": 63,
     "charIdx": 2,
     "char": "بْ",
-    "start": 47986,
-    "end": 48076,
-    "duration": 90
+    "start": 91280,
+    "end": 91550,
+    "duration": 270,
+    "peakTime": 91280,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 17,
     "wordIdx": 63,
     "charIdx": 3,
     "char": "قَ",
-    "start": 48076,
-    "end": 48165,
-    "duration": 89
+    "start": 91550,
+    "end": 91760,
+    "duration": 210,
+    "peakTime": 91640,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 17,
     "wordIdx": 63,
     "charIdx": 4,
     "char": "ىٰٓ",
-    "start": 48165,
-    "end": 48260,
-    "duration": 95
+    "start": 91760,
+    "end": 92610,
+    "duration": 850,
+    "peakTime": 91910,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 18,
     "wordIdx": 64,
     "charIdx": 0,
     "char": "إِ",
-    "start": 48437,
-    "end": 48542,
-    "duration": 105
+    "start": 92590,
+    "end": 92960,
+    "duration": 370,
+    "peakTime": 92890,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 18,
     "wordIdx": 64,
     "charIdx": 1,
     "char": "نَّ",
-    "start": 48542,
-    "end": 48652,
-    "duration": 110
+    "start": 92960,
+    "end": 93896,
+    "duration": 936,
+    "peakTime": 93620,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 18,
     "wordIdx": 65,
     "charIdx": 0,
     "char": "هَٰ",
-    "start": 48652,
-    "end": 48755,
-    "duration": 103
+    "start": 94016,
+    "end": 94290,
+    "duration": 274,
+    "peakTime": 94260,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 18,
     "wordIdx": 65,
     "charIdx": 1,
     "char": "ذَ",
-    "start": 48755,
-    "end": 48858,
-    "duration": 103
+    "start": 94290,
+    "end": 94600,
+    "duration": 310,
+    "peakTime": 94350,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 18,
     "wordIdx": 65,
     "charIdx": 2,
     "char": "ا",
-    "start": 48858,
-    "end": 48994,
-    "duration": 136
+    "start": 94600,
+    "end": 95061,
+    "duration": 461,
+    "peakTime": 95000,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 18,
     "wordIdx": 66,
     "charIdx": 0,
     "char": "لَ",
-    "start": 48994,
-    "end": 49096,
-    "duration": 102
+    "start": 95141,
+    "end": 95280,
+    "duration": 139,
+    "peakTime": 95200,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 18,
     "wordIdx": 66,
     "charIdx": 1,
     "char": "فِ",
-    "start": 49096,
-    "end": 49195,
-    "duration": 99
+    "start": 95280,
+    "end": 95390,
+    "duration": 110,
+    "peakTime": 95280,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 18,
     "wordIdx": 66,
     "charIdx": 2,
     "char": "ى",
-    "start": 49195,
-    "end": 49288,
-    "duration": 93
+    "start": 95390,
+    "end": 95523,
+    "duration": 133,
+    "peakTime": 95440,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 18,
     "wordIdx": 67,
     "charIdx": 0,
     "char": "ٱ",
-    "start": 49288,
-    "end": 49561,
-    "duration": 273
+    "start": 95583,
+    "end": 95810,
+    "duration": 227,
+    "peakTime": 95620,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 18,
     "wordIdx": 67,
     "charIdx": 1,
     "char": "ل",
-    "start": 49561,
-    "end": 49854,
-    "duration": 293
+    "start": 95810,
+    "end": 95930,
+    "duration": 120,
+    "peakTime": 95890,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 18,
     "wordIdx": 67,
     "charIdx": 2,
     "char": "صُّ",
-    "start": 49854,
-    "end": 50183,
-    "duration": 329
+    "start": 95930,
+    "end": 96360,
+    "duration": 430,
+    "peakTime": 96120,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 18,
     "wordIdx": 67,
     "charIdx": 3,
     "char": "حُ",
-    "start": 50183,
-    "end": 50502,
-    "duration": 319
+    "start": 96360,
+    "end": 96500,
+    "duration": 140,
+    "peakTime": 96490,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 18,
     "wordIdx": 67,
     "charIdx": 4,
     "char": "فِ",
-    "start": 50502,
-    "end": 50814,
-    "duration": 312
+    "start": 96500,
+    "end": 96688,
+    "duration": 188,
+    "peakTime": 96530,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 18,
     "wordIdx": 68,
     "charIdx": 0,
     "char": "ٱ",
-    "start": 50814,
-    "end": 50927,
-    "duration": 113
+    "start": 96849,
+    "end": 96980,
+    "duration": 131,
+    "peakTime": 96860,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 18,
     "wordIdx": 68,
     "charIdx": 1,
     "char": "لْ",
-    "start": 50927,
-    "end": 51049,
-    "duration": 122
+    "start": 96980,
+    "end": 97150,
+    "duration": 170,
+    "peakTime": 97130,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 18,
     "wordIdx": 68,
     "charIdx": 2,
     "char": "أُ",
-    "start": 51049,
-    "end": 51163,
-    "duration": 114
+    "start": 97150,
+    "end": 97340,
+    "duration": 190,
+    "peakTime": 97250,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 18,
     "wordIdx": 68,
     "charIdx": 3,
     "char": "و",
-    "start": 51163,
-    "end": 51305,
-    "duration": 142
+    "start": 97340,
+    "end": 97530,
+    "duration": 190,
+    "peakTime": 97340,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 18,
     "wordIdx": 68,
     "charIdx": 4,
     "char": "لَ",
-    "start": 51305,
-    "end": 51427,
-    "duration": 122
+    "start": 97530,
+    "end": 97730,
+    "duration": 200,
+    "peakTime": 97620,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 18,
     "wordIdx": 68,
     "charIdx": 5,
     "char": "ىٰ",
-    "start": 51427,
-    "end": 51528,
-    "duration": 101
+    "start": 97730,
+    "end": 97973,
+    "duration": 243,
+    "peakTime": 97760,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 19,
     "wordIdx": 69,
     "charIdx": 0,
     "char": "صُ",
-    "start": 51528,
-    "end": 51643,
-    "duration": 115
+    "start": 98295,
+    "end": 98590,
+    "duration": 295,
+    "peakTime": 98295,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 19,
     "wordIdx": 69,
     "charIdx": 1,
     "char": "حُ",
-    "start": 51643,
-    "end": 51772,
-    "duration": 129
+    "start": 98590,
+    "end": 98830,
+    "duration": 240,
+    "peakTime": 98750,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 19,
     "wordIdx": 69,
     "charIdx": 2,
     "char": "فِ",
-    "start": 51772,
-    "end": 51907,
-    "duration": 135
+    "start": 98830,
+    "end": 99078,
+    "duration": 248,
+    "peakTime": 98980,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 19,
     "wordIdx": 70,
     "charIdx": 0,
     "char": "إِ",
-    "start": 51907,
-    "end": 52276,
-    "duration": 369
+    "start": 99199,
+    "end": 99620,
+    "duration": 421,
+    "peakTime": 99310,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 19,
     "wordIdx": 70,
     "charIdx": 1,
     "char": "بْ",
-    "start": 52276,
-    "end": 52566,
-    "duration": 290
+    "start": 99620,
+    "end": 100050,
+    "duration": 430,
+    "peakTime": 99760,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 19,
     "wordIdx": 70,
     "charIdx": 2,
     "char": "رَٰ",
-    "start": 52566,
-    "end": 52898,
-    "duration": 332
+    "start": 100050,
+    "end": 100500,
+    "duration": 450,
+    "peakTime": 100100,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 19,
     "wordIdx": 70,
     "charIdx": 3,
     "char": "هِ",
-    "start": 52898,
-    "end": 53222,
-    "duration": 324
+    "start": 100500,
+    "end": 100870,
+    "duration": 370,
+    "peakTime": 100800,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 19,
     "wordIdx": 70,
     "charIdx": 4,
     "char": "ي",
-    "start": 53222,
-    "end": 53646,
-    "duration": 424
+    "start": 100870,
+    "end": 101470,
+    "duration": 600,
+    "peakTime": 101140,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 19,
     "wordIdx": 70,
     "charIdx": 5,
     "char": "مَ",
-    "start": 53646,
-    "end": 53994,
-    "duration": 348
+    "start": 101470,
+    "end": 101931,
+    "duration": 461,
+    "peakTime": 101880,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 19,
     "wordIdx": 71,
     "charIdx": 0,
     "char": "وَ",
-    "start": 53994,
-    "end": 54114,
-    "duration": 120
+    "start": 101951,
+    "end": 102160,
+    "duration": 209,
+    "peakTime": 102050,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 19,
     "wordIdx": 71,
     "charIdx": 1,
     "char": "مُ",
-    "start": 54114,
-    "end": 54213,
-    "duration": 99
+    "start": 102160,
+    "end": 102340,
+    "duration": 180,
+    "peakTime": 102230,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 19,
     "wordIdx": 71,
     "charIdx": 2,
     "char": "و",
-    "start": 54213,
-    "end": 54333,
-    "duration": 120
+    "start": 102340,
+    "end": 102550,
+    "duration": 210,
+    "peakTime": 102340,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 19,
     "wordIdx": 71,
     "charIdx": 3,
     "char": "سَ",
-    "start": 54333,
-    "end": 54435,
-    "duration": 102
+    "start": 102550,
+    "end": 102720,
+    "duration": 170,
+    "peakTime": 102710,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   },
   {
+    "ayah": 19,
     "wordIdx": 71,
     "charIdx": 4,
     "char": "ىٰ",
-    "start": 54435,
-    "end": 54532,
-    "duration": 97
+    "start": 102720,
+    "end": 102955,
+    "duration": 235,
+    "peakTime": 102880,
+    "confidence": 0.99,
+    "isAcousticSnapped": true
   }
 ]
