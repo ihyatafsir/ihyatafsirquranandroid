@@ -101,22 +101,31 @@ export function useQuranAudio(selectedReciterId: string) {
     if (selectedReciterId === 'mah') {
       const mahTimings = mahTimingsMap[String(activeSurahRef.current)];
       if (mahTimings && mahTimings.length > 0) {
-        const curAyah = mahTimings.find(t => pos >= t[1] && pos < t[2])
-                     || mahTimings.filter(t => pos >= t[1]).pop()
-                     || mahTimings[0];
-        if (curAyah) {
-          versePos = Math.max(0, pos - curAyah[1]);
-          if (curAyah[0] !== activeAyahRef.current) {
-            activeAyahRef.current = curAyah[0];
-            setCurrentVerseKey(`${activeSurahRef.current}:${curAyah[0]}`);
-            const reciter = RECITERS.find(r => r.id === selectedReciterId) || RECITERS[0];
-            mediaNotificationService.updateMetadata({
-              surahNumber: activeSurahRef.current,
-              surahName: `سورة ${activeSurahRef.current}`,
-              ayahNumber: curAyah[0],
-              reciterName: reciter.name,
-              isPlaying: status.isPlaying,
-            });
+        // Clamp pre-speech (e.g. Isti'adhah / Basmalah before Ayah 1) cleanly to Ayah 1 start
+        if (pos < mahTimings[0][1]) {
+          versePos = 0;
+          if (activeAyahRef.current !== mahTimings[0][0]) {
+            activeAyahRef.current = mahTimings[0][0];
+            setCurrentVerseKey(`${activeSurahRef.current}:${mahTimings[0][0]}`);
+          }
+        } else {
+          const curAyah = mahTimings.find(t => pos >= t[1] && pos < t[2])
+                       || mahTimings.filter(t => pos >= t[1]).pop()
+                       || mahTimings[0];
+          if (curAyah) {
+            versePos = Math.max(0, pos - curAyah[1]);
+            if (curAyah[0] !== activeAyahRef.current) {
+              activeAyahRef.current = curAyah[0];
+              setCurrentVerseKey(`${activeSurahRef.current}:${curAyah[0]}`);
+              const reciter = RECITERS.find(r => r.id === selectedReciterId) || RECITERS[0];
+              mediaNotificationService.updateMetadata({
+                surahNumber: activeSurahRef.current,
+                surahName: `سورة ${activeSurahRef.current}`,
+                ayahNumber: curAyah[0],
+                reciterName: reciter.name,
+                isPlaying: status.isPlaying,
+              });
+            }
           }
         }
       }
@@ -281,7 +290,17 @@ export function useQuranAudio(selectedReciterId: string) {
   const seekToMs = async (targetMs: number) => {
     if (soundRef.current) {
       try {
-        await soundRef.current.setPositionAsync(Math.max(0, targetMs));
+        let absPos = targetMs;
+        if (selectedReciterId === 'mah') {
+          const mahTimings = mahTimingsMap[String(activeSurahRef.current)];
+          if (mahTimings && mahTimings.length > 0) {
+            const curAyahTiming = mahTimings.find(t => t[0] === activeAyahRef.current);
+            if (curAyahTiming) {
+              absPos = curAyahTiming[1] + targetMs;
+            }
+          }
+        }
+        await soundRef.current.setPositionAsync(Math.max(0, absPos));
       } catch (seekErr) {
         console.warn("Audio setPositionAsync error:", seekErr);
       }

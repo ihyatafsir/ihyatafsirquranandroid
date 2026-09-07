@@ -460,6 +460,10 @@ export const NativeMushafWebView: React.FC<NativeMushafWebViewProps> = ({
             }
           } else {
             // Fall back to word mode if no letter entry for this frame
+            if (currentActiveCharEl) {
+              currentActiveCharEl.classList.remove("active-char");
+              currentActiveCharEl = null;
+            }
             syncWordHighlight(aNum, timeMs);
           }
         } else {
