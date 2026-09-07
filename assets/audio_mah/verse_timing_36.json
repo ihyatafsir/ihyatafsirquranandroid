@@ -2,499 +2,499 @@
   {
     "ayah": 1,
     "start_ms": 8108,
-    "end_ms": 8710,
-    "startWordIdx": 9
+    "end_ms": 10874,
+    "word_count": 1
   },
   {
     "ayah": 2,
-    "start_ms": 8730,
-    "end_ms": 12498,
-    "startWordIdx": 10
+    "start_ms": 10995,
+    "end_ms": 14622,
+    "word_count": 2
   },
   {
     "ayah": 3,
-    "start_ms": 12638,
-    "end_ms": 16647,
-    "startWordIdx": 12
+    "start_ms": 14723,
+    "end_ms": 19052,
+    "word_count": 3
   },
   {
     "ayah": 4,
-    "start_ms": 16707,
-    "end_ms": 21574,
-    "startWordIdx": 15
+    "start_ms": 19032,
+    "end_ms": 23837,
+    "word_count": 3
   },
   {
     "ayah": 5,
-    "start_ms": 21675,
-    "end_ms": 26619,
-    "startWordIdx": 18
+    "start_ms": 23937,
+    "end_ms": 28782,
+    "word_count": 3
   },
   {
     "ayah": 6,
-    "start_ms": 26699,
-    "end_ms": 37390,
-    "startWordIdx": 21
+    "start_ms": 28942,
+    "end_ms": 39812,
+    "word_count": 7
   },
   {
     "ayah": 7,
-    "start_ms": 37510,
-    "end_ms": 45498,
-    "startWordIdx": 28
+    "start_ms": 39932,
+    "end_ms": 47740,
+    "word_count": 8
   },
   {
     "ayah": 8,
-    "start_ms": 45618,
-    "end_ms": 59152,
-    "startWordIdx": 36
+    "start_ms": 47720,
+    "end_ms": 61375,
+    "word_count": 10
   },
   {
     "ayah": 9,
-    "start_ms": 59393,
-    "end_ms": 74709,
-    "startWordIdx": 46
+    "start_ms": 61475,
+    "end_ms": 77052,
+    "word_count": 12
   },
   {
     "ayah": 10,
-    "start_ms": 74830,
-    "end_ms": 87684,
-    "startWordIdx": 58
+    "start_ms": 77690,
+    "end_ms": 90308,
+    "word_count": 8
   },
   {
     "ayah": 11,
-    "start_ms": 87785,
-    "end_ms": 103728,
-    "startWordIdx": 66
+    "start_ms": 90328,
+    "end_ms": 106752,
+    "word_count": 12
   },
   {
     "ayah": 12,
-    "start_ms": 104849,
-    "end_ms": 123697,
-    "startWordIdx": 78
+    "start_ms": 106732,
+    "end_ms": 125500,
+    "word_count": 14
   },
   {
     "ayah": 13,
-    "start_ms": 123717,
-    "end_ms": 134082,
-    "startWordIdx": 92
+    "start_ms": 125733,
+    "end_ms": 136784,
+    "word_count": 8
   },
   {
     "ayah": 14,
-    "start_ms": 134202,
-    "end_ms": 152641,
-    "startWordIdx": 100
+    "start_ms": 136924,
+    "end_ms": 154963,
+    "word_count": 11
   },
   {
     "ayah": 15,
-    "start_ms": 152661,
-    "end_ms": 170659,
-    "startWordIdx": 111
+    "start_ms": 154943,
+    "end_ms": 173461,
+    "word_count": 15
   },
   {
     "ayah": 16,
-    "start_ms": 170859,
-    "end_ms": 179687,
-    "startWordIdx": 126
+    "start_ms": 173601,
+    "end_ms": 182250,
+    "word_count": 6
   },
   {
     "ayah": 17,
-    "start_ms": 179788,
-    "end_ms": 187058,
-    "startWordIdx": 132
+    "start_ms": 182230,
+    "end_ms": 189221,
+    "word_count": 5
   },
   {
     "ayah": 18,
-    "start_ms": 187078,
-    "end_ms": 208051,
-    "startWordIdx": 137
+    "start_ms": 189361,
+    "end_ms": 210094,
+    "word_count": 12
   },
   {
     "ayah": 19,
-    "start_ms": 208211,
-    "end_ms": 223913,
-    "startWordIdx": 149
+    "start_ms": 210074,
+    "end_ms": 226915,
+    "word_count": 9
   },
   {
     "ayah": 20,
-    "start_ms": 224053,
-    "end_ms": 236164,
-    "startWordIdx": 158
+    "start_ms": 227015,
+    "end_ms": 240968,
+    "word_count": 10
   },
   {
     "ayah": 21,
-    "start_ms": 236584,
-    "end_ms": 246033,
-    "startWordIdx": 168
+    "start_ms": 240988,
+    "end_ms": 249936,
+    "word_count": 7
   },
   {
     "ayah": 22,
-    "start_ms": 246133,
-    "end_ms": 255504,
-    "startWordIdx": 175
+    "start_ms": 249916,
+    "end_ms": 260031,
+    "word_count": 8
   },
   {
     "ayah": 23,
-    "start_ms": 255605,
-    "end_ms": 277678,
-    "startWordIdx": 183
+    "start_ms": 260051,
+    "end_ms": 289729,
+    "word_count": 15
   },
   {
     "ayah": 24,
-    "start_ms": 278452,
-    "end_ms": 285423,
-    "startWordIdx": 198
+    "start_ms": 289749,
+    "end_ms": 297021,
+    "word_count": 5
   },
   {
     "ayah": 25,
-    "start_ms": 285523,
-    "end_ms": 291833,
-    "startWordIdx": 203
+    "start_ms": 297041,
+    "end_ms": 305033,
+    "word_count": 4
   },
   {
     "ayah": 26,
-    "start_ms": 292093,
-    "end_ms": 305033,
-    "startWordIdx": 207
+    "start_ms": 305013,
+    "end_ms": 316048,
+    "word_count": 7
   },
   {
     "ayah": 27,
-    "start_ms": 305013,
-    "end_ms": 313324,
-    "startWordIdx": 214
+    "start_ms": 316168,
+    "end_ms": 324760,
+    "word_count": 7
   },
   {
     "ayah": 28,
-    "start_ms": 313384,
-    "end_ms": 330993,
-    "startWordIdx": 221
+    "start_ms": 325280,
+    "end_ms": 344503,
+    "word_count": 13
   },
   {
     "ayah": 29,
-    "start_ms": 331133,
-    "end_ms": 344503,
-    "startWordIdx": 234
+    "start_ms": 344483,
+    "end_ms": 356947,
+    "word_count": 8
   },
   {
     "ayah": 30,
-    "start_ms": 344483,
-    "end_ms": 359532,
-    "startWordIdx": 242
+    "start_ms": 357107,
+    "end_ms": 373486,
+    "word_count": 11
   },
   {
     "ayah": 31,
-    "start_ms": 359712,
-    "end_ms": 374708,
-    "startWordIdx": 253
+    "start_ms": 373606,
+    "end_ms": 386286,
+    "word_count": 11
   },
   {
     "ayah": 32,
-    "start_ms": 374848,
-    "end_ms": 381839,
-    "startWordIdx": 264
+    "start_ms": 386705,
+    "end_ms": 397336,
+    "word_count": 6
   },
   {
     "ayah": 33,
-    "start_ms": 381979,
-    "end_ms": 398497,
-    "startWordIdx": 270
+    "start_ms": 397456,
+    "end_ms": 412071,
+    "word_count": 10
   },
   {
     "ayah": 34,
-    "start_ms": 398777,
-    "end_ms": 413593,
-    "startWordIdx": 280
+    "start_ms": 412171,
+    "end_ms": 429058,
+    "word_count": 10
   },
   {
     "ayah": 35,
-    "start_ms": 413793,
-    "end_ms": 426754,
-    "startWordIdx": 290
+    "start_ms": 429218,
+    "end_ms": 441362,
+    "word_count": 8
   },
   {
     "ayah": 36,
-    "start_ms": 426814,
-    "end_ms": 446191,
-    "startWordIdx": 298
+    "start_ms": 441502,
+    "end_ms": 459878,
+    "word_count": 13
   },
   {
     "ayah": 37,
-    "start_ms": 446211,
-    "end_ms": 459878,
-    "startWordIdx": 311
+    "start_ms": 460347,
+    "end_ms": 472202,
+    "word_count": 9
   },
   {
     "ayah": 38,
-    "start_ms": 460347,
-    "end_ms": 469539,
-    "startWordIdx": 320
+    "start_ms": 472302,
+    "end_ms": 485038,
+    "word_count": 8
   },
   {
     "ayah": 39,
-    "start_ms": 469639,
-    "end_ms": 481173,
-    "startWordIdx": 328
+    "start_ms": 485018,
+    "end_ms": 496478,
+    "word_count": 7
   },
   {
     "ayah": 40,
-    "start_ms": 481413,
-    "end_ms": 502449,
-    "startWordIdx": 335
+    "start_ms": 496618,
+    "end_ms": 516864,
+    "word_count": 15
   },
   {
     "ayah": 41,
-    "start_ms": 502509,
-    "end_ms": 513938,
-    "startWordIdx": 350
+    "start_ms": 516984,
+    "end_ms": 528205,
+    "word_count": 8
   },
   {
     "ayah": 42,
-    "start_ms": 514038,
-    "end_ms": 523917,
-    "startWordIdx": 358
+    "start_ms": 528185,
+    "end_ms": 537116,
+    "word_count": 6
   },
   {
     "ayah": 43,
-    "start_ms": 524057,
-    "end_ms": 537116,
-    "startWordIdx": 364
+    "start_ms": 537217,
+    "end_ms": 548111,
+    "word_count": 9
   },
   {
     "ayah": 44,
-    "start_ms": 537217,
-    "end_ms": 543244,
-    "startWordIdx": 373
+    "start_ms": 548251,
+    "end_ms": 552736,
+    "word_count": 6
   },
   {
     "ayah": 45,
-    "start_ms": 543344,
-    "end_ms": 561333,
-    "startWordIdx": 379
+    "start_ms": 552755,
+    "end_ms": 569650,
+    "word_count": 11
   },
   {
     "ayah": 46,
-    "start_ms": 561413,
-    "end_ms": 575322,
-    "startWordIdx": 390
+    "start_ms": 569630,
+    "end_ms": 585343,
+    "word_count": 11
   },
   {
     "ayah": 47,
-    "start_ms": 575342,
-    "end_ms": 605159,
-    "startWordIdx": 401
+    "start_ms": 585323,
+    "end_ms": 628797,
+    "word_count": 24
   },
   {
     "ayah": 48,
-    "start_ms": 605279,
-    "end_ms": 614671,
-    "startWordIdx": 425
+    "start_ms": 628777,
+    "end_ms": 639173,
+    "word_count": 7
   },
   {
     "ayah": 49,
-    "start_ms": 614792,
-    "end_ms": 623548,
-    "startWordIdx": 432
+    "start_ms": 639193,
+    "end_ms": 652033,
+    "word_count": 8
   },
   {
     "ayah": 50,
-    "start_ms": 623808,
-    "end_ms": 633164,
-    "startWordIdx": 440
+    "start_ms": 652739,
+    "end_ms": 663715,
+    "word_count": 7
   },
   {
     "ayah": 51,
-    "start_ms": 633264,
-    "end_ms": 649369,
-    "startWordIdx": 447
+    "start_ms": 663876,
+    "end_ms": 675473,
+    "word_count": 10
   },
   {
     "ayah": 52,
-    "start_ms": 649509,
-    "end_ms": 667040,
-    "startWordIdx": 457
+    "start_ms": 676330,
+    "end_ms": 693006,
+    "word_count": 12
   },
   {
     "ayah": 53,
-    "start_ms": 667201,
-    "end_ms": 680158,
-    "startWordIdx": 469
+    "start_ms": 692986,
+    "end_ms": 708089,
+    "word_count": 10
   },
   {
     "ayah": 54,
-    "start_ms": 680178,
-    "end_ms": 695169,
-    "startWordIdx": 479
+    "start_ms": 708190,
+    "end_ms": 721390,
+    "word_count": 11
   },
   {
     "ayah": 55,
-    "start_ms": 695290,
-    "end_ms": 705185,
-    "startWordIdx": 490
+    "start_ms": 722348,
+    "end_ms": 732438,
+    "word_count": 7
   },
   {
     "ayah": 56,
-    "start_ms": 705485,
-    "end_ms": 714660,
-    "startWordIdx": 497
+    "start_ms": 732458,
+    "end_ms": 742748,
+    "word_count": 7
   },
   {
     "ayah": 57,
-    "start_ms": 714680,
-    "end_ms": 723489,
-    "startWordIdx": 504
+    "start_ms": 742868,
+    "end_ms": 751697,
+    "word_count": 6
   },
   {
     "ayah": 58,
-    "start_ms": 723589,
-    "end_ms": 729755,
-    "startWordIdx": 510
+    "start_ms": 751677,
+    "end_ms": 759191,
+    "word_count": 5
   },
   {
     "ayah": 59,
-    "start_ms": 729775,
-    "end_ms": 735401,
-    "startWordIdx": 515
+    "start_ms": 759312,
+    "end_ms": 765383,
+    "word_count": 4
   },
   {
     "ayah": 60,
-    "start_ms": 735561,
-    "end_ms": 755765,
-    "startWordIdx": 519
+    "start_ms": 765717,
+    "end_ms": 781963,
+    "word_count": 13
   },
   {
     "ayah": 61,
-    "start_ms": 756045,
-    "end_ms": 762758,
-    "startWordIdx": 532
+    "start_ms": 782063,
+    "end_ms": 791255,
+    "word_count": 5
   },
   {
     "ayah": 62,
-    "start_ms": 762798,
-    "end_ms": 771286,
-    "startWordIdx": 537
+    "start_ms": 791375,
+    "end_ms": 804449,
+    "word_count": 8
   },
   {
     "ayah": 63,
-    "start_ms": 771306,
-    "end_ms": 777957,
-    "startWordIdx": 545
+    "start_ms": 804610,
+    "end_ms": 813139,
+    "word_count": 5
   },
   {
     "ayah": 64,
-    "start_ms": 778057,
-    "end_ms": 786370,
-    "startWordIdx": 550
+    "start_ms": 813473,
+    "end_ms": 820806,
+    "word_count": 5
   },
   {
     "ayah": 65,
-    "start_ms": 786590,
-    "end_ms": 805751,
-    "startWordIdx": 555
+    "start_ms": 821186,
+    "end_ms": 837034,
+    "word_count": 11
   },
   {
     "ayah": 66,
-    "start_ms": 805891,
-    "end_ms": 820806,
-    "startWordIdx": 566
+    "start_ms": 837622,
+    "end_ms": 851239,
+    "word_count": 9
   },
   {
     "ayah": 67,
-    "start_ms": 821186,
-    "end_ms": 834930,
-    "startWordIdx": 575
+    "start_ms": 851359,
+    "end_ms": 866177,
+    "word_count": 10
   },
   {
     "ayah": 68,
-    "start_ms": 835011,
-    "end_ms": 845271,
-    "startWordIdx": 585
+    "start_ms": 866798,
+    "end_ms": 878294,
+    "word_count": 7
   },
   {
     "ayah": 69,
-    "start_ms": 845331,
-    "end_ms": 864074,
-    "startWordIdx": 592
+    "start_ms": 878414,
+    "end_ms": 894477,
+    "word_count": 12
   },
   {
     "ayah": 70,
-    "start_ms": 864094,
-    "end_ms": 878294,
-    "startWordIdx": 604
+    "start_ms": 895030,
+    "end_ms": 907185,
+    "word_count": 8
   },
   {
     "ayah": 71,
-    "start_ms": 878414,
-    "end_ms": 896732,
-    "startWordIdx": 612
+    "start_ms": 907305,
+    "end_ms": 924767,
+    "word_count": 12
   },
   {
     "ayah": 72,
-    "start_ms": 896852,
-    "end_ms": 903741,
-    "startWordIdx": 624
+    "start_ms": 924747,
+    "end_ms": 935724,
+    "word_count": 6
   },
   {
     "ayah": 73,
-    "start_ms": 903761,
-    "end_ms": 913353,
-    "startWordIdx": 630
+    "start_ms": 935844,
+    "end_ms": 945439,
+    "word_count": 6
   },
   {
     "ayah": 74,
-    "start_ms": 913373,
-    "end_ms": 924767,
-    "startWordIdx": 636
+    "start_ms": 945976,
+    "end_ms": 956552,
+    "word_count": 7
   },
   {
     "ayah": 75,
-    "start_ms": 924747,
-    "end_ms": 936665,
-    "startWordIdx": 643
+    "start_ms": 956753,
+    "end_ms": 967409,
+    "word_count": 7
   },
   {
     "ayah": 76,
-    "start_ms": 936826,
-    "end_ms": 950102,
-    "startWordIdx": 650
+    "start_ms": 967549,
+    "end_ms": 981932,
+    "word_count": 9
   },
   {
     "ayah": 77,
-    "start_ms": 950223,
-    "end_ms": 968190,
-    "startWordIdx": 659
+    "start_ms": 982052,
+    "end_ms": 996317,
+    "word_count": 11
   },
   {
     "ayah": 78,
-    "start_ms": 968330,
-    "end_ms": 984937,
-    "startWordIdx": 670
+    "start_ms": 996297,
+    "end_ms": 1011017,
+    "word_count": 11
   },
   {
     "ayah": 79,
-    "start_ms": 985037,
-    "end_ms": 998320,
-    "startWordIdx": 681
+    "start_ms": 1011137,
+    "end_ms": 1024825,
+    "word_count": 10
   },
   {
     "ayah": 80,
-    "start_ms": 998440,
-    "end_ms": 1012919,
-    "startWordIdx": 691
+    "start_ms": 1024845,
+    "end_ms": 1040175,
+    "word_count": 11
   },
   {
     "ayah": 81,
-    "start_ms": 1012959,
-    "end_ms": 1031017,
-    "startWordIdx": 702
+    "start_ms": 1040155,
+    "end_ms": 1059801,
+    "word_count": 14
   },
   {
     "ayah": 82,
-    "start_ms": 1031037,
-    "end_ms": 1046684,
-    "startWordIdx": 716
+    "start_ms": 1059781,
+    "end_ms": 1072907,
+    "word_count": 10
   },
   {
     "ayah": 83,
-    "start_ms": 1046784,
-    "end_ms": 1057478,
-    "startWordIdx": 726
+    "start_ms": 1073027,
+    "end_ms": 1086413,
+    "word_count": 8
   }
 ]
