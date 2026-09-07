@@ -354,6 +354,10 @@ class AynAcousticMakhrajEngine:
 
         # Autocorrelation Harmonicity for Al-Jawf Madd Elongation
         jawf_harmonicity = self._compute_harmonicity_vector(audio_waveform, frame_len, hop_len)
+        if len(jawf_harmonicity) < len(total_energy):
+            jawf_harmonicity = np.pad(jawf_harmonicity, (0, len(total_energy) - len(jawf_harmonicity)), mode='edge')
+        elif len(jawf_harmonicity) > len(total_energy):
+            jawf_harmonicity = jawf_harmonicity[:len(total_energy)]
 
         return MakhrajEnergyStreams(
             frame_step_ms=float(self.config.hop_length_ms),
@@ -403,7 +407,15 @@ class AynAcousticMakhrajEngine:
         energy_streams: MakhrajEnergyStreams
     ) -> float:
         """Determines physical acoustic likelihood of a transition at the given frame."""
-        idx = max(0, min(frame_index, len(energy_streams.total_energy) - 1))
+        max_valid_idx = min(
+            len(energy_streams.total_energy),
+            len(energy_streams.jawf_harmonicity),
+            len(energy_streams.khayshum_nasal_ratio),
+            len(energy_streams.lisan_safir_ratio),
+            len(energy_streams.halq_pharyngeal_ratio),
+            len(energy_streams.shiddah_transient)
+        ) - 1
+        idx = max(0, min(frame_index, max_valid_idx))
         prev_idx = max(0, idx - 1)
 
         if next_class == TajweedAcousticClass.SAFIR:
@@ -442,8 +454,16 @@ class AynAcousticMakhrajEngine:
             return default_peak
 
         hop_ms = energy_streams.frame_step_ms
-        start_frame = max(0, int(start_ms / hop_ms))
-        end_frame = min(len(energy_streams.total_energy), max(start_frame + 1, int(end_ms / hop_ms)))
+        max_f = min(
+            len(energy_streams.total_energy),
+            len(energy_streams.jawf_harmonicity),
+            len(energy_streams.khayshum_nasal_ratio),
+            len(energy_streams.lisan_safir_ratio),
+            len(energy_streams.halq_pharyngeal_ratio),
+            len(energy_streams.shiddah_transient)
+        )
+        start_frame = max(0, min(max_f - 1, int(start_ms / hop_ms)))
+        end_frame = min(max_f, max(start_frame + 1, int(end_ms / hop_ms)))
 
         if start_frame >= end_frame:
             return default_peak
