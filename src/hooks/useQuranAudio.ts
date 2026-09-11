@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Audio, AVPlaybackStatus } from 'expo-av';
 import { mediaNotificationService } from '../services/mediaNotificationService';
+import { OfflineAudioService } from '../services/offlineAudioService';
 import { ReciterConfig, SurahMetadata } from '../types/quran';
 import mahVerseTimingsData from '../../assets/mah_verse_timings.json';
 
@@ -46,30 +47,38 @@ function padZero(num: number, size: number = 3): string {
   return s;
 }
 
-export function useQuranAudio(selectedReciterId: string) {
-  const soundRef = useRef<Audio.Sound | null>(null);
-  const loadedSurahFileRef = useRef<string | null>(null);
+export function useQuranAudio(selectedReciterId: string = 'abdulbasit') {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTimeMs, setCurrentTimeMs] = useState(0);
   const [durationMs, setDurationMs] = useState(0);
   const [currentVerseKey, setCurrentVerseKey] = useState<string | null>(null);
   const [isAyahLooping, setIsAyahLooping] = useState(false);
-  const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
+  const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
 
+  const soundRef = useRef<Audio.Sound | null>(null);
   const activeSurahRef = useRef<number>(1);
   const activeAyahRef = useRef<number>(1);
   const totalAyahsRef = useRef<number>(7);
   const isLoopingRef = useRef<boolean>(false);
-  isLoopingRef.current = isAyahLooping;
+  const loadedSurahFileRef = useRef<string | null>(null);
 
-  // Initialize background audio mode
   useEffect(() => {
-    Audio.setAudioModeAsync({
-      staysActiveInBackground: true,
-      playsInSilentModeIOS: true,
-      shouldDuckAndroid: true,
-      playThroughEarpieceAndroid: false,
-    }).catch(() => {});
+    isLoopingRef.current = isAyahLooping;
+  }, [isAyahLooping]);
+
+  useEffect(() => {
+    const setupAudio = async () => {
+      try {
+        await Audio.setAudioModeAsync({
+          playsInSilentModeIOS: true,
+          staysActiveInBackground: true,
+          shouldDuckAndroid: true,
+        });
+      } catch (err) {
+        console.warn('Failed to set audio mode:', err);
+      }
+    };
+    setupAudio();
 
     return () => {
       if (soundRef.current) {
@@ -79,29 +88,32 @@ export function useQuranAudio(selectedReciterId: string) {
     };
   }, []);
 
-  // Stop audio and clear state on reciter switch
-  useEffect(() => {
-    stopAudio();
-  }, [selectedReciterId]);
-
   const onPlaybackStatusUpdate = (status: AVPlaybackStatus) => {
-    if (!status.isLoaded) {
-      if ('error' in status && status.error) {
-        setIsPlaying(false);
-      }
-      return;
-    }
+    if (!status.isLoaded) return;
 
-    const pos = status.positionMillis || 0;
     setDurationMs(status.durationMillis || 0);
-    setIsPlaying(status.isPlaying);
 
-    let versePos = pos;
-    // Continuous MAH verse tracking across the whole-surah audio file
-    if (selectedReciterId === 'mah') {
-      const mahTimings = mahTimingsMap[String(activeSurahRef.current)];
-      if (mahTimings && mahTimings.length > 0) {
-        // Clamp pre-speech (e.g. Isti'adhah / Basmalah before Ayah 1) cleanly to Ayah 1 start
+    const isMah = selectedReciterId === 'mah';
+    const mahFile = isMah ? MAH_SURAH_AUDIO[activeSurahRef.current] : undefined;
+    const mahTimings = isMah ? mahTimingsMap[String(activeSurahRef.current)] : undefined;
+
+    let versePos = status.positionMillis;
+
+    if (isMah && mahFile && mahTimings && mahTimings.length > 0) {
+      const pos = status.positionMillis;
+      const targetAyahTiming = mahTimings.find(t => t[0] === activeAyahRef.current);
+
+      if (targetAyahTiming) {
+        const start = targetAyahTiming[1];
+        const end = targetAyahTiming[2];
+
+        if (pos >= end) {
+          handleVerseFinished();
+          return;
+        }
+
+        versePos = Math.max(0, pos - start);
+      } else {
         if (pos < mahTimings[0][1]) {
           versePos = 0;
           if (activeAyahRef.current !== mahTimings[0][0]) {
@@ -140,14 +152,11 @@ export function useQuranAudio(selectedReciterId: string) {
 
   const handleVerseFinished = () => {
     if (isLoopingRef.current) {
-      // Loop same verse
       playVerse(activeSurahRef.current, activeAyahRef.current);
     } else {
-      // Advance to next verse in Surah
       if (activeAyahRef.current < totalAyahsRef.current) {
         playVerse(activeSurahRef.current, activeAyahRef.current + 1);
       } else {
-        // Surah completed
         setIsPlaying(false);
         setCurrentTimeMs(0);
         setCurrentVerseKey(null);
@@ -161,21 +170,22 @@ export function useQuranAudio(selectedReciterId: string) {
       activeSurahRef.current = surah;
       activeAyahRef.current = ayah;
       if (surahMeta) {
-        totalAyahsRef.current = surahMeta.numberOfAyahs;
+        totalAyahsRef.current = surahMeta.numberOfAyahs || 7;
       }
 
-      // Check if MAH has dedicated Surah audio
       const isMah = selectedReciterId === 'mah';
       const mahFile = isMah ? MAH_SURAH_AUDIO[surah] : undefined;
       const mahTimings = isMah ? mahTimingsMap[String(surah)] : undefined;
+
+      // Check for offline local audio first
+      const localUri = await OfflineAudioService.getLocalAudioUri(selectedReciterId, surah, ayah);
 
       if (isMah && mahFile && mahTimings) {
         const targetAyahTiming = mahTimings.find(t => t[0] === ayah);
         const ayahStartMs = targetAyahTiming ? targetAyahTiming[1] : 0;
         const startMs = ayahStartMs + (startOffsetMs || 0);
 
-        // If this Surah file is ALREADY loaded in player, just seek directly without reloading!
-        if (soundRef.current && loadedSurahFileRef.current === mahFile) {
+        if (soundRef.current && loadedSurahFileRef.current === (localUri || mahFile)) {
           await soundRef.current.setPositionAsync(startMs);
           await soundRef.current.playAsync();
           setIsPlaying(true);
@@ -183,17 +193,16 @@ export function useQuranAudio(selectedReciterId: string) {
           return;
         }
 
-        // Otherwise, load new Surah file
         if (soundRef.current) {
           await soundRef.current.unloadAsync().catch(() => {});
           soundRef.current = null;
         }
 
-        const audioUri = `https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/${mahFile}`;
-        loadedSurahFileRef.current = mahFile;
+        const audioSourceUri = localUri || `https://raw.githubusercontent.com/ihyatafsir/mah-audio/main/${mahFile}`;
+        loadedSurahFileRef.current = localUri || mahFile;
 
         const { sound } = await Audio.Sound.createAsync(
-          { uri: audioUri },
+          { uri: audioSourceUri },
           { shouldPlay: true, positionMillis: startMs, rate: playbackSpeed, progressUpdateIntervalMillis: 30 },
           onPlaybackStatusUpdate
         );
@@ -213,7 +222,7 @@ export function useQuranAudio(selectedReciterId: string) {
         return;
       }
 
-      // Standard EveryAyah reciters (or MAH fallback for non-recorded Surahs)
+      // Standard EveryAyah reciters (or fallback)
       if (soundRef.current) {
         await soundRef.current.unloadAsync().catch(() => {});
         soundRef.current = null;
@@ -221,11 +230,11 @@ export function useQuranAudio(selectedReciterId: string) {
       loadedSurahFileRef.current = null;
 
       const reciter = RECITERS.find(r => r.id === selectedReciterId) || RECITERS[0];
-      const audioUri = `${reciter.url}${padZero(surah)}${padZero(ayah)}.mp3`;
+      const audioSourceUri = localUri || `${reciter.url}${padZero(surah)}${padZero(ayah)}.mp3`;
       const startMs = startOffsetMs || 0;
 
       const { sound } = await Audio.Sound.createAsync(
-        { uri: audioUri },
+        { uri: audioSourceUri },
         { shouldPlay: true, positionMillis: startMs, rate: playbackSpeed, progressUpdateIntervalMillis: 30 },
         onPlaybackStatusUpdate
       );
@@ -241,7 +250,7 @@ export function useQuranAudio(selectedReciterId: string) {
         reciterName: reciter.name,
         isPlaying: true,
       });
-    } catch (err) {
+    } catch {
       setIsPlaying(false);
     }
   }, [selectedReciterId, playbackSpeed]);

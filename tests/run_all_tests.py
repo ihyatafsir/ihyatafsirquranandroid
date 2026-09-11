@@ -6,6 +6,8 @@ Runs all test suites:
 2. test_grapheme_alignment
 3. test_playback_simulation
 4. test_warsh_integrity
+5. test_word_mode_and_mah
+6. test_translation_transliteration_and_offline
 """
 
 import unittest
@@ -21,6 +23,7 @@ import test_grapheme_alignment
 import test_playback_simulation
 import test_warsh_integrity
 import test_word_mode_and_mah
+import test_translation_transliteration_and_offline
 
 def run_suite():
     loader = unittest.TestLoader()
@@ -31,9 +34,10 @@ def run_suite():
     suite.addTests(loader.loadTestsFromModule(test_playback_simulation))
     suite.addTests(loader.loadTestsFromModule(test_warsh_integrity))
     suite.addTests(loader.loadTestsFromModule(test_word_mode_and_mah))
+    suite.addTests(loader.loadTestsFromModule(test_translation_transliteration_and_offline))
 
     print("=" * 70)
-    print("  QURAN HIGH-PRECISION LETTER HIGHLIGHTING - TEST SUITE")
+    print("  QURAN HIGH-PRECISION LETTER HIGHLIGHTING & TRANSLATION TEST SUITE")
     print("=" * 70)
     
     runner = unittest.TextTestRunner(verbosity=2)

@@ -122,7 +122,7 @@ export const TafsirModal: React.FC<TafsirModalProps> = ({
                       style={styles.anchorsToggleBtn}
                     >
                       <Text style={styles.anchorsToggleTitle}>
-                        📖 معجم الجذور والدلائل اللغوية (العين ولسان العرب)
+                        معجم الجذور والدلائل اللغوية (العين ولسان العرب)
                       </Text>
                       <Text style={styles.anchorsToggleIcon}>
                         {expandedAnchors[idx] ? '▲ طي' : '▼ تفصيل'}

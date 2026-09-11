@@ -1,36 +1,48 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   StyleSheet,
   View,
   Text,
   TouchableOpacity,
-  SafeAreaView,
   StatusBar,
   Platform,
-  Dimensions,
 } from 'react-native';
-import { NativeMushafWebView } from './components/NativeMushafWebView';
-import { injectQuranicFonts } from './utils/fontLoader';
 import { QuranDataProvider } from './src/services/quranDataProvider';
-import { useSurahData } from './src/hooks/useSurahData';
 import { useQuranAudio, RECITERS } from './src/hooks/useQuranAudio';
+import { NativeMushafWebView } from './components/NativeMushafWebView';
+import { WordStudyView } from './src/components/WordStudyView';
 import { AudioPlayerControls } from './src/components/AudioPlayerControls';
 import { SurahPickerModal } from './src/components/SurahPickerModal';
 import { SettingsModal } from './src/components/SettingsModal';
 import { TafsirModal } from './src/components/TafsirModal';
 import { WordLearnHUD } from './src/components/WordLearnHUD';
-import { WordStudyView } from './src/components/WordStudyView';
-import { playLetterPhoneticAudio, playIsolatedWordAudio } from './src/utils/audioPhonetics';
-import { AppSettings, Verse } from './src/types/quran';
+import { AudioDownloadModal } from './src/components/AudioDownloadModal';
+import { TranslationSelectorModal } from './src/components/TranslationSelectorModal';
+import {
+  playLetterPhoneticAudio,
+  playIsolatedWordAudio,
+} from './src/utils/audioPhonetics';
+import {
+  SurahMetadata,
+  Verse,
+  Word,
+  TafsirEntry,
+  AppSettings,
+  LetterTimingEntry,
+  TranslationId,
+  TransliterationMode,
+} from './src/types/quran';
 
-// Inject Quranic web fonts for Web / Canvas fallbacks
-injectQuranicFonts();
-
-const ANDROID_STATUS_BAR_HEIGHT = Platform.OS === 'android' ? (StatusBar.currentHeight || 28) : 0;
+const ANDROID_STATUS_BAR_HEIGHT = Platform.OS === 'android' ? (StatusBar.currentHeight || 24) : 0;
 
 export default function App() {
   const [selectedSurah, setSelectedSurah] = useState<number>(1);
-  const [viewMode, setViewMode] = useState<'mushaf' | 'word'>('mushaf');
+  const [verses, setVerses] = useState<Verse[]>([]);
+  const [wordTimingMap, setWordTimingMap] = useState<{ [key: string]: any[] }>({});
+  const [letterTimingMap, setLetterTimingMap] = useState<{ [key: string]: LetterTimingEntry[] }>({});
+  const [viewMode, setViewMode] = useState<'mushaf' | 'study'>('mushaf');
+
+  // App Settings State
   const [settings, setSettings] = useState<AppSettings>({
     theme: 'dark',
     reciter: 'abdulbasit',
@@ -38,20 +50,26 @@ export default function App() {
     translitFontSize: 13,
     showTajweed: true,
     showTransliteration: true,
+    transliterationMode: 'specialRTL',
     showTranslation: true,
+    activeTranslation: 'haleem',
     autoScroll: true,
     repeatMode: 'none',
     highlightMode: 'word',
   });
 
-  // Modal Dialogues State
+  // Modals Visibility State
   const [surahPickerVisible, setSurahPickerVisible] = useState(false);
   const [settingsVisible, setSettingsVisible] = useState(false);
   const [tafsirVisible, setTafsirVisible] = useState(false);
-  const [tafsirVerse, setTafsirVerse] = useState<Verse | null>(null);
-  const [tafsirEntries, setTafsirEntries] = useState<any[]>([]);
+  const [downloadModalVisible, setDownloadModalVisible] = useState(false);
+  const [translationModalVisible, setTranslationModalVisible] = useState(false);
 
-  // Word Learn HUD State
+  // Active Tafsir Data
+  const [tafsirVerse, setTafsirVerse] = useState<Verse | null>(null);
+  const [tafsirEntries, setTafsirEntries] = useState<TafsirEntry[]>([]);
+
+  // Letter/Word Decomposition HUD State
   const [activeWordHUD, setActiveWordHUD] = useState<{
     surah: number;
     ayah: number;
@@ -62,228 +80,233 @@ export default function App() {
     translation?: string;
   } | null>(null);
 
-  // All 114 Surahs Metadata (lightweight static cache)
-  const allSurahs = useMemo(() => QuranDataProvider.getAllSurahs(), []);
-  const surahMeta = useMemo(() => QuranDataProvider.getSurahMetadata(selectedSurah), [selectedSurah]);
+  // All Surahs catalog
+  const allSurahs = QuranDataProvider.getAllSurahs();
+  const surahMeta = QuranDataProvider.getSurahMetadata(selectedSurah) || allSurahs[0];
+  const selectedReciterConfig = RECITERS.find(r => r.id === settings.reciter) || RECITERS[0];
 
-  // Dynamic Scoped Surah Data (Verses & Reciter Timings loaded on demand)
-  const { verses, wordTimingMap, letterTimingMap, getTafsir } = useSurahData(
-    selectedSurah,
-    settings.reciter
-  );
-
-  // High-Precision Audio Playback Engine
+  // Core Audio Hook
   const audio = useQuranAudio(settings.reciter);
 
-  // Actions
-  const handleSelectSurah = (surahNum: number) => {
-    setSelectedSurah(surahNum);
+  // Calculate Active Word Index during Playback
+  const getActiveWordIdx = useCallback((): number => {
+    if (!audio.currentVerseKey || !audio.isPlaying) return -1;
+    const words = wordTimingMap[audio.currentVerseKey];
+    if (!words || words.length === 0) return -1;
+
+    for (let i = 0; i < words.length; i++) {
+      const w = words[i];
+      if (audio.currentTimeMs >= w.start && audio.currentTimeMs <= w.end) {
+        return i;
+      }
+    }
+    return -1;
+  }, [audio.currentVerseKey, audio.isPlaying, audio.currentTimeMs, wordTimingMap]);
+
+  const activeWordIdx = getActiveWordIdx();
+
+  // Load Surah Data (Verses, Timing Maps, Preloads)
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadSurahData() {
+      try {
+        const narration = selectedReciterConfig.narration || 'hafs';
+        const vList = await QuranDataProvider.getVerses(selectedSurah, narration);
+        const wMap = await QuranDataProvider.getWordTiming(settings.reciter, selectedSurah);
+        const lMap = await QuranDataProvider.getLetterTiming(settings.reciter, selectedSurah);
+
+        if (isMounted) {
+          setVerses(vList);
+          setWordTimingMap(wMap);
+          setLetterTimingMap(lMap);
+        }
+
+        QuranDataProvider.preloadSurah(selectedSurah + 1);
+      } catch (err) {
+        console.warn(`[App] Failed to load Surah ${selectedSurah}:`, err);
+      }
+    }
+
+    loadSurahData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedSurah, settings.reciter]);
+
+  // Handle Surah Selection
+  const handleSelectSurah = (surahNumber: number) => {
     audio.stopAudio();
-    setActiveWordHUD(null);
+    setSelectedSurah(surahNumber);
+    setSurahPickerVisible(false);
+  };
+
+  // Playback Navigation Handlers
+  const handleSeekAyah = (ayah: number) => {
+    audio.playVerse(selectedSurah, ayah, surahMeta);
   };
 
   const handleNextAyah = () => {
-    const currentAyah = (audio.currentVerseKey && audio.currentVerseKey.startsWith(`${selectedSurah}:`))
+    const currentAyah = audio.currentVerseKey
       ? parseInt(audio.currentVerseKey.split(':')[1], 10)
-      : 0;
-    const maxAyahs = surahMeta?.numberOfAyahs || 1;
-    if (currentAyah < maxAyahs) {
+      : 1;
+    const total = surahMeta?.numberOfAyahs || 7;
+    if (currentAyah < total) {
       audio.playVerse(selectedSurah, currentAyah + 1, surahMeta);
     }
   };
 
   const handlePrevAyah = () => {
-    const currentAyah = (audio.currentVerseKey && audio.currentVerseKey.startsWith(`${selectedSurah}:`))
+    const currentAyah = audio.currentVerseKey
       ? parseInt(audio.currentVerseKey.split(':')[1], 10)
-      : 2;
+      : 1;
     if (currentAyah > 1) {
       audio.playVerse(selectedSurah, currentAyah - 1, surahMeta);
     }
   };
 
-  const handleSeekAyah = (ayah: number) => {
-    audio.playVerse(selectedSurah, ayah, surahMeta);
+  // Interactive Gesture Handlers: Mushaf Mode
+  const handleMushafWordSingleClick = (surah: number, ayah: number) => {
+    audio.playVerse(surah, ayah, surahMeta);
   };
 
-  // Mushaf Mode Single Tap: Play full verse of active reciter (or seek reciter to that word if already playing)
-  const handleMushafWordSingleClick = async (
-    surah: number,
-    ayah: number,
-    wordIdx: number,
-    wordText: string
-  ) => {
-    const timingList = wordTimingMap[String(ayah)] || wordTimingMap[`${surah}:${ayah}`];
-    let st: number | undefined = undefined;
-    if (timingList && timingList[wordIdx]) {
-      const entry = timingList[wordIdx];
-      let rawSt = Array.isArray(entry) ? entry[1] : (entry.start_ms ?? (entry.start ? entry.start * 1000 : 0));
-      if (rawSt > 0 && rawSt < 100) rawSt *= 1000;
-      if (rawSt > 0) st = rawSt;
-    }
-
-    if (audio.isPlaying && audio.currentVerseKey === `${surah}:${ayah}` && st !== undefined) {
-      await audio.seekToMs(st);
-      return;
-    }
-    audio.playVerse(surah, ayah, surahMeta, st);
-  };
-
-  // Word Study Mode Single Tap: Play isolated word audio from QuranCDN WBW
-  const handleWordStudyWordSingleClick = async (
-    surah: number,
-    ayah: number,
-    wordIdx: number,
-    wordText: string
-  ) => {
-    await playIsolatedWordAudio(surah, ayah, wordIdx, wordText);
-  };
-
-  // Double Tap (Both Modes): Open Letter Decomposition HUD (without audio collision)
   const handleWordDoubleClick = (
     surah: number,
     ayah: number,
     wordIdx: number,
-    wordText: string
+    wordText: string,
+    wordObj?: Word
   ) => {
-    const verseObj = verses.find(v => v.ayah === ayah);
-    const wordObj = verseObj?.words && verseObj.words[wordIdx];
-
     setActiveWordHUD({
       surah,
       ayah,
       wordIdx,
       wordText,
-      translit: wordObj?.transliteration,
+      translit: wordObj?.translit || wordObj?.transliteration,
       root: wordObj?.root,
       translation: wordObj?.translation,
     });
   };
 
-  const activeWordIdx = useMemo(() => {
-    if (!audio.isPlaying || !audio.currentVerseKey || !wordTimingMap) return -1;
-    const ayahStr = audio.currentVerseKey.split(':')[1];
-    const timingList = wordTimingMap[audio.currentVerseKey] || wordTimingMap[ayahStr];
-    if (!timingList || timingList.length === 0) return -1;
-    const t = audio.currentTimeMs;
-    for (let i = 0; i < timingList.length; i++) {
-      const entry = timingList[i];
-      let s = Array.isArray(entry) ? entry[1] : (entry.start_ms ?? (entry.start ? entry.start * 1000 : 0));
-      let e = Array.isArray(entry) ? entry[2] : (entry.end_ms ?? (entry.end ? entry.end * 1000 : 0));
-      if (s > 0 && s < 100 && e > 0 && e < 300) { s *= 1000; e *= 1000; }
-      let effectiveEnd = e;
-      const nextEntry = timingList[i + 1];
-      if (nextEntry) {
-        let nextS = Array.isArray(nextEntry) ? nextEntry[1] : (nextEntry.start_ms ?? (nextEntry.start ? nextEntry.start * 1000 : e));
-        if (nextS > 0 && nextS < 100) nextS *= 1000;
-        if (nextS >= e && (nextS - e) < 800) effectiveEnd = nextS;
-      }
-      if (t >= s && t < effectiveEnd) {
-        const wIdx = (Array.isArray(entry) && typeof entry[0] === 'number' && entry[0] >= 1) ? entry[0] - 1 : i;
-        return wIdx;
-      }
-    }
-    // Sustain last word if audio is still within ayah
-    const lastEntry = timingList[timingList.length - 1];
-    let lastS = Array.isArray(lastEntry) ? lastEntry[1] : (lastEntry.start_ms ?? (lastEntry.start ? lastEntry.start * 1000 : 0));
-    if (lastS > 0 && lastS < 100) lastS *= 1000;
-    if (t >= lastS) {
-      const lastWIdx = (Array.isArray(lastEntry) && typeof lastEntry[0] === 'number' && lastEntry[0] >= 1) ? lastEntry[0] - 1 : timingList.length - 1;
-      return lastWIdx;
-    }
-    return -1;
-  }, [audio.isPlaying, audio.currentVerseKey, audio.currentTimeMs, wordTimingMap]);
+  // Interactive Gesture Handlers: Word Study Mode
+  const handleWordStudyWordSingleClick = (
+    surah: number,
+    ayah: number,
+    wordIdx: number,
+    wordText: string
+  ) => {
+    playIsolatedWordAudio(surah, ayah, wordIdx, wordText);
+  };
 
-  const handleOpenTafsir = async (ayahNumber?: number) => {
-    const targetAyah = ayahNumber || (audio.currentVerseKey ? parseInt(audio.currentVerseKey.split(':')[1], 10) : 1);
-    const verseObj = verses.find(v => v.ayah === targetAyah) || null;
-    const entries = await getTafsir(targetAyah);
-    setTafsirVerse(verseObj);
+  // Open Tafsir Modal for Current or Selected Verse
+  const handleOpenTafsir = async () => {
+    let currentAyah = 1;
+    if (audio.currentVerseKey && audio.currentVerseKey.startsWith(`${selectedSurah}:`)) {
+      currentAyah = parseInt(audio.currentVerseKey.split(':')[1], 10);
+    }
+    const currentVerseObj = verses.find(v => v.ayah === currentAyah) || verses[0] || null;
+    const entries = await QuranDataProvider.getTafsir(selectedSurah, currentAyah);
+
+    setTafsirVerse(currentVerseObj);
     setTafsirEntries(entries || []);
     setTafsirVisible(true);
   };
 
-  const activeReciter = RECITERS.find(r => r.id === settings.reciter) || RECITERS[0];
-
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#030712" translucent />
+      <StatusBar barStyle="light-content" backgroundColor="#070d1a" />
 
-      {/* ═══════════════════════════════════════════════════════════════════ */}
-      {/* HEADER BAR (Surah Title, Reciter Selector, Tafsir & Settings FAB) */}
-      {/* ═══════════════════════════════════════════════════════════════════ */}
-      <SafeAreaView style={styles.safeHeader}>
+      {/* TOP LUXURY APP BAR */}
+      <View style={styles.safeHeader}>
         <View style={styles.headerBar}>
-          {/* Settings Button */}
+          {/* Settings Trigger */}
           <TouchableOpacity
-            onPress={() => setSettingsVisible(true)}
             style={styles.iconCircle}
+            onPress={() => setSettingsVisible(true)}
+            activeOpacity={0.7}
           >
             <Text style={styles.iconCircleText}>⚙</Text>
           </TouchableOpacity>
 
-          {/* Tafsir Modal Trigger */}
+          {/* Translation Selector Trigger */}
           <TouchableOpacity
-            onPress={() => handleOpenTafsir()}
-            style={styles.tafsirTriggerBtn}
+            style={styles.translationBadgeBtn}
+            onPress={() => setTranslationModalVisible(true)}
+            activeOpacity={0.7}
           >
-            <Text style={styles.tafsirTriggerText}>📖 التفسير</Text>
-          </TouchableOpacity>
-
-          {/* Center: Surah Title & Index Selector */}
-          <TouchableOpacity
-            onPress={() => setSurahPickerVisible(true)}
-            style={styles.surahTitleBtn}
-          >
-            <View style={styles.surahTitleRow}>
-              <Text style={styles.surahArabicTitle}>
-                {surahMeta ? surahMeta.name : 'سورة الفاتحة'}
-              </Text>
-              <Text style={styles.surahChevron}>▾</Text>
-            </View>
-            <Text style={styles.surahSubTitle}>
-              {surahMeta ? `${surahMeta.englishName} • ${surahMeta.numberOfAyahs} آيات` : ''}
+            <Text style={styles.translationBadgeText}>
+              {settings.activeTranslation === 'haleem'
+                ? 'Haleem'
+                : settings.activeTranslation === 'cleary'
+                ? 'Cleary'
+                : settings.activeTranslation === 'rida'
+                ? 'Rida DE'
+                : settings.activeTranslation === 'kathir'
+                ? 'Ibn Kathir'
+                : settings.activeTranslation === 'jalalayn'
+                ? 'Jalalayn'
+                : 'Sahih'}
             </Text>
           </TouchableOpacity>
 
-          {/* Reciter Badge */}
+          {/* Center Surah Name / Title Picker */}
           <TouchableOpacity
-            onPress={() => setSettingsVisible(true)}
-            style={styles.reciterBadge}
+            style={styles.surahTitleBtn}
+            onPress={() => setSurahPickerVisible(true)}
+            activeOpacity={0.8}
           >
-            <Text style={styles.reciterBadgeText}>
-              {activeReciter.name.split(' ')[0]}
+            <View style={styles.surahTitleRow}>
+              <Text style={styles.surahArabicTitle}>{surahMeta.name}</Text>
+              <Text style={styles.surahChevron}>▾</Text>
+            </View>
+            <Text style={styles.surahSubInfo}>
+              {surahMeta.number}. {surahMeta.englishName} ({surahMeta.numberOfAyahs} آيات)
+            </Text>
+          </TouchableOpacity>
+
+          {/* Offline Download Trigger */}
+          <TouchableOpacity
+            style={styles.downloadIconBtn}
+            onPress={() => setDownloadModalVisible(true)}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.downloadIconText}>⬇</Text>
+          </TouchableOpacity>
+
+          {/* Tafsir Trigger */}
+          <TouchableOpacity
+            style={styles.tafsirTriggerBtn}
+            onPress={handleOpenTafsir}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.tafsirTriggerText}>إحياء</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* View Mode Switcher */}
+        <View style={styles.viewModeSegment}>
+          <TouchableOpacity
+            style={[styles.segmentBtn, viewMode === 'mushaf' && styles.segmentBtnActive]}
+            onPress={() => setViewMode('mushaf')}
+          >
+            <Text style={[styles.segmentText, viewMode === 'mushaf' && styles.segmentTextActive]}>
+              مصحف المدينة (Mushaf)
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.segmentBtn, viewMode === 'study' && styles.segmentBtnActive]}
+            onPress={() => setViewMode('study')}
+          >
+            <Text style={[styles.segmentText, viewMode === 'study' && styles.segmentTextActive]}>
+              دراسة الكلمات (Word Study)
             </Text>
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
-
-      {/* ═══════════════════════════════════════════════════════════════════ */}
-      {/* VIEW MODE TOGGLE (Quran Reading & Learning First)                  */}
-      {/* ═══════════════════════════════════════════════════════════════════ */}
-      <View style={styles.viewModeSegment}>
-        <TouchableOpacity
-          style={[styles.segmentBtn, viewMode === 'mushaf' && styles.segmentBtnActive]}
-          onPress={() => setViewMode('mushaf')}
-          activeOpacity={0.8}
-        >
-          <Text style={[styles.segmentText, viewMode === 'mushaf' && styles.segmentTextActive]}>
-            📖 المصحف الشريف
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.segmentBtn, viewMode === 'word' && styles.segmentBtnActive]}
-          onPress={() => setViewMode('word')}
-          activeOpacity={0.8}
-        >
-          <Text style={[styles.segmentText, viewMode === 'word' && styles.segmentTextActive]}>
-            🔤 وضع الكلمات والدراسة
-          </Text>
-        </TouchableOpacity>
       </View>
 
-      {/* ═══════════════════════════════════════════════════════════════════ */}
-      {/* MAIN CANVAS: MADANI MUSHAF OR WORD-BY-WORD STUDY & LEARNING        */}
-      {/* ═══════════════════════════════════════════════════════════════════ */}
+      {/* MAIN CANVAS: MADANI MUSHAF OR WORD-BY-WORD STUDY */}
       <View style={styles.mushafContainer}>
         {viewMode === 'mushaf' ? (
           <NativeMushafWebView
@@ -299,19 +322,20 @@ export default function App() {
             onSeekAyah={handleSeekAyah}
             onWordSingleClick={handleMushafWordSingleClick}
             onWordDoubleClick={handleWordDoubleClick}
-            onWordClick={handleWordDoubleClick}
+            onWordClick={(surah, ayah, wordIdx, wordText) => handleWordDoubleClick(surah, ayah, wordIdx, wordText)}
           />
         ) : (
           <WordStudyView
             verses={verses}
             surahNumber={selectedSurah}
             currentVerseKey={audio.currentVerseKey}
-            currentTimeMs={audio.currentTimeMs}
             isPlaying={audio.isPlaying}
             activeWordIdx={activeWordIdx}
             fontSize={settings.fontSize}
             showTransliteration={settings.showTransliteration}
+            transliterationMode={settings.transliterationMode}
             showTranslation={settings.showTranslation}
+            activeTranslation={settings.activeTranslation}
             onSeekAyah={handleSeekAyah}
             onWordSingleClick={handleWordStudyWordSingleClick}
             onWordDoubleClick={(surah, ayah, wordIdx, wordText, wordObj) => {
@@ -320,7 +344,7 @@ export default function App() {
                 ayah,
                 wordIdx,
                 wordText,
-                translit: wordObj?.transliteration,
+                translit: wordObj?.translit || wordObj?.transliteration,
                 root: wordObj?.root,
                 translation: wordObj?.translation,
               });
@@ -329,9 +353,7 @@ export default function App() {
         )}
       </View>
 
-      {/* ═══════════════════════════════════════════════════════════════════ */}
-      {/* FLOATING AUDIO CONTROLS BAR (Play, Pause, Seeks, Loop, Scrubber)   */}
-      {/* ═══════════════════════════════════════════════════════════════════ */}
+      {/* FLOATING AUDIO CONTROLS */}
       <AudioPlayerControls
         isPlaying={audio.isPlaying}
         currentVerseKey={audio.currentVerseKey}
@@ -355,9 +377,7 @@ export default function App() {
         onChangeSpeed={audio.cyclePlaybackSpeed}
       />
 
-      {/* ═══════════════════════════════════════════════════════════════════ */}
-      {/* MODAL DIALOGUES                                                     */}
-      {/* ═══════════════════════════════════════════════════════════════════ */}
+      {/* MODAL DIALOGS */}
       <SurahPickerModal
         visible={surahPickerVisible}
         surahs={allSurahs}
@@ -370,7 +390,31 @@ export default function App() {
         visible={settingsVisible}
         settings={settings}
         onUpdateSettings={setSettings}
+        onOpenTranslationModal={() => {
+          setSettingsVisible(false);
+          setTranslationModalVisible(true);
+        }}
+        onOpenDownloadModal={() => {
+          setSettingsVisible(false);
+          setDownloadModalVisible(true);
+        }}
         onClose={() => setSettingsVisible(false)}
+      />
+
+      <TranslationSelectorModal
+        visible={translationModalVisible}
+        activeTranslation={settings.activeTranslation}
+        onSelectTranslation={(id: TranslationId) => {
+          setSettings(prev => ({ ...prev, activeTranslation: id }));
+        }}
+        onClose={() => setTranslationModalVisible(false)}
+      />
+
+      <AudioDownloadModal
+        visible={downloadModalVisible}
+        reciter={selectedReciterConfig}
+        currentSurah={surahMeta}
+        onClose={() => setDownloadModalVisible(false)}
       />
 
       <TafsirModal
@@ -414,8 +458,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 14,
+    paddingHorizontal: 12,
     paddingVertical: 10,
+    gap: 6,
   },
   iconCircle: {
     width: 36,
@@ -430,6 +475,34 @@ const styles = StyleSheet.create({
   iconCircleText: {
     color: '#cbd5e1',
     fontSize: 16,
+  },
+  translationBadgeBtn: {
+    backgroundColor: 'rgba(56, 189, 248, 0.15)',
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#38bdf8',
+  },
+  translationBadgeText: {
+    color: '#38bdf8',
+    fontSize: 11,
+    fontWeight: 'bold',
+  },
+  downloadIconBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(0, 255, 170, 0.12)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#00ffaa',
+  },
+  downloadIconText: {
+    color: '#00ffaa',
+    fontSize: 15,
+    fontWeight: 'bold',
   },
   tafsirTriggerBtn: {
     backgroundColor: 'rgba(251, 191, 36, 0.15)',
@@ -446,6 +519,7 @@ const styles = StyleSheet.create({
   },
   surahTitleBtn: {
     alignItems: 'center',
+    flex: 1,
   },
   surahTitleRow: {
     flexDirection: 'row',
@@ -454,7 +528,7 @@ const styles = StyleSheet.create({
   },
   surahArabicTitle: {
     color: '#00ffaa',
-    fontSize: 20,
+    fontSize: 19,
     fontWeight: 'bold',
     fontFamily: 'Amiri',
   },
@@ -465,24 +539,6 @@ const styles = StyleSheet.create({
   surahSubInfo: {
     color: '#94a3b8',
     fontSize: 11,
-  },
-  surahSubTitle: {
-    color: '#94a3b8',
-    fontSize: 11,
-    marginTop: 1,
-  },
-  reciterBadge: {
-    backgroundColor: 'rgba(0, 255, 170, 0.12)',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#00ffaa',
-  },
-  reciterBadgeText: {
-    color: '#00ffaa',
-    fontSize: 11,
-    fontWeight: 'bold',
   },
   viewModeSegment: {
     flexDirection: 'row',

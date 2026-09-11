@@ -5,35 +5,36 @@ import {
   FlatList,
   TouchableOpacity,
   StyleSheet,
-  Dimensions,
 } from 'react-native';
-import { Verse, Word } from '../types/quran';
+import { Verse, Word, TransliterationMode, TranslationId } from '../types/quran';
 
 interface WordStudyViewProps {
-  verses: Verse[];
   surahNumber: number;
+  verses: Verse[];
   currentVerseKey: string | null;
-  currentTimeMs?: number;
   isPlaying: boolean;
-  activeWordIdx?: number;
-  showTransliteration?: boolean;
-  showTranslation?: boolean;
-  showTajweed?: boolean;
+  activeWordIdx: number;
   fontSize?: number;
+  showTransliteration?: boolean;
+  transliterationMode?: TransliterationMode;
+  showTranslation?: boolean;
+  activeTranslation?: TranslationId;
   onSeekAyah: (ayah: number) => void;
-  onWordSingleClick: (surah: number, ayah: number, wordIdx: number, wordText: string, wordObj?: Word) => void;
-  onWordDoubleClick: (surah: number, ayah: number, wordIdx: number, wordText: string, wordObj?: Word) => void;
+  onWordSingleClick: (surah: number, ayah: number, wordIdx: number, wordArabic: string, wordObj?: Word) => void;
+  onWordDoubleClick: (surah: number, ayah: number, wordIdx: number, wordArabic: string, wordObj?: Word) => void;
 }
 
 export const WordStudyView: React.FC<WordStudyViewProps> = ({
-  verses,
   surahNumber,
+  verses,
   currentVerseKey,
   isPlaying,
-  activeWordIdx = -1,
+  activeWordIdx,
+  fontSize = 24,
   showTransliteration = true,
+  transliterationMode = 'specialRTL',
   showTranslation = true,
-  fontSize = 26,
+  activeTranslation = 'sahih',
   onSeekAyah,
   onWordSingleClick,
   onWordDoubleClick,
@@ -53,16 +54,13 @@ export const WordStudyView: React.FC<WordStudyViewProps> = ({
     const last = lastTapRef.current;
 
     if (last.key === key && (now - last.time) < 280) {
-      // ➔ DOUBLE TAP: Cancel single-tap audio timer & open Letter Decomposition HUD
       if (last.timer) {
         clearTimeout(last.timer);
         last.timer = null;
       }
       lastTapRef.current = { key: '', time: 0, timer: null };
-
       onWordDoubleClick(surahNumber, ayah, wordIdx, wordObj.arabic, wordObj);
     } else {
-      // ➔ FIRST TAP: Set debounce timer
       if (last.timer) {
         clearTimeout(last.timer);
       }
@@ -70,11 +68,9 @@ export const WordStudyView: React.FC<WordStudyViewProps> = ({
       const timer = setTimeout(() => {
         lastTapRef.current = { key: '', time: 0, timer: null };
 
-        // Visual ink pulse
         setPulsingWordKey(key);
         setTimeout(() => setPulsingWordKey(p => p === key ? null : p), 600);
 
-        // Execute single-tap isolated word audio
         onWordSingleClick(surahNumber, ayah, wordIdx, wordObj.arabic, wordObj);
       }, 280);
 
@@ -82,11 +78,38 @@ export const WordStudyView: React.FC<WordStudyViewProps> = ({
     }
   }, [surahNumber, onWordSingleClick, onWordDoubleClick]);
 
+  const getVerseTranslationText = (item: Verse): string => {
+    switch (activeTranslation) {
+      case 'haleem':
+        return item.haleemTranslation || item.translation || '';
+      case 'cleary':
+        return item.clearyTranslation || item.translation || '';
+      case 'rida':
+        return item.ridaGermanTranslation || item.translation || '';
+      case 'kathir':
+        return item.ibnKathirTranslation || item.translation || '';
+      case 'jalalayn':
+        return item.jalalaynTranslation || item.translation || '';
+      case 'sahih':
+      default:
+        return item.translation || '';
+    }
+  };
+
+  const getWordTransliterationText = (word: Word): string => {
+    if (transliterationMode === 'specialRTL') {
+      return word.translit || word.transliteration || word.latinTranslit || '';
+    }
+    return word.latinTranslit || word.transliteration || word.translit || '';
+  };
+
   const renderVerseCard = useCallback(({ item }: { item: Verse }) => {
     const isCurrentVerse = currentVerseKey === `${surahNumber}:${item.ayah}`;
     const words: Word[] = item.words && item.words.length > 0
       ? item.words
       : (item.text || '').trim().split(/\s+/).map((w, idx) => ({ id: idx + 1, arabic: w }));
+
+    const verseTranslation = getVerseTranslationText(item);
 
     return (
       <View style={[styles.verseCard, isCurrentVerse && styles.verseCardActive]}>
@@ -111,6 +134,7 @@ export const WordStudyView: React.FC<WordStudyViewProps> = ({
             const wordKey = `${surahNumber}:${item.ayah}:${wIdx}`;
             const isPulsing = pulsingWordKey === wordKey;
             const isWordReciting = isCurrentVerse && isPlaying && activeWordIdx === wIdx;
+            const wordTranslit = getWordTransliterationText(word);
 
             return (
               <TouchableOpacity
@@ -134,9 +158,9 @@ export const WordStudyView: React.FC<WordStudyViewProps> = ({
                   {word.arabic}
                 </Text>
 
-                {showTransliteration && word.transliteration ? (
+                {showTransliteration && wordTranslit ? (
                   <Text style={styles.translitText} numberOfLines={1}>
-                    {word.transliteration}
+                    {wordTranslit}
                   </Text>
                 ) : null}
 
@@ -151,14 +175,27 @@ export const WordStudyView: React.FC<WordStudyViewProps> = ({
         </View>
 
         {/* Verse Translation Footer */}
-        {item.translation ? (
+        {verseTranslation ? (
           <View style={styles.verseTranslationBox}>
-            <Text style={styles.verseTranslationText}>{item.translation}</Text>
+            <Text style={styles.verseTranslationText}>{verseTranslation}</Text>
           </View>
         ) : null}
       </View>
     );
-  }, [surahNumber, currentVerseKey, isPlaying, activeWordIdx, pulsingWordKey, fontSize, showTransliteration, showTranslation, onSeekAyah, handleWordTap]);
+  }, [
+    surahNumber,
+    currentVerseKey,
+    isPlaying,
+    activeWordIdx,
+    pulsingWordKey,
+    fontSize,
+    showTransliteration,
+    transliterationMode,
+    showTranslation,
+    activeTranslation,
+    onSeekAyah,
+    handleWordTap,
+  ]);
 
   return (
     <View style={styles.container}>
