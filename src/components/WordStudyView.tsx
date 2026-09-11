@@ -1,16 +1,16 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
+  StyleSheet,
   FlatList,
   TouchableOpacity,
-  StyleSheet,
 } from 'react-native';
 import { Verse, Word, TransliterationMode, TranslationId } from '../types/quran';
 
 interface WordStudyViewProps {
-  surahNumber: number;
   verses: Verse[];
+  surahNumber: number;
   currentVerseKey: string | null;
   isPlaying: boolean;
   activeWordIdx: number;
@@ -19,18 +19,18 @@ interface WordStudyViewProps {
   transliterationMode?: TransliterationMode;
   showTranslation?: boolean;
   activeTranslation?: TranslationId;
-  onSeekAyah: (ayah: number) => void;
-  onWordSingleClick: (surah: number, ayah: number, wordIdx: number, wordArabic: string, wordObj?: Word) => void;
-  onWordDoubleClick: (surah: number, ayah: number, wordIdx: number, wordArabic: string, wordObj?: Word) => void;
+  onSeekAyah: (ayahNumber: number) => void;
+  onWordSingleClick: (surah: number, ayah: number, wordIdx: number, wordText: string, wordObj?: Word) => void;
+  onWordDoubleClick: (surah: number, ayah: number, wordIdx: number, wordText: string, wordObj?: Word) => void;
 }
 
 export const WordStudyView: React.FC<WordStudyViewProps> = ({
-  surahNumber,
   verses,
+  surahNumber,
   currentVerseKey,
   isPlaying,
   activeWordIdx,
-  fontSize = 24,
+  fontSize = 26,
   showTransliteration = true,
   transliterationMode = 'specialRTL',
   showTranslation = true,
@@ -39,30 +39,52 @@ export const WordStudyView: React.FC<WordStudyViewProps> = ({
   onWordSingleClick,
   onWordDoubleClick,
 }) => {
+  const flatListRef = useRef<FlatList>(null);
   const [pulsingWordKey, setPulsingWordKey] = useState<string | null>(null);
-
-  // Gesture Disambiguation: 1 Click -> Isolated Word Audio; 2 Clicks (within 280ms) -> Letters HUD
   const lastTapRef = useRef<{ key: string; time: number; timer: any }>({
     key: '',
     time: 0,
     timer: null,
   });
 
+  // Auto-scroll to active Ayah card during playback
+  useEffect(() => {
+    if (currentVerseKey && isPlaying && verses && verses.length > 0) {
+      const parts = currentVerseKey.split(':');
+      const ayahNum = parseInt(parts[1] || parts[0], 10);
+      const idx = verses.findIndex(v => v.ayah === ayahNum);
+      if (idx >= 0 && flatListRef.current) {
+        try {
+          flatListRef.current.scrollToIndex({
+            index: idx,
+            animated: true,
+            viewPosition: 0.15,
+          });
+        } catch {
+          // Ignore layout race condition
+        }
+      }
+    }
+  }, [currentVerseKey, isPlaying, verses]);
+
   const handleWordTap = useCallback((ayah: number, wordIdx: number, wordObj: Word) => {
     const key = `${surahNumber}:${ayah}:${wordIdx}`;
     const now = Date.now();
-    const last = lastTapRef.current;
+    const DOUBLE_TAP_DELAY = 300;
 
-    if (last.key === key && (now - last.time) < 280) {
-      if (last.timer) {
-        clearTimeout(last.timer);
-        last.timer = null;
+    if (lastTapRef.current.key === key && (now - lastTapRef.current.time) < DOUBLE_TAP_DELAY) {
+      if (lastTapRef.current.timer) {
+        clearTimeout(lastTapRef.current.timer);
       }
       lastTapRef.current = { key: '', time: 0, timer: null };
+
+      setPulsingWordKey(key);
+      setTimeout(() => setPulsingWordKey(p => p === key ? null : p), 600);
+
       onWordDoubleClick(surahNumber, ayah, wordIdx, wordObj.arabic, wordObj);
     } else {
-      if (last.timer) {
-        clearTimeout(last.timer);
+      if (lastTapRef.current.timer) {
+        clearTimeout(lastTapRef.current.timer);
       }
 
       const timer = setTimeout(() => {
@@ -104,7 +126,7 @@ export const WordStudyView: React.FC<WordStudyViewProps> = ({
   };
 
   const renderVerseCard = useCallback(({ item }: { item: Verse }) => {
-    const isCurrentVerse = currentVerseKey === `${surahNumber}:${item.ayah}`;
+    const isCurrentVerse = currentVerseKey === `${surahNumber}:${item.ayah}` || currentVerseKey === `${item.ayah}`;
     const words: Word[] = item.words && item.words.length > 0
       ? item.words
       : (item.text || '').trim().split(/\s+/).map((w, idx) => ({ id: idx + 1, arabic: w }));
@@ -135,6 +157,7 @@ export const WordStudyView: React.FC<WordStudyViewProps> = ({
             const isPulsing = pulsingWordKey === wordKey;
             const isWordReciting = isCurrentVerse && isPlaying && activeWordIdx === wIdx;
             const wordTranslit = getWordTransliterationText(word);
+            const isRtlTranslit = transliterationMode === 'specialRTL';
 
             return (
               <TouchableOpacity
@@ -159,13 +182,26 @@ export const WordStudyView: React.FC<WordStudyViewProps> = ({
                 </Text>
 
                 {showTransliteration && wordTranslit ? (
-                  <Text style={styles.translitText} numberOfLines={1}>
+                  <Text
+                    style={[
+                      styles.translitText,
+                      isRtlTranslit && styles.translitTextRTL,
+                      isWordReciting && styles.translitTextReciting,
+                    ]}
+                    numberOfLines={1}
+                  >
                     {wordTranslit}
                   </Text>
                 ) : null}
 
                 {showTranslation && word.translation ? (
-                  <Text style={styles.translationText} numberOfLines={1}>
+                  <Text
+                    style={[
+                      styles.translationText,
+                      isWordReciting && styles.translationTextReciting,
+                    ]}
+                    numberOfLines={1}
+                  >
                     {word.translation}
                   </Text>
                 ) : null}
@@ -200,15 +236,22 @@ export const WordStudyView: React.FC<WordStudyViewProps> = ({
   return (
     <View style={styles.container}>
       <FlatList
+        ref={flatListRef}
         data={verses}
         keyExtractor={item => `${surahNumber}:${item.ayah}`}
         renderItem={renderVerseCard}
+        extraData={`${activeWordIdx}_${currentVerseKey}_${isPlaying}_${pulsingWordKey}_${transliterationMode}_${activeTranslation}`}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={true}
-        initialNumToRender={8}
-        maxToRenderPerBatch={10}
-        windowSize={5}
-        removeClippedSubviews={true}
+        initialNumToRender={10}
+        maxToRenderPerBatch={15}
+        windowSize={11}
+        removeClippedSubviews={false}
+        onScrollToIndexFailed={info => {
+          setTimeout(() => {
+            flatListRef.current?.scrollToIndex({ index: info.index, animated: true, viewPosition: 0.15 });
+          }, 100);
+        }}
       />
     </View>
   );
@@ -303,8 +346,9 @@ const styles = StyleSheet.create({
     borderColor: '#00ffaa',
     backgroundColor: 'rgba(0, 255, 170, 0.22)',
     shadowColor: '#00ffaa',
-    shadowOpacity: 0.5,
-    shadowRadius: 8,
+    shadowOpacity: 0.6,
+    shadowRadius: 10,
+    transform: [{ scale: 1.04 }],
   },
   arabicWordText: {
     color: '#f8fafc',
@@ -327,11 +371,22 @@ const styles = StyleSheet.create({
     marginTop: 2,
     textAlign: 'center',
   },
+  translitTextRTL: {
+    writingDirection: 'rtl',
+  },
+  translitTextReciting: {
+    color: '#67e8f9',
+    fontWeight: 'bold',
+  },
   translationText: {
     color: '#cbd5e1',
     fontSize: 11,
     marginTop: 1,
     textAlign: 'center',
+  },
+  translationTextReciting: {
+    color: '#f1f5f9',
+    fontWeight: '600',
   },
   verseTranslationBox: {
     marginTop: 10,

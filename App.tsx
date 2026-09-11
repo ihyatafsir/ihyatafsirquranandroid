@@ -88,20 +88,58 @@ export default function App() {
   // Core Audio Hook
   const audio = useQuranAudio(settings.reciter);
 
-  // Calculate Active Word Index during Playback
+  // Calculate Active Word Index during Playback (Supports both array [wIdx, start, end] and object formats)
   const getActiveWordIdx = useCallback((): number => {
     if (!audio.currentVerseKey || !audio.isPlaying) return -1;
-    const words = wordTimingMap[audio.currentVerseKey];
-    if (!words || words.length === 0) return -1;
+    const ayahPart = audio.currentVerseKey.includes(':') ? audio.currentVerseKey.split(':')[1] : audio.currentVerseKey;
+    const words = wordTimingMap[audio.currentVerseKey] || wordTimingMap[ayahPart];
 
-    for (let i = 0; i < words.length; i++) {
-      const w = words[i];
-      if (audio.currentTimeMs >= w.start && audio.currentTimeMs <= w.end) {
-        return i;
+    if (words && words.length > 0) {
+      for (let i = 0; i < words.length; i++) {
+        const entry = words[i];
+        let st = 0, en = 0, wIdx = i;
+        if (Array.isArray(entry)) {
+          wIdx = (typeof entry[0] === 'number' && entry[0] >= 1) ? entry[0] - 1 : i;
+          st = entry[1] || 0;
+          en = entry[2] || 0;
+        } else if (entry && typeof entry === 'object') {
+          wIdx = entry.wordIdx !== undefined ? entry.wordIdx :
+                 (entry.w !== undefined ? entry.w :
+                 (entry.word !== undefined && typeof entry.word === 'number' ? entry.word - 1 : i));
+          st = entry.start !== undefined ? entry.start : (entry.s !== undefined ? entry.s : 0);
+          en = entry.end !== undefined ? entry.end : (entry.e !== undefined ? entry.e : 0);
+        }
+        if (st > 0 && st < 100 && en > 0 && en < 300) { st *= 1000; en *= 1000; }
+        let effectiveEnd = en;
+        const nextEntry = words[i + 1];
+        if (nextEntry) {
+          let nextSt = en;
+          if (Array.isArray(nextEntry)) nextSt = nextEntry[1] || en;
+          else if (nextEntry && typeof nextEntry === 'object') {
+            nextSt = nextEntry.start !== undefined ? nextEntry.start : (nextEntry.s !== undefined ? nextEntry.s : en);
+          }
+          if (nextSt > 0 && nextSt < 100) nextSt *= 1000;
+          if (nextSt > en) effectiveEnd = nextSt;
+        }
+        if (audio.currentTimeMs >= st && audio.currentTimeMs < effectiveEnd) {
+          return wIdx;
+        }
       }
     }
+
+    // Fallback to letter timing map if word timing map is absent
+    const letters = letterTimingMap[audio.currentVerseKey] || letterTimingMap[ayahPart];
+    if (letters && letters.length > 0) {
+      for (let i = 0; i < letters.length; i++) {
+        const l = letters[i];
+        if (audio.currentTimeMs >= l.start && audio.currentTimeMs <= l.end) {
+          return l.wordIdx !== undefined ? l.wordIdx : -1;
+        }
+      }
+    }
+
     return -1;
-  }, [audio.currentVerseKey, audio.isPlaying, audio.currentTimeMs, wordTimingMap]);
+  }, [audio.currentVerseKey, audio.isPlaying, audio.currentTimeMs, wordTimingMap, letterTimingMap]);
 
   const activeWordIdx = getActiveWordIdx();
 
